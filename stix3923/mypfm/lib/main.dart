@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mypfm/view/splashpage.dart';
+import 'package:mypfm/view/splashscreen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         darkTheme: ThemeData.dark(),
         title: 'MyPFM',
         home: const Scaffold(
-          body: SplashPage(),
+          body: SplashScreen(),
         ));
   }
 }
