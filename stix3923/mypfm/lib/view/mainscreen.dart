@@ -12,53 +12,48 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late List<Widget> tabChildren = [];
   int _currentIndex = 0;
-  String maintitle = "Record";
 
-  @override
-  void initState() {
-    super.initState();
-    tabChildren = const [
-      TabRecordScreen(),
-      TabBudgetScreen(),
-      TabReportScreen(),
-      TabResourceScreen(),
-    ];
-  }
+  // List of tab screens
+  final List<Widget> _tabScreens = [
+    const TabRecordScreen(title: 'Record'),
+    const TabBudgetScreen(title: 'Budget'),
+    const TabReportScreen(title: 'Report'),
+    const TabResourceScreen(title: 'Resource'),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: tabChildren[_currentIndex],
+      appBar: AppBar(
+        title: Text(_tabScreens[_currentIndex].title), // Dynamic title
+        backgroundColor: Colors.orange.shade100,
+        centerTitle: true,
+      ),
+      body: _tabScreens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
-        items: const [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.attach_money,
-              ),
-              label: "Record"),
+            icon: Icon(Icons.attach_money),
+            label: 'Record',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.store_mall_directory,
-              ),
-              label: "Budget"),
+            icon: Icon(Icons.store_mall_directory),
+            label: 'Budget',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-              ),
-              label: "Report"),
+            icon: Icon(Icons.person),
+            label: 'Report',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-              ),
-              label: "Resource")
+            icon: Icon(Icons.person),
+            label: 'Resource',
+          ),
         ],
       ),
-      endDrawer: Drawer(
-        // Use endDrawer instead of drawer
+            endDrawer: Drawer(
         child: ListView(
           children: [
             DrawerHeader(
@@ -69,18 +64,15 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Profile Icon
                   CircleAvatar(
-                    backgroundColor:
-                        Colors.orange, // Background color of the circle
-                    radius: 20, // Adjust the size as needed
+                    backgroundColor: Colors.orange,
+                    radius: 20,
                     child: Icon(
-                      Icons.person, // Choose the desired icon
-                      color: Colors.white, // Color of the icon
-                      size: 24, // Size of the icon
+                      Icons.person,
+                      color: Colors.white,
+                      size: 24,
                     ),
                   ),
-                  // Name and Email
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +93,6 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ],
                   ),
-                  // Edit Button
                   IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
@@ -173,18 +164,6 @@ class _MainScreenState extends State<MainScreen> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      if (_currentIndex == 0) {
-        maintitle = "Record";
-      }
-      if (_currentIndex == 1) {
-        maintitle = "Budget";
-      }
-      if (_currentIndex == 2) {
-        maintitle = "Report";
-      }
-      if (_currentIndex == 3) {
-        maintitle = "Resource";
-      }
     });
   }
 }

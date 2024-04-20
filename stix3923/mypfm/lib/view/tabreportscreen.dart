@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TabReportScreen extends StatefulWidget {
-  const TabReportScreen({super.key});
+  const TabReportScreen({Key? key, required this.title}) : super(key: key);
+
+  final String title;
 
   @override
   State<TabReportScreen> createState() => _TabReportScreenState();
@@ -10,8 +12,8 @@ class TabReportScreen extends StatefulWidget {
 class _TabReportScreenState extends State<TabReportScreen> {
   @override
   Widget build(BuildContext context) {
-    return  const Scaffold(
-      body: Center(child: Text("Report Screen",))
+    return Center(
+      child: Text(widget.title),
     );
   }
 }
