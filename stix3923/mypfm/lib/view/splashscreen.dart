@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:mypfm/view/mainscreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -9,12 +12,21 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  void initState() {
+    super.initState();
+    Timer(
+        const Duration(seconds: 5),
+        () => Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (content) => const MainScreen())));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Container(
           constraints: const BoxConstraints.expand(),
-          color: Color.fromARGB(255, 255, 248, 199),
+          color: const Color.fromARGB(255, 255, 248, 199),
           // Set the background color here
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
