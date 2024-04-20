@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mypfm/view/registerscreen.dart';
 import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
 import 'package:mypfm/view/tabreportscreen.dart';
@@ -13,6 +14,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  String maintitle = "Record";
 
   // List of tab screens
   final List<Widget> _tabScreens = [
@@ -26,34 +28,41 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_tabScreens[_currentIndex].title), // Dynamic title
+        title: Text(
+          maintitle,
+          style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ), // Dynamic title
         backgroundColor: Colors.orange.shade100,
         centerTitle: true,
       ),
       body: _tabScreens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+        unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        showUnselectedLabels: true,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money),
+            icon: Icon(Icons.note_alt_outlined),
             label: 'Record',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.store_mall_directory),
+            icon: Icon(Icons.attach_money),
             label: 'Budget',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.bar_chart_outlined),
             label: 'Report',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.travel_explore_outlined),
             label: 'Resource',
           ),
         ],
       ),
-            endDrawer: Drawer(
+      endDrawer: Drawer(
         child: ListView(
           children: [
             DrawerHeader(
@@ -151,8 +160,38 @@ class _MainScreenState extends State<MainScreen> {
             ListTile(
               title: const Text('Log Out'),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                // Show confirmation dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    // Return AlertDialog with the confirmation message
+                    return AlertDialog(
+                      title: const Text('Log Out'),
+                      content: const Text('Do you want to log out?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            // Navigate to the register screen
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Dismiss the dialog
+                            Navigator.pop(context);
+                          },
+                          child: const Text('No'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
@@ -164,6 +203,18 @@ class _MainScreenState extends State<MainScreen> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      if (_currentIndex == 0) {
+        maintitle = "Record";
+      }
+      if (_currentIndex == 1) {
+        maintitle = "Budget";
+      }
+      if (_currentIndex == 2) {
+        maintitle = "Report";
+      }
+      if (_currentIndex == 3) {
+        maintitle = "Resource";
+      }
     });
   }
 }
