@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/view/loginscreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:ndialog/ndialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -48,6 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             elevation: 10,
             child: Container(
               padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
+              color: Colors.white,              
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -117,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(width: 2.0),
                           )),
-                      obscureText: true,
+                      obscureText: _passwordVisible,
                     ),
                     TextFormField(
                       style: const TextStyle(),
@@ -155,7 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(width: 2.0),
                           )),
-                      obscureText: true,
+                      obscureText: _passwordVisible,
                     ),
                     const SizedBox(
                       height: 15,
@@ -185,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: ElevatedButton.styleFrom(
                               fixedSize: Size(screenWidth / 3, 50)),
                           child: const Text('Register'),
-                          onPressed: _registerAccountDialog,
+                          onPressed: null,
                         ),
                       ],
                     ),
@@ -318,10 +320,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _showEULA() {
     loadEula();
-    showDialog(
+    showDialog(      
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text(
             "EULA",
           ),
