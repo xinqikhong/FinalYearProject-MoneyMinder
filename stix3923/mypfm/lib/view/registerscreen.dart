@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mypfm/model/config.dart';
 import 'package:mypfm/view/loginscreen.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -376,7 +378,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: const Text("Registering..."));
     progressDialog.show();
 
-    http.post(Uri.parse(MyConfig.server + "/mypasar/php/register_user.php"),
+    http.post(Uri.parse(MyConfig.server + "/mypfm/php/register_user.php"),
         body: {
           "name": _name,
           "email": _email,
