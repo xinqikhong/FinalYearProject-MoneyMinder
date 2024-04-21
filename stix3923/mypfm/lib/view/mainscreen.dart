@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
@@ -6,13 +7,22 @@ import 'package:mypfm/view/tabreportscreen.dart';
 import 'package:mypfm/view/tabresourcescreen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final User user;
+  const MainScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  //can delete, just want to test user object succesfully pass or not
+  @override
+  void initState() {
+    super.initState();
+    // Print output to the console
+    print(widget.user.name);
+  }
+
   int _currentIndex = 0;
   String maintitle = "Record";
 

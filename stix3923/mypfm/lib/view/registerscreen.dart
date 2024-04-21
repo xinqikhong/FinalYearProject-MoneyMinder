@@ -285,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                _registerUserAccount();
+                _registerUser();
               },
             ),
             TextButton(
@@ -370,7 +370,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     eula = await rootBundle.loadString('assets/eula.txt');
   }
 
-  void _registerUserAccount() {
+  void _registerUser() {
     FocusScope.of(context).requestFocus(FocusNode());
     String _name = _nameEditingController.text;
     String _email = _emailditingController.text;
