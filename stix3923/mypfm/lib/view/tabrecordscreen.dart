@@ -17,7 +17,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         children: [
           // Pagination for months
           Container(
-            height: 50, // Adjust height as needed
+            height: 40, // Adjust height as needed
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -37,6 +37,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               ],
             ),
           ),
+          Divider(),
           // Total income and expenses
           Container(
             padding: EdgeInsets.all(10),
@@ -50,27 +51,63 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           ),
           // Record list
           Expanded(
-            child: ListView.builder(
-              itemCount: 10, // Replace with actual record count
-              itemBuilder: (context, index) {
-                // Replace with record widget
-                return ListTile(
-                  leading: Icon(Icons.attach_money),
-                  title: Text('Record Title'),
-                  subtitle: Text('Record Category'),
-                  trailing: Text(
-                    '\$XXX.XX',
-                    style: TextStyle(
-                      color: Colors.blue, // For income
+              child: Container(
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Date and totals
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      'Day X', // Replace with actual day
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  onTap: () {
-                    // Record tap logic
-                  },
-                );
-              },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          'Income: \$XXX.XX'), // Replace with actual total income
+                      Text(
+                          'Expense: \$XXX.XX'), // Replace with actual total expense
+                    ],
+                  ),
+                  Divider(), // Divider between totals and records
+                  // Individual records
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 5, // Replace with actual record count
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Icon(Icons.attach_money),
+                        title: Text(
+                            'Record Title'), // Replace with actual record title
+                        subtitle: Text(
+                            'Record Category'), // Replace with actual record category
+                        trailing: Text(
+                          '\$XXX.XX',
+                          style: TextStyle(
+                            color: Colors.blue, // For income
+                          ),
+                        ), // Replace with actual record amount
+                        onTap: () {
+                          // Record tap logic
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
+          )),
         ],
       ),
       floatingActionButton: FloatingActionButton(
