@@ -26,11 +26,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isChecked = false;
+  bool _passwordVisible = true;
 
   @override
   void initState() {
     super.initState();
     loadPref();
+    focus.attach(context);
+    focus1.attach(context);
+    focus2.attach(context);
+  }
+
+  @override
+  void dispose() {
+    focus.dispose();
+    focus1.dispose();
+    focus2.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,10 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget upperHalf(BuildContext context) {
     return SizedBox(
-      height: screenHeight / 3.5,
-      width: resWidth * 0.7,
+      height: screenHeight / 4.5,
+      width: resWidth * 0.9,
       child: Image.asset(
-        'assets/images/mypasar.png',
+        'assets/images/moneyminder3.png',
         fit: BoxFit.cover,
       ),
     );
@@ -78,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Card(
                 elevation: 10,
                 child: Container(
+                    color: Colors.white,
                     padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
                     child: Form(
                       key: _formKey,
@@ -98,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               validator: (val) => val!.isEmpty ||
                                       !val.contains("@") ||
                                       !val.contains(".")
-                                  ? "enter a valid email"
+                                  ? "Please enter a valid email"
                                   : null,
                               focusNode: focus,
                               onFieldSubmitted: (v) {
@@ -118,22 +131,34 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             textInputAction: TextInputAction.done,
                             validator: (val) =>
-                                val!.isEmpty ? "Enter a password" : null,
+                                val!.isEmpty ? "Please enter a password" : null,
                             focusNode: focus1,
                             onFieldSubmitted: (v) {
                               FocusScope.of(context).requestFocus(focus2);
                             },
                             controller: _passEditingController,
-                            decoration: const InputDecoration(
-                                labelStyle: TextStyle(),
+                            decoration: InputDecoration(
+                                labelStyle: const TextStyle(),
                                 labelText: 'Password',
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.lock,
                                 ),
-                                focusedBorder: OutlineInputBorder(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  },
+                                ),
+                                focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(width: 2.0),
                                 )),
-                            obscureText: true,
+                            obscureText: _passwordVisible,
                           ),
                           const SizedBox(
                             height: 15,
@@ -238,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     String _email = _emailditingController.text;
     String _pass = _passEditingController.text;
-    http.post(Uri.parse(MyConfig.server + "/mypasar/php/login_user.php"),
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/login_user.php"),
         body: {"email": _email, "password": _pass}).then((response) {
       print(response.body);
       var jsondata = jsonDecode(response.body);
@@ -251,12 +276,13 @@ class _LoginScreenState extends State<LoginScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
         progressDialog.dismiss();
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => MainScreen(
-                      user: user,
-                    )));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainScreen(user: user),
+          ),
+          (route) => false, // This condition removes all routes from the stack
+        );
       } else {
         Fluttertoast.showToast(
             msg: "Login Failed",

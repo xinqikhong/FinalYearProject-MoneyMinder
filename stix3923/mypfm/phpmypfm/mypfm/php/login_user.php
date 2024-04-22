@@ -22,10 +22,10 @@ while ($row = $result->fetch_assoc()) {
         $response = array('status' => 'success', 'data' => $userlist);
         sendJsonResponse($response);
     }
-}else{
-    $response = array('status' => 'failed', 'data' => null);
-    sendJsonResponse($response);
-}
+}else {
+        $response = array('status' => 'failed', 'data' => null);
+        sendJsonResponse($response);
+    }
 $conn->close();
 
 function sendJsonResponse($sentArray)

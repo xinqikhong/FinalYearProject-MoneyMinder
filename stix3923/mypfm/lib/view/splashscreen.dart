@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
     String password = (prefs.getString('pass')) ?? '';
     late User user;
     if (email.length > 1 && password.length > 1) {
-      http.post(Uri.parse(MyConfig.server + "/mypasar/php/login_user.php"),
+      http.post(Uri.parse("${MyConfig.server}/mypfm/php/login_user.php"),
           body: {"email": email, "password": password}).then((response) {
         print(response.body);
         var jsondata = jsonDecode(response.body);

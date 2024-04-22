@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mypfm/model/user.dart';
-import 'package:mypfm/view/registerscreen.dart';
+import 'package:mypfm/view/loginscreen.dart';
 import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
 import 'package:mypfm/view/tabreportscreen.dart';
@@ -177,7 +177,7 @@ class _MainScreenState extends State<MainScreen> {
                     // Return AlertDialog with the confirmation message
                     return AlertDialog(
                       title: const Text('Log Out'),
-                      content: const Text('Do you want to log out?'),
+                      content: const Text('Are you sure?'),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
@@ -185,7 +185,7 @@ class _MainScreenState extends State<MainScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
+                                builder: (context) => const LoginScreen(),
                               ),
                             );
                           },

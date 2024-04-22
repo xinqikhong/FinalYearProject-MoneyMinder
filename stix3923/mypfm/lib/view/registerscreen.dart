@@ -32,6 +32,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    focus.attach(context);
+    focus1.attach(context);
+    focus2.attach(context);
+    focus3.attach(context);
+  }
+
+  @override
+  void dispose() {
+    focus.dispose();
+    focus1.dispose();
+    focus2.dispose();
+    focus3.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
@@ -40,24 +58,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       resWidth = screenWidth * 0.75;
     }
+
     return Scaffold(
-        body: Center(
-            child: SingleChildScrollView(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [upperHalf(context), lowerHalf(context)],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget upperHalf(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      child: SizedBox(
+        height: screenHeight / 5.5,
+        width: resWidth * 0.9,
+        child: Image.asset(
+          'assets/images/moneyminder3.png',
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget lowerHalf(BuildContext context) {
+    return Container(
+      width: resWidth,
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: Column(
         children: [
           Card(
             elevation: 10,
             child: Container(
               padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-              color: Colors.white,              
+              color: Colors.white,
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
+                    Text(
+                      "Register",
+                      style: TextStyle(
+                        fontSize: resWidth * 0.05,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
                     TextFormField(
                         textInputAction: TextInputAction.next,
                         validator: (val) => val!.isEmpty || (val.length < 3)
-                            ? "name must be longer than 3"
+                            ? "Name must be longer than 3"
                             : null,
                         onFieldSubmitted: (v) {
                           FocusScope.of(context).requestFocus(focus);
@@ -76,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         validator: (val) => val!.isEmpty ||
                                 !val.contains("@") ||
                                 !val.contains(".")
-                            ? "enter a valid email"
+                            ? "Enter a valid email (e.g. abc@example.com)"
                             : null,
                         focusNode: focus,
                         onFieldSubmitted: (v) {
@@ -92,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderSide: BorderSide(width: 2.0),
                             ))),
                     TextFormField(
-                      textInputAction: TextInputAction.done,
+                      textInputAction: TextInputAction.next,
                       validator: (val) => validatePassword(val.toString()),
                       focusNode: focus1,
                       onFieldSubmitted: (v) {
@@ -127,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: (val) {
                         validatePassword(val.toString());
                         if (val != _passEditingController.text) {
-                          return "password do not match";
+                          return "Password do not match";
                         } else {
                           return null;
                         }
@@ -186,8 +244,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               fixedSize: Size(screenWidth / 3, 50)),
+                          onPressed: _registerAccountDialog,
                           child: const Text('Register'),
-                          onPressed: null,
                         ),
                       ],
                     ),
@@ -242,7 +300,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ],
       ),
-    )));
+    );
   }
 
   void _registerAccountDialog() {
@@ -305,13 +363,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? validatePassword(String value) {
     // String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+    String pattern =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     RegExp regex = RegExp(pattern);
     if (value.isEmpty) {
       return 'Please enter password';
     } else {
       if (!regex.hasMatch(value)) {
-        return 'Enter valid password';
+        return 'Enter a valid password (e.g. Abc1234@)';
       } else {
         return null;
       }
@@ -320,7 +379,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _showEULA() {
     loadEula();
-    showDialog(      
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -381,7 +440,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: const Text("Registering..."));
     progressDialog.show();
 
-    http.post(Uri.parse(MyConfig.server + "/mypfm/php/register_user.php"),
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/register_user.php"),
         body: {
           "name": _name,
           "email": _email,
@@ -391,7 +450,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       print(data);
       if (response.statusCode == 200 && data['status'] == 'success') {
         Fluttertoast.showToast(
-            msg: "Registration Success",
+            msg: "Registration Success.\nCheck Email for Verification.",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
