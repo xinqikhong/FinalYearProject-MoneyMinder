@@ -67,8 +67,8 @@ function sendMail($email, $otp, $pass)
     $mail->Port = 587;
     $mail->SMTPSecure = 'tls'; // Enable TLS encryption
     $mail->SMTPAuth = true;
-    $mail->Username = 'xinqikhong11@gmail.com'; // Your Gmail email address
-    $mail->Password = 'oagryttdsvikdhbg'; // Your Gmail password
+    $mail->Username = ''; // Your Gmail email address
+    $mail->Password = ''; // Your Gmail password
 
     // Sender and recipient settings
     $mail->setFrom('xinqikhong11@gmail.com', 'Your Name'); // Your name and email address
