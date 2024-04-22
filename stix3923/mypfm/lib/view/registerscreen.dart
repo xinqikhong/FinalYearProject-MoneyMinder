@@ -6,6 +6,7 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/view/loginscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
+import 'package:logger/logger.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -15,6 +16,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  // Define a logger instance
+  var logger = Logger();
   bool _isChecked = false;
   bool _passwordVisible = true;
   String eula = "";
@@ -446,31 +449,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "email": _email,
           "password": _pass
         }).then((response) {
-      var data = jsonDecode(response.body);
-      print(data);
-      if (response.statusCode == 200 && data['status'] == 'success') {
-        Fluttertoast.showToast(
-            msg: "Registration Success.\nCheck Email for Verification.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        progressDialog.dismiss();
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => const LoginScreen()));
-        return;
+      progressDialog.dismiss();
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+        if (data['status'] == 'success') {
+          Fluttertoast.showToast(
+              msg: "Registration Success.\nCheck Email for Verification.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const LoginScreen()));
+        } else {
+          Fluttertoast.showToast(
+              msg: data['error'] ?? "Registration Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+        }
       } else {
+        print("Failed to connect to the server. Status code: ${response.statusCode}");
         Fluttertoast.showToast(
-            msg: "Registration Failed",
+            msg: "Failed to connect to the server",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
-        progressDialog.dismiss();
-        return;
       }
+    }).catchError((error) {
+      progressDialog.dismiss();
+      logger.e("An error occurred: $error");
+      Fluttertoast.showToast(
+          msg: "An error occurred: $error",          
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
     });
   }
 }
