@@ -56,12 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
       resWidth = screenWidth * 0.75;
     }
 
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [upperHalf(context), lowerHalf(context)],
+    return Theme(
+      data: Theme.of(context),
+      child: Scaffold(
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [upperHalf(context), lowerHalf(context)],
+            ),
           ),
         ),
       ),
@@ -92,106 +95,109 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Container(
                     color: Colors.white,
                     padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: resWidth * 0.05,
-                              fontWeight: FontWeight.w600,
+                    child: Theme(
+                      data: Theme.of(context),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: resWidth * 0.05,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                              textInputAction: TextInputAction.next,
-                              validator: (val) => val!.isEmpty ||
-                                      !val.contains("@") ||
-                                      !val.contains(".")
-                                  ? "Please enter a valid email"
-                                  : null,
-                              focusNode: focus,
-                              onFieldSubmitted: (v) {
-                                FocusScope.of(context).requestFocus(focus1);
-                              },
-                              controller: _emailditingController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: const InputDecoration(
-                                  labelStyle: TextStyle(),
-                                  labelText: 'Email',
-                                  icon: Icon(
-                                    Icons.phone,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                          TextFormField(
-                            textInputAction: TextInputAction.done,
-                            validator: (val) =>
-                                val!.isEmpty ? "Please enter a password" : null,
-                            focusNode: focus1,
-                            onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus2);
-                            },
-                            controller: _passEditingController,
-                            decoration: InputDecoration(
-                                labelStyle: const TextStyle(),
-                                labelText: 'Password',
-                                icon: const Icon(
-                                  Icons.lock,
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _passwordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _passwordVisible = !_passwordVisible;
-                                    });
-                                  },
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                )),
-                            obscureText: _passwordVisible,
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: _isChecked,
-                                      onChanged: (bool? value) {
-                                        _onRememberMeChanged(value!);
-                                      },
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                                textInputAction: TextInputAction.next,
+                                validator: (val) => val!.isEmpty ||
+                                        !val.contains("@") ||
+                                        !val.contains(".")
+                                    ? "Please enter a valid email"
+                                    : null,
+                                focusNode: focus,
+                                onFieldSubmitted: (v) {
+                                  FocusScope.of(context).requestFocus(focus1);
+                                },
+                                controller: _emailditingController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: const InputDecoration(
+                                    labelStyle: TextStyle(),
+                                    labelText: 'Email',
+                                    icon: Icon(
+                                      Icons.phone,
                                     ),
-                                    const Text('Remember me',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  ],
-                                ),
-                                Flexible(
-                                  flex: 5,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        fixedSize: Size(screenWidth / 3, 50)),
-                                    child: const Text('Login'),
-                                    onPressed: _loginUser,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(width: 2.0),
+                                    ))),
+                            TextFormField(
+                              textInputAction: TextInputAction.done,
+                              validator: (val) =>
+                                  val!.isEmpty ? "Please enter a password" : null,
+                              focusNode: focus1,
+                              onFieldSubmitted: (v) {
+                                FocusScope.of(context).requestFocus(focus2);
+                              },
+                              controller: _passEditingController,
+                              decoration: InputDecoration(
+                                  labelStyle: const TextStyle(),
+                                  labelText: 'Password',
+                                  icon: const Icon(
+                                    Icons.lock,
                                   ),
-                                ),
-                              ]),
-                        ],
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _passwordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _passwordVisible = !_passwordVisible;
+                                      });
+                                    },
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(width: 2.0),
+                                  )),
+                              obscureText: _passwordVisible,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _isChecked,
+                                        onChanged: (bool? value) {
+                                          _onRememberMeChanged(value!);
+                                        },
+                                      ),
+                                      const Text('Remember me',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                    ],
+                                  ),
+                                  Flexible(
+                                    flex: 5,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(screenWidth / 3, 50)),
+                                      child: const Text('Login'),
+                                      onPressed: _loginUser,
+                                    ),
+                                  ),
+                                ]),
+                          ],
+                        ),
                       ),
                     ))),
             const SizedBox(

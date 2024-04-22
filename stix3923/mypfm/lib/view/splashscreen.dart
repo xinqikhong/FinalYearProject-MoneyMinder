@@ -75,11 +75,11 @@ class _SplashScreenState extends State<SplashScreen> {
                       builder: (content) => MainScreen(user: user))));
         } else {
           user = User(
-            id: "na",
-            name: "na",
-            email: "na",
-            regdate: "na",
-            otp: "na",
+            id: "unregistered",
+            name: "unregistered",
+            email: "unregistered",
+            regdate: "unregistered",
+            otp: "unregistered",
           );
 
           Timer(
@@ -92,11 +92,11 @@ class _SplashScreenState extends State<SplashScreen> {
       }).timeout(const Duration(seconds: 5));
     } else {
       user = User(
-        id: "na",
-        name: "na",
-        email: "na",
-        regdate: "na",
-        otp: "na",
+        id: "unregistered",
+        name: "unregistered",
+        email: "unregistered",
+        regdate: "unregistered",
+        otp: "unregistered",
       );
       Timer(
           const Duration(seconds: 3),

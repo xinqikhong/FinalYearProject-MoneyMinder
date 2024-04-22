@@ -62,12 +62,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       resWidth = screenWidth * 0.75;
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [upperHalf(context), lowerHalf(context)],
+    return Theme(
+      data: Theme.of(context),
+      child: Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [upperHalf(context), lowerHalf(context)],
+              ),
             ),
           ),
         ),
@@ -287,20 +290,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           const SizedBox(
             height: 10,
-          ),
-          GestureDetector(
-            onTap: null,
-            child: const Text(
-              "Back to Home",
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          ),          
         ],
       ),
     );
