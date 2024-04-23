@@ -13,7 +13,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("widget.title"),
+      child: Text("Resource"),
     );
   }
 }

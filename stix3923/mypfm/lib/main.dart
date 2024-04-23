@@ -11,14 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          // Light mode theme properties
-          brightness: Brightness.light,
-          primaryColor: Colors.orange.shade300, // Example primary color
-        ),
-        darkTheme: ThemeData.dark().copyWith(
-          // Dark mode theme properties
-          primaryColor:
-              Colors.orange.shade600, // Example primary color in dark mode
+          primaryColor: Color.fromARGB(255, 255, 149, 67),
         ),
         title: 'MyPFM',
         home: const Scaffold(

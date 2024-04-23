@@ -3,7 +3,7 @@ import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/loginscreen.dart';
 import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
-import 'package:mypfm/view/tabreportscreen.dart';
+import 'package:mypfm/view/tabstatscreen.dart';
 import 'package:mypfm/view/tabresourcescreen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
     tabScreens = [
       TabRecordScreen(user: widget.user),
       TabBudgetScreen(user: widget.user),
-      TabReportScreen(user: widget.user),
+      TabStatsScreen(user: widget.user),
       TabResourceScreen(user: widget.user),
     ];
   }
@@ -40,10 +40,21 @@ class _MainScreenState extends State<MainScreen> {
         appBar: AppBar(
           title: Text(
             maintitle,
-            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          ), // Dynamic title
-          backgroundColor: Colors.orange.shade100,
+            style: const TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Color.fromARGB(255, 255, 234, 199), // Dynamic title
           centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize:
+                Size.fromHeight(4.0), // Adjust the height of the divider
+            child: Divider(
+              color: Colors.grey, // Adjust the color of the divider
+              height: 4.0, // Adjust the thickness of the divider
+            ),
+          ),
         ),
         body: tabScreens[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
@@ -64,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_outlined),
-              label: 'Report',
+              label: 'Stats',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.travel_explore_outlined),
