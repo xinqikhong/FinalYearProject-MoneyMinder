@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:mypfm/view/editprofilescreen.dart';
 import 'package:mypfm/view/loginscreen.dart';
+import 'package:mypfm/view/registerscreen.dart';
 import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
 import 'package:mypfm/view/tabstatscreen.dart';
@@ -45,9 +47,9 @@ class _MainScreenState extends State<MainScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: Color.fromARGB(255, 255, 234, 199), // Dynamic title
+          backgroundColor: const Color.fromARGB(255, 255, 234, 199), // Dynamic title
           centerTitle: true,
-          bottom: PreferredSize(
+          bottom: const PreferredSize(
             preferredSize:
                 Size.fromHeight(4.0), // Adjust the height of the divider
             child: Divider(
@@ -126,7 +128,7 @@ class _MainScreenState extends State<MainScreen> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        // Add edit button functionality here
+                        _handleEditProfileBtn();
                       },
                     ),
                   ],
@@ -268,5 +270,57 @@ class _MainScreenState extends State<MainScreen> {
         maintitle = "Resource";
       }
     });
+  }
+
+  void _handleEditProfileBtn() {
+    if (widget.user.id == "unregistered") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Register to Edit Profile'),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+            content: const Text('You need to register first to edit your profile.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Register'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Navigate to EditProfileScreen for registered users
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EditProfileScreen(user: widget.user),
+        ),
+      );
+    }
   }
 }

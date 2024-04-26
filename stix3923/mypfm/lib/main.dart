@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color.fromARGB(255, 255, 149, 67),
+          fontFamily: 'Montserrat',
         ),
         title: 'MyPFM',
         home: const Scaffold(
