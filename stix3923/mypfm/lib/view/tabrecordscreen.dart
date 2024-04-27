@@ -181,7 +181,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const AddRecordScreen(),
+          builder: (context) => AddRecordScreen(user: widget.user),
         ),
       );
     }
