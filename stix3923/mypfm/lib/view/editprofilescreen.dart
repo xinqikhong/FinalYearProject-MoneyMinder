@@ -27,7 +27,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final focus = FocusNode();
   final focus1 = FocusNode();
   final focus2 = FocusNode();
-  final focus3 = FocusNode();
+  //final focus3 = FocusNode();
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     focus.attach(context);
     focus1.attach(context);
     focus2.attach(context);
-    focus3.attach(context);
+    //focus3.attach(context);
 
     _loadUserData();
   }
@@ -44,7 +44,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Profile"),
+        title: const Text(
+          "Edit Profile",
+          style: TextStyle(
+            fontSize: 27,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -61,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         TextFormField(
                             //readOnly: true,
-                            textInputAction: TextInputAction.next,
+                            //textInputAction: TextInputAction.next,
                             validator: (val) => _validateName(val!),
                             onFieldSubmitted: (v) {
                               FocusScope.of(context).requestFocus(focus);
@@ -77,19 +84,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   borderSide: BorderSide(width: 2.0),
                                 ))),
                         TextFormField(
-                            //readOnly: true,
-                            textInputAction: TextInputAction.next,
-                            validator: (val) => _validateEmail(val!),
+                            readOnly: true,
+                            //textInputAction: TextInputAction.next,
+                            /*validator: (val) => _validateEmail(val!),
                             focusNode: focus,
                             onFieldSubmitted: (v) {
                               FocusScope.of(context).requestFocus(focus1);
                             },
-                            autofocus: false,
+                            autofocus: false,*/
                             controller: _emailEditingController,
                             keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(color: Colors.grey),
                             decoration: const InputDecoration(
                                 labelText: 'Email*',
-                                labelStyle: TextStyle(),
+                                labelStyle: TextStyle(color: Colors.grey),
                                 icon: Icon(Icons.email),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(width: 2.0),
@@ -99,11 +107,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         TextFormField(
                             //readOnly: true,
-                            textInputAction: TextInputAction.next,
+                            //textInputAction: TextInputAction.next,
                             validator: (val) => _validatePhone(val!),
-                            focusNode: focus1,                            
+                            focusNode: focus,
                             onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus2);
+                              FocusScope.of(context).requestFocus(focus1);
                             },
                             autofocus: false,
                             controller: _phoneEditingController,
@@ -122,9 +130,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             //readOnly: true,
                             textInputAction: TextInputAction.done,
                             validator: (val) => _validateAddress(val!),
-                            focusNode: focus2,                            
+                            focusNode: focus1,
                             onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus3);
+                              FocusScope.of(context).requestFocus(focus2);
                             },
                             autofocus: false,
                             controller: _addressEditingController,
@@ -140,18 +148,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           height: 20,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
                               //style: ElevatedButton.styleFrom(
                               //fixedSize: Size(screenWidth / 3, 50)),
                               onPressed: _saveEditDialog,
-                              child: const Text('Save'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .white, // Set your desired background color
+                                foregroundColor: Colors
+                                    .orange, // Set your desired text color
+                              ),
+                              child: const Text(
+                                'Save',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
                             ),
                             ElevatedButton(
                               //style: ElevatedButton.styleFrom(
                               //fixedSize: Size(screenWidth / 3, 50)),
                               onPressed: _cancelEditDialog,
-                              child: const Text('Cancel'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .white, // Set your desired background color
+                                foregroundColor: Colors
+                                    .orange, // Set your desired text color
+                              ),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
                             ),
                           ],
                         ),
@@ -170,13 +199,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _nameEditingController.text = widget.user.name!;
       _emailEditingController.text = widget.user.email!;
-      _phoneEditingController.text = widget.user.phone!;
-      _addressEditingController.text = widget.user.address!;
+
+      // Check if phone is null before setting the text controller
+      if (widget.user.phone != null) {
+        _phoneEditingController.text = widget.user.phone!;
+      } else {
+        _phoneEditingController.text =
+            ''; // Set an empty string if phone is null
+      }
+
+      // Check if address is null before setting the text controller
+      if (widget.user.address != null) {
+        _addressEditingController.text = widget.user.address!;
+      } else {
+        _addressEditingController.text =
+            ''; // Set an empty string if address is null
+      }
     });
   }
 
   @override
   void dispose() {
+    focus.dispose();
+    focus1.dispose();
+    focus2.dispose();
     _nameEditingController.dispose();
     _emailEditingController.dispose();
     _phoneEditingController.dispose();
@@ -191,23 +237,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return null; // No error
   }
 
-  String? _validateEmail(String value) {
+  /*String? _validateEmail(String value) {
     if (value.isEmpty || !value.contains("@") || !value.contains(".")) {
       return "Enter a valid email (e.g. abc@example.com)";
     }
     return null; // No error
-  }
+  }*/
 
   String? _validatePhone(String value) {
-    if (value.isNotEmpty && value.length < 9) {
-      return "Phone number should have at least 9 digits";
+    if (value != null && value.isNotEmpty && value.length < 9) {
+      return "Phone number should contains at least 9 digits";
     }
     return null; // No error (empty or valid)
   }
 
   String? _validateAddress(String value) {
-    if (value.isNotEmpty && value.length < 5) {
-      return "Please enter a valid address (at least 5 characters)";
+    if (value != null && value.isNotEmpty && value.length < 5) {
+      return "Address should contains at least 5 characters";
     }
     return null; // No error (empty or valid)
   }
@@ -215,7 +261,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _saveEditDialog() {
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
-          msg: "Please complete the registration form first",
+          msg: "Please enter valid information",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -263,9 +309,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _editProfile() {
     FocusScope.of(context).requestFocus(FocusNode());
     String _name = _nameEditingController.text;
-    String _email = _emailEditingController.text;
-    String _phone = _phoneEditingController.text;
-    String _address = _addressEditingController.text;
+    //String _email = _emailEditingController.text;
+    String? _phone = _phoneEditingController.text.isEmpty
+        ? null
+        : _phoneEditingController.text;
+    String? _address = _addressEditingController.text.isEmpty
+        ? null
+        : _addressEditingController.text;
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Edit profile in progress.."),
@@ -274,31 +324,55 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/editProfile_user.php"),
         body: {
+          "userid": widget.user.id,
           "name": _name,
-          "email": _email,
-          "phone": _phone,
-          "address": _address
+          //"email": _email,
+          "phone": _phone ?? "", // Send an empty string if phone is null
+          "address": _address ?? "" // Send an empty string if address is null
         }).then((response) {
       progressDialog.dismiss();
+      print(_phone);
+      print(_address);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        print(data);
-        if (data['status'] == 'success') {
+        print(widget.user.id); //debug
+        print(data); //debug
+        // Check if all fields were successfully updated
+        bool allSuccess =
+            data.values.every((value) => value['status'] == 'success');
+
+        if (allSuccess) {
           Fluttertoast.showToast(
-              msg: "Edit Profile Success.",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              fontSize: 14.0);
-          _loadUserData();
+            msg: "Edit Profile Success.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0,
+          );
+          setState(() {
+            widget.user.name = _nameEditingController.text;
+            widget.user.phone = _phoneEditingController.text;
+            widget.user.address = _addressEditingController.text;
+            focus.attach(context);
+            focus1.attach(context);
+            focus2.attach(context);
+          });
         } else {
+          String errorMessage = data.values.firstWhere(
+                  (value) => value['status'] != 'success',
+                  orElse: () => {})['error'] ??
+              "Edit Profile Failed";
           Fluttertoast.showToast(
-              msg: data['error'] ?? "Edit Profile Failed",
+              msg: errorMessage,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
+        print(widget.user.name);
+        print(widget.user.phone);
+        print(widget.user.address);
+        _loadUserData();
       } else {
         print(
             "Failed to connect to the server. Status code: ${response.statusCode}");
@@ -340,6 +414,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 style: TextStyle(),
               ),
               onPressed: () {
+                Navigator.of(context).pop();
+                _formKey.currentState?.reset();
                 _loadUserData();
               },
             ),

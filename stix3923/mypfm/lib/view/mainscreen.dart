@@ -43,11 +43,11 @@ class _MainScreenState extends State<MainScreen> {
           title: Text(
             maintitle,
             style: const TextStyle(
-              fontSize: 30,
+              fontSize: 27,
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: const Color.fromARGB(255, 255, 234, 199), // Dynamic title
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor, // Dynamic title
           centerTitle: true,
           bottom: const PreferredSize(
             preferredSize:
