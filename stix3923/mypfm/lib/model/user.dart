@@ -4,6 +4,8 @@ class User {
   String? email;
   String? regdate;
   String? otp;
+  String? phone;
+  String? address;
 
   User(
       {required this.id,
@@ -11,6 +13,8 @@ class User {
       required this.email,
       required this.regdate,
       required this.otp,
+      required this.phone,
+      required this.address,
       });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -19,5 +23,7 @@ class User {
     email = json['email'];
     regdate = json['regdate'];
     otp = json['otp'];
+    phone = json['phone'];
+    address = json['address'];
   }
 }
