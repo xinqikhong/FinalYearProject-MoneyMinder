@@ -319,7 +319,7 @@ class _CategorySelectionBottomSheetState
             Expanded(
               // Allows the content to fill the remaining space
               child: GridView.count(
-                crossAxisCount: 4, // 4 categories per row
+                crossAxisCount: 3, // 4 categories per row
                 children: widget.categories
                     .map((category) => _CategoryItem(
                           category: category,
