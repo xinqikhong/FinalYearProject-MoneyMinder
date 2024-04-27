@@ -8,7 +8,7 @@ include_once("dbconnect.php");
 
 $email = $_POST['email'];
 $password = sha1($_POST['password']);
-$sqllogin = "SELECT * FROM tbl_user WHERE user_email = '$email' AND user_password = '$password'";
+$sqllogin = "SELECT * FROM tbl_users WHERE user_email = '$email' AND user_password = '$password' AND user_otp = '1'";
 
 $result = $conn->query($sqllogin);
 if ($result->num_rows > 0) {

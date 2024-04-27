@@ -26,7 +26,7 @@ $pass = $_POST['password'];
 $password = sha1($pass);
 $otp = rand(10000, 99999);
 
-$sqlregister = "INSERT INTO `tbl_user`(`user_name`, `user_email`, `user_password`, `user_otp`) VALUES ('$name','$email','$password','$otp')";
+$sqlregister = "INSERT INTO `tbl_users`(`user_name`, `user_email`, `user_password`, `user_otp`) VALUES ('$name','$email','$password','$otp')";
 
 try {
     if ($conn->query($sqlregister) === TRUE) {
@@ -90,8 +90,8 @@ function sendMail($email, $otp, $pass)
         $mail->Port = 587;
         $mail->SMTPSecure = 'tls'; // Enable TLS encryption
         $mail->SMTPAuth = true;
-        $mail->Username = ''; // Your Gmail email address
-        $mail->Password = ''; // Your Gmail password
+        $mail->Username = 'xinqikhong11@gmail.com'; // Your Gmail email address
+        $mail->Password = 'oagryttdsvikdhbg'; // Your Gmail password
 
         // Sender and recipient settings
         $mail->setFrom('xinqikhong11@gmail.com', 'MoneyMinder'); // Your name and email address
