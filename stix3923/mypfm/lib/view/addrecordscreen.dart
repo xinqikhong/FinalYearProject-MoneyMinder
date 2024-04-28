@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:intl/intl.dart';
-//import 'package:expandable/expandable.dart';
+import 'package:ndialog/ndialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 class AddRecordScreen extends StatefulWidget {
   final User user;
@@ -12,6 +18,7 @@ class AddRecordScreen extends StatefulWidget {
 }
 
 class _AddRecordScreenState extends State<AddRecordScreen> {
+  var logger = Logger();
   String selectedType = "Expense"; // Initial selected type
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
@@ -42,6 +49,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   @override
   void dispose() {
     _focusScopeNode.dispose();
+    _dateController.dispose();
+    _amountController.dispose();
+    _categoryController.dispose();
+    _accountController.dispose();
+    _noteController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -206,6 +219,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                           labelText: "Category",
                           icon: Icon(Icons.category),
                         ),
+                        validator: (value) =>
+                            value!.isEmpty ? "Please select category" : null,
                         focusNode: focus1,
                       ),
                     ),
@@ -221,6 +236,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       icon: Icon(
                           Icons.account_balance), // Optional icon for the field
                     ),
+                    validator: (value) =>
+                        value!.isEmpty ? "Please select account" : null,
                     focusNode: focus2,
                     onTap: () {
                       showModalBottomSheet(
@@ -293,14 +310,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // Handle form submission (save record)
-                            // This would involve saving the data (type, date, amount, category, account, note, description) to your database or storage solution.
-                            print(
-                                "Record saved!"); // Placeholder for actual saving logic
-                          }
-                        },
+                        onPressed: _addRecordDialog,
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               Colors.white, // Set your desired background color
@@ -360,6 +370,143 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         ),
       ),
     );
+  }
+
+  void _clearAllControllers() {
+    setState(() {
+      _dateController.text = "";
+      _amountController.clear();
+      _categoryController.clear();
+      _accountController.clear();
+      _noteController.clear();
+      _descriptionController.clear();
+    });
+  }
+
+  void _addRecordDialog() {
+    if (!_formKey.currentState!.validate()) {
+      Fluttertoast.showToast(
+          msg: "Please enter valid information.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Add record",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _addRecord();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addRecord() {
+    FocusScope.of(context).requestFocus(FocusNode());
+    String _date = _dateController.text;
+    String _amount = _amountController.text;
+    String _category = _categoryController.text;
+    String _account = _accountController.text;
+    String? _note = _noteController.text.isEmpty ? null : _noteController.text;
+    String? _desc = _descriptionController.text.isEmpty
+        ? null
+        : _descriptionController.text;
+    print(widget.user.id);
+    print("Check data: $_date $_amount $_category $_account $_note $_desc");
+    FocusScope.of(context).unfocus();
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: const Text("Add record in progress.."),
+        title: const Text("Adding..."));
+    progressDialog.show();
+
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/addExpense.php"), body: {
+      "user_id": widget.user.id,
+      "expense_date": _date,
+      "expense_amount": _amount,
+      "expense_category": _category,
+      "expense_account": _account,
+      "expense_note": _note ?? "", // Send an empty string if note is null
+      "expense_desc": _desc ?? "" // Send an empty string if address is null
+    }).then((response) {
+      progressDialog.dismiss();
+      print(widget.user.id);
+      print(_account);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(widget.user.id); //debug
+        print(data); //debug
+        // Check if all fields were successfully updated
+        if (data['status'] == 'success') {
+          Fluttertoast.showToast(
+              msg: "Add Record Success.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          _formKey.currentState?.reset();
+          _clearAllControllers();
+          return;
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: data['error'] ?? "Add Record Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          return;
+        }
+      } else {
+        print(response.body);
+        print(
+            "Failed to connect to the server. Status code: ${response.statusCode}");
+        Fluttertoast.showToast(
+            msg: "Failed to connect to the server",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    }).catchError((error) {
+      progressDialog.dismiss();
+      logger.e("An error occurred: $error");
+      Fluttertoast.showToast(
+          msg: "An error occurred: $error",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    });
   }
 }
 

@@ -262,7 +262,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _saveEditDialog() {
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
-          msg: "Please enter valid information",
+          msg: "Please enter valid information.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
