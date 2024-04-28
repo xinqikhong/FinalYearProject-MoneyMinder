@@ -330,11 +330,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                             builder: (context) => AlertDialog(
                               title: const Text("Clear Form"),
                               content: const Text(
-                                  "Are you sure you want to clear all form data?"),
+                                  "Are you sure?"),
                               actions: [
                                 TextButton(
                                   onPressed: () {
                                     _formKey.currentState!.reset();
+                                    _clearAllControllers();
                                     Navigator.pop(
                                         context); // Close screen after clearing
                                   },
