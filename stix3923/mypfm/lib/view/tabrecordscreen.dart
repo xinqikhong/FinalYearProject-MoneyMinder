@@ -76,7 +76,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         },
         child: const Icon(Icons.add),
         tooltip: "Add Record",
-        backgroundColor: Theme.of(context).primaryColor,
+        //backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30), // Adjust the value as needed
         ),

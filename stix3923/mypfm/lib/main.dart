@@ -18,20 +18,31 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color.fromARGB(255, 255, 227,
               186), // Default app bar background color // Default app bar text color
         ),
-        buttonTheme: ButtonThemeData(
+        /*buttonTheme: ButtonThemeData(
           buttonColor:
               const Color.fromARGB(255, 255, 147, 24), // Default button color
           textTheme: ButtonTextTheme.normal, // Default text theme for buttons
           colorScheme: ColorScheme.fromSwatch().copyWith(
             secondary: const Color.fromARGB(255, 255, 147, 24),
           ), // Default color scheme for buttons
+        ),*/        
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Color.fromARGB(255, 240, 101, 1), // Set text color for TextButtons
+          ),
         ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor:
+              Color.fromARGB(255, 255, 211, 154), // Set background color
+          foregroundColor: Colors.deepOrange, // Set icon color
+        ),
+
         inputDecorationTheme: const InputDecorationTheme(
           // Set cursor color
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: Color.fromARGB(255, 255, 227,
-              186), width: 2.0), // Set border color and width
+                color: Color.fromARGB(255, 255, 227, 186),
+                width: 2.0), // Set border color and width
           ),
           labelStyle: TextStyle(color: Colors.grey),
         ),
@@ -40,11 +51,11 @@ class MyApp extends StatelessWidget {
           selectionColor: Colors.orange,
           selectionHandleColor: Colors.orange,
         ),
-        datePickerTheme:   const DatePickerThemeData(
+        datePickerTheme: const DatePickerThemeData(
           dividerColor: Colors.orange,
           surfaceTintColor: Colors.orange,
-          backgroundColor: Colors.white, 
-        ), 
+          backgroundColor: Colors.white,
+        ),
         fontFamily: 'Montserrat',
         // Set your primary color here
       ),

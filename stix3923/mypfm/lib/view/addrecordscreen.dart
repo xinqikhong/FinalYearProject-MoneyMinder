@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:intl/intl.dart';
 
 class AddRecordScreen extends StatefulWidget {
-  final User user;
+  final User user;  
   const AddRecordScreen({Key? key, required this.user}) : super(key: key);
+  
 
   @override
   State<AddRecordScreen> createState() => _AddRecordScreenState();
@@ -107,17 +109,33 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     icon: Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
+                    DateTime? initialDate;
+                    if (_dateController.text.isNotEmpty) {
+                      try {
+                        // Parse the date string from _dateController
+                        initialDate = DateFormat('dd/MM/yyyy')
+                            .parse(_dateController.text);
+                      } on FormatException catch (e) {
+                        print("Error parsing date: $e");
+                        // Handle parsing error (optional)
+                      }
+                    }
+
                     // Handle date selection using a date picker package (not included here)
                     DateTime? pickedDate = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.now(),
+                      initialDate: initialDate ?? DateTime.now(),
                       firstDate: DateTime(2023, 1, 1),
                       lastDate: DateTime.now(),
                     );
                     if (pickedDate != null) {
+                      final DateFormat formatter = DateFormat(
+                          'dd/MM/yyyy'); // Adjust format as needed (e.g., 'yyyy-MM-dd')
+                      final formattedDate = formatter.format(pickedDate);
                       setState(() {
-                        _dateController.text = pickedDate.toString();
+                        _dateController.text = formattedDate.toString();
                       });
+                      print(_dateController.text);
                     }
                   },
                   validator: (value) =>
@@ -138,7 +156,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 const SizedBox(height: 10.0),
 
                 TextFormField(
-                  readOnly: true, // Make category field read-only
+                  readOnly: true,
+                  controller: _categoryController, // Make category field read-only
                   decoration: const InputDecoration(
                     labelText: "Category",
                     icon: Icon(Icons.category), // Optional icon for the field
@@ -160,7 +179,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 const SizedBox(height: 10.0),
 
                 TextFormField(
-                  readOnly: true, // Make account field read-only
+                  readOnly: true, 
+                  controller: _amountController,// Make account field read-only
                   decoration: const InputDecoration(
                     labelText: "Account",
                     icon: Icon(
@@ -295,56 +315,69 @@ class _CategorySelectionBottomSheetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // Set background color
+      color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(16.0), // Add some padding
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Set minimum height
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Category",
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),
                 ),
-                IconButton(
-                  onPressed: () =>
-                      Navigator.pop(context), // Close the bottom sheet
-                  icon: const Icon(Icons.close),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        // Handle "Edit" button press (navigate to edit screen or implement logic here)
+                        _handleEditCategoryBtn();
+                        print("Edit button pressed!"); // Placeholder for now
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const Divider(), // Add a divider line
+            const Divider(),
             Expanded(
-              // Allows the content to fill the remaining space
               child: GridView.count(
-                crossAxisCount: 3, // 4 categories per row
+                crossAxisCount: 3, // Adjust columns as needed
+                childAspectRatio: 1.8,
+                physics:
+                    const ClampingScrollPhysics(), // Adjust cell aspect ratio for better look
                 children: widget.categories
                     .map((category) => _CategoryItem(
                           category: category,
-                          onPressed: () {
-                            widget.onCategorySelected(category);
-                            Navigator.pop(context); // Close after selection
+                          onPressed: () => {
+                            widget.onCategorySelected(category),
+                            Navigator.pop(context),
                           },
                         ))
                     .toList(),
               ),
             ),
-            const SizedBox(height: 10.0), // Add a little spacing
+            const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FloatingActionButton.extended(
-                  onPressed: () {
-                    // Handle "Add" button press (navigate to add category screen or implement logic here)
-                    // You might need to open another screen for adding a category
-                    print(
-                        "Add Category button pressed!"); // Placeholder for now
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text("Add"),
-                ),
+                FloatingActionButton(
+                    onPressed: () {
+                      // Handle "Add" button press (navigate to add category screen or implement logic here)
+                      _handleAddCategoryBtn(); // Placeholder for now
+                    },
+                    tooltip: "Add Category",
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: const Icon(Icons.add)),
               ],
             ),
           ],
@@ -352,6 +385,10 @@ class _CategorySelectionBottomSheetState
       ),
     );
   }
+  
+  void _handleAddCategoryBtn() {}
+  
+  void _handleEditCategoryBtn() {}
 }
 
 class _CategoryItem extends StatelessWidget {
@@ -366,12 +403,20 @@ class _CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Replace with your actual category icons (consider using a package for icons)
-    final icon = Icon(Icons.category); // Placeholder icon for now
-    return TextButton.icon(
+    return TextButton(
       onPressed: onPressed,
-      icon: icon,
-      label: Text(category),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.all(5.0), // Adjust padding as needed
+        minimumSize: const Size(100.0, 30.0), // Set minimum size for each cell
+      ),
+      child: Text(
+        category,
+        maxLines: 2, // Allow wrapping for longer text
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+            fontSize: 13.0,
+            fontWeight: FontWeight.bold), // Truncate if text overflows
+      ),
     );
   }
 }
@@ -405,7 +450,7 @@ class _AccountSelectionBottomSheetState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Account",
                   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
@@ -420,7 +465,8 @@ class _AccountSelectionBottomSheetState
             Expanded(
               // Allows the content to fill the remaining space
               child: GridView.count(
-                crossAxisCount: 3, // 3 accounts per row
+                crossAxisCount: 3,
+                // 3 accounts per row
                 children: widget.accounts
                     .map((account) => _AccountItem(
                           account: account,
@@ -467,7 +513,7 @@ class _AccountItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Replace with your actual account icons (consider using a package for icons)
-    final icon = Icon(Icons.account_balance); // Placeholder icon for now
+    final icon = const Icon(Icons.account_balance); // Placeholder icon for now
     return ClipRRect(
       // Add rounded corners
       borderRadius: BorderRadius.circular(10.0),
