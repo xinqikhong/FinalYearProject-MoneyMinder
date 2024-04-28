@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:intl/intl.dart';
+//import 'package:expandable/expandable.dart';
 
 class AddRecordScreen extends StatefulWidget {
-  final User user;  
+  final User user;
   const AddRecordScreen({Key? key, required this.user}) : super(key: key);
-  
 
   @override
   State<AddRecordScreen> createState() => _AddRecordScreenState();
@@ -20,6 +20,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FocusScopeNode _focusScopeNode = FocusScopeNode();
+  final focus = FocusNode();
+  final focus1 = FocusNode();
+  final focus2 = FocusNode();
+  final focus3 = FocusNode();
+  final focus4 = FocusNode();
+  final focus5 = FocusNode();
 
   final List<String> categories = [
     "Food",
@@ -33,6 +40,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final List<String> accounts = ["Cash", "Bank Account", "E-wallet", "Other"];
 
   @override
+  void dispose() {
+    _focusScopeNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -43,250 +56,305 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               fontWeight: FontWeight.bold,
             )),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                // Row for Income/Expense buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedType = "Income";
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedType == "Income"
-                            ? Colors.green
-                            : Colors.grey[
-                                200], // Set button color based on selection
-                      ),
-                      child: Text(
-                        "Income",
-                        style: TextStyle(
-                            color: selectedType == "Income"
-                                ? Colors.white
-                                : Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedType = "Expense";
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedType == "Expense"
-                            ? Colors.red
-                            : Colors.grey[
-                                200], // Set button color based on selection
-                      ),
-                      child: Text(
-                        "Expense",
-                        style: TextStyle(
-                            color: selectedType == "Expense"
-                                ? Colors.white
-                                : Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20.0), // Add spacing
-
-                // Form fields
-                TextFormField(
-                  controller: _dateController,
-                  readOnly: true, // Make date field read-only
-                  decoration: const InputDecoration(
-                    labelText: "Date",
-                    icon: Icon(Icons.calendar_today),
-                  ),
-                  onTap: () async {
-                    DateTime? initialDate;
-                    if (_dateController.text.isNotEmpty) {
-                      try {
-                        // Parse the date string from _dateController
-                        initialDate = DateFormat('dd/MM/yyyy')
-                            .parse(_dateController.text);
-                      } on FormatException catch (e) {
-                        print("Error parsing date: $e");
-                        // Handle parsing error (optional)
-                      }
-                    }
-
-                    // Handle date selection using a date picker package (not included here)
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: initialDate ?? DateTime.now(),
-                      firstDate: DateTime(2023, 1, 1),
-                      lastDate: DateTime.now(),
-                    );
-                    if (pickedDate != null) {
-                      final DateFormat formatter = DateFormat(
-                          'dd/MM/yyyy'); // Adjust format as needed (e.g., 'yyyy-MM-dd')
-                      final formattedDate = formatter.format(pickedDate);
-                      setState(() {
-                        _dateController.text = formattedDate.toString();
-                      });
-                      print(_dateController.text);
-                    }
-                  },
-                  validator: (value) =>
-                      value!.isEmpty ? "Please select a date" : null,
-                ),
-                const SizedBox(height: 10.0),
-
-                TextFormField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: "Amount",
-                    icon: Icon(Icons.attach_money),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? "Please enter amount" : null,
-                ),
-                const SizedBox(height: 10.0),
-
-                TextFormField(
-                  readOnly: true,
-                  controller: _categoryController, // Make category field read-only
-                  decoration: const InputDecoration(
-                    labelText: "Category",
-                    icon: Icon(Icons.category), // Optional icon for the field
-                  ),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => CategorySelectionBottomSheet(
-                        categories: categories, // Pass your categories list
-                        onCategorySelected: (selectedCategory) {
+      body: FocusScope(
+        node: _focusScopeNode,
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Row for Income/Expense buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
                           setState(() {
-                            _categoryController.text = selectedCategory;
+                            selectedType = "Income";
                           });
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: selectedType == "Income"
+                              ? Colors.green
+                              : Colors.grey[
+                                  200], // Set button color based on selection
+                        ),
+                        child: Text(
+                          "Income",
+                          style: TextStyle(
+                              color: selectedType == "Income"
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 10.0),
-
-                TextFormField(
-                  readOnly: true, 
-                  controller: _amountController,// Make account field read-only
-                  decoration: const InputDecoration(
-                    labelText: "Account",
-                    icon: Icon(
-                        Icons.account_balance), // Optional icon for the field
-                  ),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => AccountSelectionBottomSheet(
-                        accounts: accounts, // Pass your accounts list
-                        onAccountSelected: (selectedAccount) {
+                      ElevatedButton(
+                        onPressed: () {
                           setState(() {
-                            _accountController.text = selectedAccount;
+                            selectedType = "Expense";
                           });
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: selectedType == "Expense"
+                              ? Colors.red
+                              : Colors.grey[
+                                  200], // Set button color based on selection
+                        ),
+                        child: Text(
+                          "Expense",
+                          style: TextStyle(
+                              color: selectedType == "Expense"
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 10.0),
-
-                TextFormField(
-                  controller: _noteController,
-                  decoration: const InputDecoration(
-                    labelText: "Note (Optional)",
-                    icon: Icon(Icons.note_alt_outlined),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 10.0),
+                  const SizedBox(height: 20.0), // Add spacing
 
-                TextFormField(
-                  controller: _descriptionController,
-                  maxLines: 3, // Allow multiple lines for description
-                  decoration: const InputDecoration(
-                    labelText: "Description (Optional)",
-                    icon: Icon(Icons.description_outlined),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-
-                // Row for Save and Cancel buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // Handle form submission (save record)
-                          // This would involve saving the data (type, date, amount, category, account, note, description) to your database or storage solution.
-                          print(
-                              "Record saved!"); // Placeholder for actual saving logic
+                  // Form fields
+                  TextFormField(
+                    controller: _dateController,
+                    readOnly: true, // Make date field read-only
+                    decoration: const InputDecoration(
+                      labelText: "Date",
+                      icon: Icon(Icons.calendar_today),
+                    ),
+                    onTap: () async {
+                      DateTime? initialDate;
+                      if (_dateController.text.isNotEmpty) {
+                        try {
+                          // Parse the date string from _dateController
+                          initialDate = DateFormat('dd/MM/yyyy')
+                              .parse(_dateController.text);
+                        } on FormatException catch (e) {
+                          print("Error parsing date: $e");
+                          // Handle parsing error (optional)
                         }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.white, // Set your desired background color
-                        foregroundColor:
-                            Colors.orange, // Set your desired text color
-                      ),
-                      child: const Text(
-                        "Save",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                      }
+
+                      // Handle date selection using a date picker package (not included here)
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: initialDate ?? DateTime.now(),
+                        firstDate: DateTime(2023, 1, 1),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null) {
+                        final DateFormat formatter = DateFormat(
+                            'dd/MM/yyyy'); // Adjust format as needed (e.g., 'yyyy-MM-dd')
+                        final formattedDate = formatter.format(pickedDate);
+                        setState(() {
+                          _dateController.text = formattedDate.toString();
+                          //focus.requestFocus();
+                        });
+                        _focusScopeNode.requestFocus(focus);
+                        print(_dateController.text);
+                      }
+                    },
+                    validator: (value) =>
+                        value!.isEmpty ? "Please select a date" : null,
+                    /*onFieldSubmitted: (v) {
+                      FocusScope.of(context).requestFocus(focus);
+                    },*/
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  TextFormField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: "Amount",
+                      icon: Icon(Icons.attach_money),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? "Please enter amount" : null,
+                    focusNode: focus,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (v) {
+                      _focusScopeNode.requestFocus(focus1);
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  GestureDetector(
+                    onTap: () {
+                      // Open bottom sheet when tapped
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => CategorySelectionBottomSheet(
+                          categories: categories,
+                          onCategorySelected: (selectedCategory) {
+                            setState(() {
+                              _categoryController.text = selectedCategory;
+                            });
+                            _focusScopeNode.requestFocus(focus2);
+                          },
+                        ),
+                      );
+                    },
+                    child: AbsorbPointer(
+                      // Disable text field interaction to prevent keyboard from showing
+                      absorbing: true,
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: _categoryController,
+                        decoration: const InputDecoration(
+                          labelText: "Category",
+                          icon: Icon(Icons.category),
+                        ),
+                        focusNode: focus1,
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text("Clear Form"),
-                            content: const Text(
-                                "Are you sure you want to clear all form data?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  _formKey.currentState!.reset();
-                                  Navigator.pop(
-                                      context); // Close screen after clearing
-                                },
-                                child: const Text("Yes"),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context), // Dismiss dialog
-                                child: const Text("No"),
-                              ),
-                            ],
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  TextFormField(
+                    readOnly: true,
+                    controller:
+                        _accountController, // Make account field read-only
+                    decoration: const InputDecoration(
+                      labelText: "Account",
+                      icon: Icon(
+                          Icons.account_balance), // Optional icon for the field
+                    ),
+                    focusNode: focus2,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => AccountSelectionBottomSheet(
+                          accounts: accounts, // Pass your accounts list
+                          onAccountSelected: (selectedAccount) {
+                            setState(() {
+                              _accountController.text = selectedAccount;
+                            });
+                            _focusScopeNode.requestFocus(focus3);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  TextFormField(
+                    controller: _noteController,
+                    decoration: const InputDecoration(
+                      labelText: "Note (Optional)",
+                      icon: Icon(Icons.note_alt_outlined),
+                    ),
+                    focusNode: focus3,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (v) {
+                      _focusScopeNode.requestFocus(focus4);
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+
+                  /*TextFormField(
+                    controller: _descriptionController,
+                    maxLines: 3, // Allow multiple lines for description
+                    textInputAction: TextInputAction.newline,
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                      labelText: "Description (Optional)",
+                      icon: Icon(Icons.description_outlined),
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context)
+                          .unfocus(); // Close keyboard after editing
+                    },
+                  ),*/
+                  TextFormField(
+                      //textInputAction: TextInputAction.next,
+                      focusNode: focus4,
+                      onFieldSubmitted: (v) {
+                        _focusScopeNode.requestFocus(focus5);
+                      },
+                      maxLines: 4,
+                      controller: _descriptionController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                          labelText: 'Description (Optional)',
+                          alignLabelWithHint: true,
+                          labelStyle: TextStyle(),
+                          icon: Icon(
+                            Icons.description_outlined,
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.white, // Set your desired background color
-                        foregroundColor:
-                            Colors.orange, // Set your desired text color
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          ))),
+                  const SizedBox(height: 20.0),
+
+                  // Row for Save and Cancel buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            // Handle form submission (save record)
+                            // This would involve saving the data (type, date, amount, category, account, note, description) to your database or storage solution.
+                            print(
+                                "Record saved!"); // Placeholder for actual saving logic
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.white, // Set your desired background color
+                          foregroundColor:
+                              Colors.orange, // Set your desired text color
+                        ),
+                        child: const Text(
+                          "Save",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
                       ),
-                      child: const Text(
-                        "Clear",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Clear Form"),
+                              content: const Text(
+                                  "Are you sure you want to clear all form data?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    _formKey.currentState!.reset();
+                                    Navigator.pop(
+                                        context); // Close screen after clearing
+                                  },
+                                  child: const Text("Yes"),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context), // Dismiss dialog
+                                  child: const Text("No"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.white, // Set your desired background color
+                          foregroundColor:
+                              Colors.orange, // Set your desired text color
+                        ),
+                        child: const Text(
+                          "Clear",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -312,82 +380,96 @@ class CategorySelectionBottomSheet extends StatefulWidget {
 
 class _CategorySelectionBottomSheetState
     extends State<CategorySelectionBottomSheet> {
+  final FocusScopeNode _focusScopeNode = FocusScopeNode();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Category",
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                        _handleEditCategoryBtn();
-                        print("Edit button pressed!"); // Placeholder for now
-                      },
-                      icon: const Icon(Icons.edit),
+    return FocusScope(
+      node: _focusScopeNode,
+      child: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Category",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Divider(),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 3, // Adjust columns as needed
-                childAspectRatio: 1.8,
-                physics:
-                    const ClampingScrollPhysics(), // Adjust cell aspect ratio for better look
-                children: widget.categories
-                    .map((category) => _CategoryItem(
-                          category: category,
-                          onPressed: () => {
-                            widget.onCategorySelected(category),
-                            Navigator.pop(context),
-                          },
-                        ))
-                    .toList(),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Handle "Edit" button press (navigate to edit screen or implement logic here)
+                          _handleEditCategoryBtn();
+                          print("Edit button pressed!"); // Placeholder for now
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                    onPressed: () {
-                      // Handle "Add" button press (navigate to add category screen or implement logic here)
-                      _handleAddCategoryBtn(); // Placeholder for now
-                    },
-                    tooltip: "Add Category",
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: const Icon(Icons.add)),
-              ],
-            ),
-          ],
+              const Divider(),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 3, // Adjust columns as needed
+                  childAspectRatio: 1.8,
+                  physics:
+                      const ClampingScrollPhysics(), // Adjust cell aspect ratio for better look
+                  children: widget.categories
+                      .map((category) => _CategoryItem(
+                            category: category,
+                            onPressed: () => {
+                              widget.onCategorySelected(category),
+                              Navigator.pop(context),
+                            },
+                          ))
+                      .toList(),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                      onPressed: () {
+                        // Handle "Add" button press (navigate to add category screen or implement logic here)
+                        _handleAddCategoryBtn(); // Placeholder for now
+                      },
+                      tooltip: "Add Category",
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Icon(Icons.add)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-  
+
+  @override
+  void dispose() {
+    _focusScopeNode.dispose();
+    super.dispose();
+  }
+
   void _handleAddCategoryBtn() {}
-  
+
   void _handleEditCategoryBtn() {}
 }
 
@@ -438,66 +520,97 @@ class AccountSelectionBottomSheet extends StatefulWidget {
 
 class _AccountSelectionBottomSheetState
     extends State<AccountSelectionBottomSheet> {
+  final FocusScopeNode _focusScopeNode = FocusScopeNode();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white, // Set background color
-      child: Padding(
-        padding: const EdgeInsets.all(16.0), // Add some padding
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // Set minimum height
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Account",
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  onPressed: () =>
-                      Navigator.pop(context), // Close the bottom sheet
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            const Divider(), // Add a divider line
-            Expanded(
-              // Allows the content to fill the remaining space
-              child: GridView.count(
-                crossAxisCount: 3,
-                // 3 accounts per row
-                children: widget.accounts
-                    .map((account) => _AccountItem(
-                          account: account,
-                          onPressed: () {
-                            widget.onAccountSelected(account);
-                            Navigator.pop(context); // Close after selection
-                          },
-                        ))
-                    .toList(),
+    return FocusScope(
+      node: _focusScopeNode,
+      child: Container(
+        color: Colors.white, // Set background color
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Add some padding
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Set minimum height
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Account",
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Handle "Edit" button press (navigate to edit screen or implement logic here)
+                          _handleEditAccountBtn();
+                          print("Edit button pressed!"); // Placeholder for now
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () =>
+                            Navigator.pop(context), // Close the bottom sheet
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 10.0), // Add a little spacing
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton.extended(
-                  onPressed: () {
-                    // Handle "Add" button press (navigate to add account screen or implement logic here)
-                    // You might need to open another screen for adding an account
-                    print("Add Account button pressed!"); // Placeholder for now
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text("Add"),
+              const Divider(), // Add a divider line
+              Expanded(
+                // Allows the content to fill the remaining space
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  // 3 accounts per row
+                  childAspectRatio: 1.8,
+                  physics: const ClampingScrollPhysics(),
+                  children: widget.accounts
+                      .map((account) => _AccountItem(
+                            account: account,
+                            onPressed: () {
+                              widget.onAccountSelected(account);
+                              Navigator.pop(context); // Close after selection
+                            },
+                          ))
+                      .toList(),
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 10.0), // Add a little spacing
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                      onPressed: () {
+                        // Handle "Add" button press (navigate to add category screen or implement logic here)
+                        _handleAddAccountBtn(); // Placeholder for now
+                      },
+                      tooltip: "Add Account",
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Icon(Icons.add)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _focusScopeNode.dispose();
+    super.dispose();
+  }
+
+  void _handleEditAccountBtn() {}
+
+  void _handleAddAccountBtn() {}
 }
 
 class _AccountItem extends StatelessWidget {
@@ -512,15 +625,19 @@ class _AccountItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Replace with your actual account icons (consider using a package for icons)
-    final icon = const Icon(Icons.account_balance); // Placeholder icon for now
-    return ClipRRect(
-      // Add rounded corners
-      borderRadius: BorderRadius.circular(10.0),
-      child: TextButton.icon(
-        onPressed: onPressed,
-        icon: icon,
-        label: Text(account),
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.all(5.0), // Adjust padding as needed
+        minimumSize: const Size(100.0, 30.0), // Set minimum size for each cell
+      ),
+      child: Text(
+        account,
+        maxLines: 2, // Allow wrapping for longer text
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+            fontSize: 13.0,
+            fontWeight: FontWeight.bold), // Truncate if text overflows
       ),
     );
   }
