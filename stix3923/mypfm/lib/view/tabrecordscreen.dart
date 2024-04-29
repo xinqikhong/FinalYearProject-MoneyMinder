@@ -4,8 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 //import 'package:flutter_month_picker/flutter_month_picker.dart';
 import 'package:mypfm/model/config.dart';
+import 'package:mypfm/model/expense.dart';
+import 'package:mypfm/model/income.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/addrecordscreen.dart';
+import 'package:mypfm/view/recorddetailsscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -21,6 +24,7 @@ class TabRecordScreen extends StatefulWidget {
 class _TabRecordScreenState extends State<TabRecordScreen> {
   List expenselist = [];
   List incomelist = [];
+  List allRecords = [];
   String titlecenter = "Loading data...";
   late DateTime _selectedMonth;
   int numExpense = 0;
@@ -163,7 +167,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   // Method to build daily record
   Widget _buildDailyRecord(int index) {
     // Combine income and expense records into a single list
-    List allRecords = [...expenselist, ...incomelist];
+    allRecords = [...expenselist, ...incomelist];
 
     // Group records by date
     var groupedRecords = <DateTime, List>{};
@@ -258,56 +262,58 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           ),
         ),
         const Divider(height: 1),
-        for (var record in recordsForDay)
-          GestureDetector(
-            onTap: () => {_recordDetails(index)},
-            child: Container(
-              color: Color.fromARGB(255, 255, 245, 230),
-              child: Column(
-                children: [
-                  ListTile(
-                    visualDensity: VisualDensity(vertical: -4),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 1, horizontal: 16),
-                    leading: Icon(Icons.attach_money,
+        // Use ListView.builder to iterate over recordsForDay
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: recordsForDay.length,
+          itemBuilder: (context, i) {
+            var record = recordsForDay[i];
+            return GestureDetector(
+              onTap: () => _recordDetails(recordsForDay[i]),
+              child: Container(
+                color: Color.fromARGB(255, 255, 245, 230),
+                child: Column(
+                  children: [
+                    ListTile(
+                      visualDensity: VisualDensity(vertical: -4),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 1, horizontal: 16),
+                      leading: Icon(
+                        Icons.attach_money,
                         color: record.containsKey('expense_amount')
                             ? Colors.red
-                            : Colors.blue),
-                    title: Text(
-                      record.containsKey('expense_note')
-                          ? record['expense_note']
-                          : record['income_note'],
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                    subtitle: Text(
-                      record.containsKey('expense_category')
-                          ? record['expense_category']
-                          : record['income_category'],
-                      style: const TextStyle(fontSize: 13),
-                      /*style: const TextStyle(
-                        fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
-                                record.containsKey('income_note') && record['income_note'] != '')
-                            ? 14 // Font size when note information is present
-                            : 18, // Font size when note information is absent
-                            
-                        fontWeight: FontWeight.bold, // Optional: Apply bold font weight
+                            : Colors.blue,
                       ),
-                      */
-                    ),
-                    trailing: Text(
-                      '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
-                      style: TextStyle(
+                      title: Text(
+                        record.containsKey('expense_note')
+                            ? record['expense_note']
+                            : record['income_note'],
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      subtitle: Text(
+                        record.containsKey('expense_category')
+                            ? record['expense_category']
+                            : record['income_category'],
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                      trailing: Text(
+                        '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
+                        style: TextStyle(
                           fontSize: 14,
                           color: record.containsKey('expense_amount')
                               ? Colors.red
-                              : Colors.blue),
+                              : Colors.blue,
+                        ),
+                      ),
                     ),
-                  ),
-                  const Divider(height: 1),
-                ],
+                    const Divider(height: 1),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
+        ),
       ],
     );
   }
@@ -521,27 +527,58 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     });
   }
 
-  _recordDetails(int index) async {
-    Product product = Product(
-      productId: productlist[index]['product_id'],
-      productName: productlist[index]['product_name'],
-      productDesc: productlist[index]['product_desc'],
-      productPrice: productlist[index]['product_price'],
-      productQty: productlist[index]['product_qty'],
-      userEmail: productlist[index]['user_email'],
-      productState: productlist[index]['product_state'],
-      productLoc: productlist[index]['product_loc'],
-      productLat: productlist[index]['product_lat'],
-      productLong: productlist[index]['product_long'],
-      productDate: productlist[index]['product_date'],
-    );
-    await Navigator.push(
+  _recordDetails(var record) async {
+    // Check if it's an expense or income record
+    if (record.containsKey('expense_id')) {
+      print(record['expense_id']);
+      // It's an expense record
+      Expense expense = Expense(
+        expenseId: record['expense_id'],
+        expenseDate: record['expense_date'],
+        expenseAmount: record['expense_amount'],
+        expenseCategory: record['expense_category'],
+        expenseAccount: record['expense_account'],
+        expenseNote: record['expense_note'],
+        expenseDesc: record['expense_desc'],
+        expenseCreationDate: record['expense_creationdate'],
+        userId: record['user_id'],
+      );
+      // Navigate to the record details screen with the expense object
+      await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => PrDetailsOwnerPage(
-                  product: product,
-                )));
-    _loadProducts();
-  }
+          builder: (BuildContext context) => RecordDetailsScreen(
+            record: expense,
+          ),
+        ),
+      );
+      // Refresh the data after returning from the details screen
+      _refresh();
+    } else if (record.containsKey('income_id')) {
+      print(record['income_id']);
+      // It's an income record
+      Income income = Income(
+        incomeId: record['income_id'],
+        incomeDate: record['income_date'],
+        incomeAmount: record['income_amount'],
+        incomeCategory: record['income_category'],
+        incomeAccount: record['income_account'],
+        incomeNote: record['income_note'],
+        incomeDesc: record['income_desc'],
+        incomeCreationDate: record['income_creationdate'],
+        userId: record['user_id'],
+      );
+      // Navigate to the record details screen with the income object
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => RecordDetailsScreen(
+            record: income,
+          ),
+        ),
+      );
+      // Refresh the data after returning from the details screen
+      _refresh();
+    }
   }
 }
