@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mypfm/model/config.dart';
-import 'package:mypfm/model/expense.dart';
-import 'package:mypfm/model/income.dart';
+//import 'package:mypfm/model/expense.dart';
+//import 'package:mypfm/model/income.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/addrecordscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
@@ -19,15 +19,12 @@ class TabRecordScreen extends StatefulWidget {
 
 class _TabRecordScreenState extends State<TabRecordScreen> {
   List expenselist = [];
-  //List<Expense>? expenseList;
-
   List incomelist = [];
-  //List<Income>? incomeList;
-
   String titlecenter = "Loading data...";
   late DateTime _selectedMonth;
   int numExpense = 0;
   int numIncome = 0;
+  String currency = "RM";
 
   @override
   void initState() {
@@ -40,6 +37,9 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double totalIncome = calculateTotalIncome(incomelist);
+    double totalExpense = calculateTotalExpense(expenselist);
+
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _refresh,
@@ -82,12 +82,36 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                   const Divider(),
                   // Total income and expenses
                   Container(
-                    padding: const EdgeInsets.all(10),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    padding: const EdgeInsets.all(2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text('Total Income: \$XXXX'),
-                        Text('Total Expense: \$XXXX'),
+                        Column(
+                          children: [
+                            Text(
+                              'Income',
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                            Text(
+                              '$currency ${totalIncome.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.blue),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              'Expense',
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                            Text(
+                              '$currency ${totalExpense.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.red),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -102,7 +126,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                       itemBuilder: (context, index) {
                         return _buildDailyRecord(index);
                       },
-                      padding: EdgeInsets.only(bottom: 80),
+                      padding: const EdgeInsets.only(bottom: 80),
                     ),
                   ),
                 ],
@@ -144,37 +168,85 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
     // Ensure that index is within the bounds of sortedDates list
     if (index < 0 || index >= sortedDates.length) {
-      return SizedBox(); // Return an empty widget if index is out of bounds
+      return const SizedBox(); // Return an empty widget if index is out of bounds
     }
 
     // Get records for the selected index date
     var recordsForDay = groupedRecords[sortedDates[index]] ?? [];
+
+    // Calculate total income and total expense
+    double dailyIncome = 0;
+    double dailyExpense = 0;
+    for (var record in recordsForDay) {
+      if (record.containsKey('income_amount')) {
+        dailyIncome += double.parse(record['income_amount']);
+      } else if (record.containsKey('expense_amount')) {
+        dailyExpense += double.parse(record['expense_amount']);
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            '${sortedDates[index].day}/${sortedDates[index].month}/${sortedDates[index].year}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${sortedDates[index].day}/${sortedDates[index].month}/${sortedDates[index].year}',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Row(
+                children: [
+                  Text(
+                    '$currency ${dailyIncome.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 18, color: Colors.blue),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  Text(
+                    '$currency ${dailyExpense.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 18, color: Colors.red),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         for (var record in recordsForDay)
           ListTile(
-            leading: Icon(Icons.attach_money,
-                color: record.containsKey('expense_amount')
-                    ? Colors.red
-                    : Colors.blue),
+            leading: Text(
+              '${sortedDates[index].day}/${sortedDates[index].month}',
+              style: TextStyle(
+                  fontSize: 15,
+                  color: record.containsKey('expense_amount')
+                      ? Colors.red
+                      : Colors.blue),
+            ),
             title: Text(record.containsKey('expense_note')
                 ? record['expense_note']
                 : record['income_note']),
-            subtitle: Text(record.containsKey('expense_category')
-                ? record['expense_category']
-                : record['income_category']),
+            subtitle: Text(
+              record.containsKey('expense_category')
+                  ? record['expense_category']
+                  : record['income_category'],
+              /*style: const TextStyle(
+                fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
+                        record.containsKey('income_note') && record['income_note'] != '')
+                    ? 14 // Font size when note information is present
+                    : 18, // Font size when note information is absent
+                    
+                fontWeight: FontWeight.bold, // Optional: Apply bold font weight
+              ),
+              */
+            ),
             trailing: Text(
-              '\$${record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']}',
+              '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
               style: TextStyle(
+                  fontSize: 15,
                   color: record.containsKey('expense_amount')
                       ? Colors.red
                       : Colors.blue),
@@ -225,6 +297,22 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   // Method to get number of days in a month
   int _getNumberOfDaysInMonth(int year, int month) {
     return DateTime(year, month + 1, 0).day;
+  }
+
+  double calculateTotalIncome(List incomeList) {
+    double totalIncome = 0;
+    for (var record in incomeList) {
+      totalIncome += double.parse(record['income_amount']);
+    }
+    return totalIncome;
+  }
+
+  double calculateTotalExpense(List expenseList) {
+    double totalExpense = 0;
+    for (var record in expenseList) {
+      totalExpense += double.parse(record['expense_amount']);
+    }
+    return totalExpense;
   }
 
   void _handleAddRecordBtn() {
