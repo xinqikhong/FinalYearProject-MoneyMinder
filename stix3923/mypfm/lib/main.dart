@@ -25,16 +25,17 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             secondary: const Color.fromARGB(255, 255, 147, 24),
           ), // Default color scheme for buttons
-        ),*/        
+        ),*/
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: Color.fromARGB(255, 240, 101, 1), // Set text color for TextButtons
+            foregroundColor: Color.fromARGB(
+                255, 240, 101, 1), // Set text color for TextButtons
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor:
               Color.fromARGB(255, 255, 211, 154), // Set background color
-          foregroundColor: Colors.deepOrange, // Set icon color
+          foregroundColor: Colors.orange, // Set icon color
         ),
 
         inputDecorationTheme: const InputDecorationTheme(
@@ -55,6 +56,11 @@ class MyApp extends StatelessWidget {
           dividerColor: Colors.orange,
           surfaceTintColor: Colors.orange,
           backgroundColor: Colors.white,
+        ),
+        iconTheme: IconThemeData(
+          // Set icon theme for AppBar
+          color: Color.fromARGB(
+                255, 240, 101, 1), // Set icon color to orange
         ),
         fontFamily: 'Montserrat',
         // Set your primary color here

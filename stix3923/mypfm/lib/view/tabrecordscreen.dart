@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mypfm/model/config.dart';
-//import 'package:mypfm/model/expense.dart';
-//import 'package:mypfm/model/income.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/addrecordscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TabRecordScreen extends StatefulWidget {
   final User user;
@@ -48,35 +47,42 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             // Pagination for months
             Center(
               child: Container(
+                color: Color.fromARGB(255, 255, 227, 186),
                 height: 40, // Adjust height as needed
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
                       onPressed: _goToPreviousMonth,
-                      icon: const Icon(Icons.arrow_back),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Colors.black,
+                      ),
                     ),
                     TextButton(
                       onPressed: _showMonthPicker,
                       child: Text(
-                        '${_selectedMonth.month}/${_selectedMonth.year}',
+                        DateFormat('MMM yyyy').format(_selectedMonth),
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     ), // Display selected month
                     IconButton(
                       onPressed: _goToNextMonth,
-                      icon: const Icon(Icons.arrow_forward),
+                      icon: const Icon(Icons.arrow_forward_ios_rounded),
+                      color: Colors.black,
                     ),
                   ],
                 ),
               ),
             ),
-            const Divider(),
+            const Divider(height:2),
             // Total income and expenses
             Container(
+              color: Color.fromARGB(255, 255, 227, 186),
               padding: const EdgeInsets.all(2),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -114,7 +120,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 ],
               ),
             ),
-            const Divider(),
+            const Divider(height: 1),
             // Record list
             Expanded(
               child: expenselist.isEmpty && incomelist.isEmpty
@@ -192,41 +198,44 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${sortedDates[index].day}/${sortedDates[index].month}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: [
-                  Text(
-                    '$currency ${dailyIncome.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.blue),
-                  ),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  Text(
-                    '$currency ${dailyExpense.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.red),
-                  ),
-                ],
-              ),
-            ],
+        Container(
+          color: Color.fromARGB(255, 255, 227, 186),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${sortedDates[index].day}/${sortedDates[index].month}',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '$currency ${dailyIncome.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.blue),
+                    ),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Text(
+                      '$currency ${dailyExpense.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.red),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-        const Divider(),
+        const Divider(height: 1),
         for (var record in recordsForDay)
           Column(
             children: [
@@ -268,7 +277,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                           : Colors.blue),
                 ),
               ),
-              const Divider(),
+              const Divider(height: 1),
             ],
           ),
       ],

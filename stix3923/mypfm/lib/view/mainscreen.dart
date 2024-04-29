@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
-        unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        unselectedLabelStyle: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
         showUnselectedLabels: true,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
