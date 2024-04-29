@@ -25,14 +25,17 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   //List<Income>? incomeList;
 
   String titlecenter = "Loading data...";
+  late DateTime _selectedMonth;
   int numExpense = 0;
   int numIncome = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadExpense();
-    _loadIncome();
+    _selectedMonth = DateTime.now();
+    /*_loadExpense();
+    _loadIncome();*/
+    _loadRecords();
   }
 
   @override
@@ -53,21 +56,21 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          onPressed: () {
-                            // Previous month logic
-                          },
+                          onPressed: _goToPreviousMonth,
                           icon: const Icon(Icons.arrow_back),
                         ),
-                        const Text(
-                          'Selected Month',
-                          style: TextStyle(
-                            fontSize: 20,
+                        TextButton(
+                          onPressed: _showMonthPicker,
+                          child: Text(
+                            '${_selectedMonth.month}/${_selectedMonth.year}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ), // Display selected month
                         IconButton(
-                          onPressed: () {
-                            // Next month logic
-                          },
+                          onPressed: _goToNextMonth,
                           icon: const Icon(Icons.arrow_forward),
                         ),
                       ],
@@ -90,8 +93,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 // Record list
                 Expanded(
                   child: ListView.builder(
-                    itemCount:
-                        5, // Replace with actual number of days in a month
+                    itemCount: _getNumberOfDaysInMonth(
+                        _selectedMonth.year,
+                        _selectedMonth
+                            .month), // Replace with actual number of days in a month
                     itemBuilder: (context, index) {
                       return _buildDailyRecord(index);
                     },
@@ -103,72 +108,116 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         onPressed: () {
           _handleAddRecordBtn();
         },
-        child: const Icon(Icons.add),
         tooltip: "Add Record",
         //backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30), // Adjust the value as needed
         ),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
+  // Method to build daily record
   Widget _buildDailyRecord(int index) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Date and totals
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                'Day ${index + 1}', // Replace with actual day
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Income: \$XXX.XX'), // Replace with actual total income
-                Text('Expense: \$XXX.XX'), // Replace with actual total expense
-              ],
-            ),
-            const Divider(), // Divider between totals and records
-            // Individual records
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5, // Replace with actual record count
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const Icon(Icons.attach_money),
-                  title: const Text(
-                      'Record Title'), // Replace with actual record title
-                  subtitle: const Text(
-                      'Record Category'), // Replace with actual record category
-                  trailing: const Text(
-                    '\$XXX.XX',
-                    style: TextStyle(
-                      color: Colors.blue, // For income
-                    ),
-                  ), // Replace with actual record amount
-                  onTap: () {
-                    // Record tap logic
-                  },
-                );
-              },
-            ),
-          ],
+    // Combine income and expense records into a single list
+    List allRecords = [...expenselist, ...incomelist];
+    // Sort the combined list by date
+    allRecords.sort((a, b) {
+      // Sort by date in descending order
+      // If dates are equal, sort by creation date in descending order
+      var dateA = DateTime.parse(a['date']);
+      var dateB = DateTime.parse(b['date']);
+      if (dateA != dateB) {
+        return dateB.compareTo(dateA);
+      } else {
+        var creationDateA = DateTime.parse(a['creation_date']);
+        var creationDateB = DateTime.parse(b['creation_date']);
+        return creationDateB.compareTo(creationDateA);
+      }
+    });
+
+    // Group records by date
+    var groupedRecords = <DateTime, List>{};
+    for (var record in allRecords) {
+      var date = DateTime.parse(record['date']);
+      if (!groupedRecords.containsKey(date)) {
+        groupedRecords[date] = [];
+      }
+      groupedRecords[date]!.add(record);
+    }
+
+    // Get sorted dates
+    var sortedDates = groupedRecords.keys.toList();
+    sortedDates.sort((a, b) => b.compareTo(a));
+
+    // Get records for the selected index date
+    var recordsForDay = groupedRecords[sortedDates[index]] ?? [];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(
+            '${sortedDates[index].day}/${sortedDates[index].month}/${sortedDates[index].year}',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
+        for (var record in recordsForDay)
+          ListTile(
+            leading: Icon(Icons.attach_money,
+                color: record['type'] == 'expense' ? Colors.red : Colors.blue),
+            title: Text(record['note']),
+            subtitle: Text(record['category']),
+            trailing: Text(
+              '\$${record['amount']}',
+              style: TextStyle(
+                  color:
+                      record['type'] == 'expense' ? Colors.red : Colors.blue),
+            ),
+          ),
+      ],
     );
+  }
+
+  // Method to show month picker
+  Future<void> _showMonthPicker() async {
+    final pickedMonth = await showDatePicker(
+      context: context,
+      initialDate: _selectedMonth,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDatePickerMode: DatePickerMode.year,
+    );
+    if (pickedMonth != null && pickedMonth != _selectedMonth) {
+      setState(() {
+        _selectedMonth = pickedMonth;
+        // Reload records for the selected month
+        //_loadExpense();
+        //_loadIncome();
+        _loadRecords();
+      });
+    }
+  }
+
+  void _goToPreviousMonth() {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+      _loadRecords(); // Reload records for the new selected month
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+      _loadRecords(); // Reload records for the new selected month
+    });
+  }
+
+  // Method to get number of days in a month
+  int _getNumberOfDaysInMonth(int year, int month) {
+    return DateTime(year, month + 1, 0).day;
   }
 
   void _handleAddRecordBtn() {
@@ -216,20 +265,32 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     }
   }
 
-  void _loadExpense() {
+  void _loadRecords() {
     if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
       });
       return;
     }
+    // Load both income and expense records for the selected month
+    _loadExpense();
+    _loadIncome();
+  }
+
+  void _loadExpense() {
+    /*if (widget.user.id == "unregistered") {
+      setState(() {
+        titlecenter = "Unregistered User";
+      });
+      return;
+    }*/
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadExpense.php"),
         body: {'user_id': widget.user.id}).then((response) {
       var jsondata = jsonDecode(response.body);
       var extractdata = jsondata['data'];
       print(response.body);
       print(jsondata);
-      if (response.statusCode == 200 && jsondata['status'] == 'success') {        
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
         setState(() {
           expenselist = extractdata;
           numExpense = expenselist.length;
@@ -243,12 +304,12 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   void _loadIncome() {
-    if (widget.user.id == "unregistered") {
+    /*if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
       });
       return;
-    }
+    }*/
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadIncome.php"),
         body: {'user_id': widget.user.id}).then((response) {
       var jsondata = jsonDecode(response.body);
