@@ -227,7 +227,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                           },
                         ),
                       );
-                    },
+                    },                    
                     child: AbsorbPointer(
                       // Disable text field interaction to prevent keyboard from showing
                       absorbing: true,
@@ -513,6 +513,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
   void _loadRecordDetails() {
     setState(() {
       if (widget.record is Expense) {
+        selectedType = "Expense";
         Expense expense = widget.record as Expense;
         print('Expense ID: ${expense.expenseId}');
         _dateController.text = (widget.record as Expense).expenseDate!;
@@ -522,6 +523,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         _noteController.text = (widget.record as Expense).expenseNote!;
         _descriptionController.text = (widget.record as Expense).expenseDesc!;
       } else {
+        selectedType = "Income";
         Income income = widget.record as Income;
         print('Income ID: ${income.incomeId}');
         _dateController.text = (widget.record as Income).incomeDate!;
