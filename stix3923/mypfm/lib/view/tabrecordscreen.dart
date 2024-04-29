@@ -100,6 +100,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     itemBuilder: (context, index) {
                       return _buildDailyRecord(index);
                     },
+                    padding: EdgeInsets.only(bottom: 80),
                   ),
                 ),
               ],
@@ -122,25 +123,12 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   Widget _buildDailyRecord(int index) {
     // Combine income and expense records into a single list
     List allRecords = [...expenselist, ...incomelist];
-    // Sort the combined list by date
-    allRecords.sort((a, b) {
-      // Sort by date in descending order
-      // If dates are equal, sort by creation date in descending order
-      var dateA = DateTime.parse(a['date']);
-      var dateB = DateTime.parse(b['date']);
-      if (dateA != dateB) {
-        return dateB.compareTo(dateA);
-      } else {
-        var creationDateA = DateTime.parse(a['creation_date']);
-        var creationDateB = DateTime.parse(b['creation_date']);
-        return creationDateB.compareTo(creationDateA);
-      }
-    });
 
     // Group records by date
     var groupedRecords = <DateTime, List>{};
     for (var record in allRecords) {
-      var date = DateTime.parse(record['date']);
+      var date =
+          DateTime.parse(record['expense_date'] ?? record['income_date']);
       if (!groupedRecords.containsKey(date)) {
         groupedRecords[date] = [];
       }
@@ -150,6 +138,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     // Get sorted dates
     var sortedDates = groupedRecords.keys.toList();
     sortedDates.sort((a, b) => b.compareTo(a));
+
+    // Ensure that index is within the bounds of sortedDates list
+    if (index < 0 || index >= sortedDates.length) {
+      return SizedBox(); // Return an empty widget if index is out of bounds
+    }
 
     // Get records for the selected index date
     var recordsForDay = groupedRecords[sortedDates[index]] ?? [];
@@ -167,14 +160,21 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         for (var record in recordsForDay)
           ListTile(
             leading: Icon(Icons.attach_money,
-                color: record['type'] == 'expense' ? Colors.red : Colors.blue),
-            title: Text(record['note']),
-            subtitle: Text(record['category']),
+                color: record.containsKey('expense_amount')
+                    ? Colors.red
+                    : Colors.blue),
+            title: Text(record.containsKey('expense_note')
+                ? record['expense_note']
+                : record['income_note']),
+            subtitle: Text(record.containsKey('expense_category')
+                ? record['expense_category']
+                : record['income_category']),
             trailing: Text(
-              '\$${record['amount']}',
+              '\$${record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']}',
               style: TextStyle(
-                  color:
-                      record['type'] == 'expense' ? Colors.red : Colors.blue),
+                  color: record.containsKey('expense_amount')
+                      ? Colors.red
+                      : Colors.blue),
             ),
           ),
       ],
