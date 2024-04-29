@@ -32,7 +32,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     _selectedMonth = DateTime.now();
     /*_loadExpense();
     _loadIncome();*/
-    _loadRecords();
+    _loadRecords(_selectedMonth.year, _selectedMonth.month);
   }
 
   @override
@@ -43,82 +43,86 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: expenselist.isEmpty && incomelist.isEmpty
-            ? Center(
-                child: Text(titlecenter,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold)))
-            : Column(
-                children: [
-                  // Pagination for months
-                  Center(
-                    child: Container(
-                      height: 40, // Adjust height as needed
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            onPressed: _goToPreviousMonth,
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          TextButton(
-                            onPressed: _showMonthPicker,
-                            child: Text(
-                              '${_selectedMonth.month}/${_selectedMonth.year}',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ), // Display selected month
-                          IconButton(
-                            onPressed: _goToNextMonth,
-                            icon: const Icon(Icons.arrow_forward),
-                          ),
-                        ],
+        child: Column(
+          children: [
+            // Pagination for months
+            Center(
+              child: Container(
+                height: 40, // Adjust height as needed
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      onPressed: _goToPreviousMonth,
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    TextButton(
+                      onPressed: _showMonthPicker,
+                      child: Text(
+                        '${_selectedMonth.month}/${_selectedMonth.year}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                    ), // Display selected month
+                    IconButton(
+                      onPressed: _goToNextMonth,
+                      icon: const Icon(Icons.arrow_forward),
                     ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            // Total income and expenses
+            Container(
+              padding: const EdgeInsets.all(2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        'Income',
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                      Text(
+                        '$currency ${totalIncome.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  const Divider(),
-                  // Total income and expenses
-                  Container(
-                    padding: const EdgeInsets.all(2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Income',
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                            Text(
-                              '$currency ${totalIncome.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.blue, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              'Expense',
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                            Text(
-                              '$currency ${totalExpense.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.red, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  Column(
+                    children: [
+                      Text(
+                        'Expense',
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                      Text(
+                        '$currency ${totalExpense.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  const Divider(),
-                  // Record list
-                  Expanded(
-                    child: ListView.builder(
+                ],
+              ),
+            ),
+            const Divider(),
+            // Record list
+            Expanded(
+              child: expenselist.isEmpty && incomelist.isEmpty
+                  ? Center(
+                      child: Text(titlecenter,
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold)))
+                  : ListView.builder(
                       itemCount: _getNumberOfDaysInMonth(
                           _selectedMonth.year,
                           _selectedMonth
@@ -128,9 +132,9 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                       },
                       padding: const EdgeInsets.only(bottom: 80),
                     ),
-                  ),
-                ],
-              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -202,14 +206,20 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 children: [
                   Text(
                     '$currency ${dailyIncome.toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 15, color: Colors.blue),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.blue),
                   ),
                   const SizedBox(
                     width: 30,
                   ),
                   Text(
                     '$currency ${dailyExpense.toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.red),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.red),
                   ),
                 ],
               ),
@@ -222,20 +232,23 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             children: [
               ListTile(
                 visualDensity: VisualDensity(vertical: -4),
-                contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 16),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 1, horizontal: 16),
                 leading: Icon(Icons.attach_money,
                     color: record.containsKey('expense_amount')
                         ? Colors.red
                         : Colors.blue),
-                title: Text(record.containsKey('expense_note')
-                    ? record['expense_note']
-                    : record['income_note'],
-                    style: const TextStyle(fontSize: 14),),
+                title: Text(
+                  record.containsKey('expense_note')
+                      ? record['expense_note']
+                      : record['income_note'],
+                  style: const TextStyle(fontSize: 14),
+                ),
                 subtitle: Text(
                   record.containsKey('expense_category')
                       ? record['expense_category']
                       : record['income_category'],
-                      style: const TextStyle(fontSize: 13),
+                  style: const TextStyle(fontSize: 13),
                   /*style: const TextStyle(
                     fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
                             record.containsKey('income_note') && record['income_note'] != '')
@@ -263,7 +276,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   Future<void> _refresh() async {
-    _loadRecords();
+    _loadRecords(_selectedMonth.year, _selectedMonth.month);
   }
 
   // Method to show month picker
@@ -281,7 +294,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         // Reload records for the selected month
         //_loadExpense();
         //_loadIncome();
-        _loadRecords();
+        _loadRecords(_selectedMonth.year, _selectedMonth.month);
       });
     }
   }
@@ -289,14 +302,16 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   void _goToPreviousMonth() {
     setState(() {
       _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
-      _loadRecords(); // Reload records for the new selected month
+      _loadRecords(_selectedMonth.year,
+          _selectedMonth.month); // Reload records for the new selected month
     });
   }
 
   void _goToNextMonth() {
     setState(() {
       _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-      _loadRecords(); // Reload records for the new selected month
+      _loadRecords(_selectedMonth.year,
+          _selectedMonth.month); // Reload records for the new selected month
     });
   }
 
@@ -366,7 +381,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     }
   }
 
-  void _loadRecords() {
+  void _loadRecords(int year, int month) {
     if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
@@ -374,19 +389,23 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       return;
     }
     // Load both income and expense records for the selected month
-    _loadExpense();
-    _loadIncome();
+    _loadExpense(year, month);
+    _loadIncome(year, month);
   }
 
-  void _loadExpense() {
+  void _loadExpense(int year, int month) {
     /*if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
       });
       return;
     }*/
-    http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadExpense.php"),
-        body: {'user_id': widget.user.id}).then((response) {
+    print(month);
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadExpense.php"), body: {
+      'user_id': widget.user.id,
+      'year': year.toString(),
+      'month': month.toString()
+    }).then((response) {
       var jsondata = jsonDecode(response.body);
       var extractdata = jsondata['data'];
       print(response.body);
@@ -396,23 +415,34 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           expenselist = extractdata;
           numExpense = expenselist.length;
         });
-      } else {
+      } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
+        // Handle case when no records are found
         setState(() {
-          titlecenter = "No Record Available";
+          titlecenter = "No Records Found";
+          expenselist = []; // Clear existing data
+          numExpense = 0;
+        });
+      } else {
+        // Handle other error cases
+        setState(() {
+          titlecenter = "Error loading expense records";
         });
       }
     });
   }
 
-  void _loadIncome() {
+  void _loadIncome(int year, int month) {
     /*if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
       });
       return;
     }*/
-    http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadIncome.php"),
-        body: {'user_id': widget.user.id}).then((response) {
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadIncome.php"), body: {
+      'user_id': widget.user.id,
+      'year': year.toString(),
+      'month': month.toString()
+    }).then((response) {
       var jsondata = jsonDecode(response.body);
       var extractdata = jsondata['data'];
       print(response.body);
@@ -422,9 +452,17 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           incomelist = extractdata;
           numIncome = incomelist.length;
         });
-      } else {
+      } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
+        // Handle case when no records are found
         setState(() {
-          titlecenter = "No Record Available";
+          titlecenter = "No Records Found";
+          incomelist = []; // Clear existing data
+          numIncome = 0;
+        });
+      } else {
+        // Handle other error cases
+        setState(() {
+          titlecenter = "Error loading expense records";
         });
       }
     });
