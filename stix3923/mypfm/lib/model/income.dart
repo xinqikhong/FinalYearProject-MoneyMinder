@@ -1,36 +1,36 @@
 class Income {
-  int incomeId;
-  DateTime incomeDate;
-  double incomeAmount;
-  String incomeCategory;
+  String? incomeId;
+  String? incomeDate;
+  String? incomeAmount;
+  String? incomeCategory;
   String? incomeNote;
   String? incomeDesc;
-  int userId;
-  int accountId;
-  DateTime incomeCreationDate;
+  String? userId;
+  String? incomeAccount;
+  String? incomeCreationDate;
 
   Income({
-    required this.incomeId,
-    required this.incomeDate,
-    required this.incomeAmount,
-    required this.incomeCategory,
+    this.incomeId,
+    this.incomeDate,
+    this.incomeAmount,
+    this.incomeCategory,
     this.incomeNote,
     this.incomeDesc,
-    required this.userId,
-    required this.accountId,
-    required this.incomeCreationDate,
+    this.userId,
+    this.incomeAccount,
+    this.incomeCreationDate,
   });
 
   Income.fromJson(Map<String, dynamic> json)
       : incomeId = json['income_id'],
-        incomeDate = DateTime.parse(json['income_date']),
+        incomeDate = json['income_date'],
         incomeAmount = json['income_amount'],
         incomeCategory = json['income_category'],
         incomeNote = json['income_note'],
         incomeDesc = json['income_desc'],
         userId = json['user_id'],
-        accountId = json['account_id'],
-        incomeCreationDate = DateTime.parse(json['income_creationdate']);
+        incomeAccount = json['income_account'],
+        incomeCreationDate = json['income_creationdate'];
 
   Map<String, dynamic> toJson() => {
         'income_id': incomeId,
@@ -40,7 +40,7 @@ class Income {
         'income_note': incomeNote,
         'income_desc': incomeDesc,
         'user_id': userId,
-        'account_id': accountId,
+        'income_account': incomeAccount,
         'income_creationdate': incomeCreationDate.toString(),
       };
 }
