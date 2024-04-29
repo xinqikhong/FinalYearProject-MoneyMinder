@@ -41,70 +41,73 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: expenselist.isEmpty && incomelist.isEmpty
-          ? Center(
-              child: Text(titlecenter,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold)))
-          : Column(
-              children: [
-                // Pagination for months
-                Center(
-                  child: Container(
-                    height: 40, // Adjust height as needed
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: _goToPreviousMonth,
-                          icon: const Icon(Icons.arrow_back),
-                        ),
-                        TextButton(
-                          onPressed: _showMonthPicker,
-                          child: Text(
-                            '${_selectedMonth.month}/${_selectedMonth.year}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: expenselist.isEmpty && incomelist.isEmpty
+            ? Center(
+                child: Text(titlecenter,
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold)))
+            : Column(
+                children: [
+                  // Pagination for months
+                  Center(
+                    child: Container(
+                      height: 40, // Adjust height as needed
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: _goToPreviousMonth,
+                            icon: const Icon(Icons.arrow_back),
                           ),
-                        ), // Display selected month
-                        IconButton(
-                          onPressed: _goToNextMonth,
-                          icon: const Icon(Icons.arrow_forward),
-                        ),
+                          TextButton(
+                            onPressed: _showMonthPicker,
+                            child: Text(
+                              '${_selectedMonth.month}/${_selectedMonth.year}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ), // Display selected month
+                          IconButton(
+                            onPressed: _goToNextMonth,
+                            icon: const Icon(Icons.arrow_forward),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Divider(),
+                  // Total income and expenses
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Total Income: \$XXXX'),
+                        Text('Total Expense: \$XXXX'),
                       ],
                     ),
                   ),
-                ),
-                const Divider(),
-                // Total income and expenses
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Total Income: \$XXXX'),
-                      Text('Total Expense: \$XXXX'),
-                    ],
+                  const Divider(),
+                  // Record list
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _getNumberOfDaysInMonth(
+                          _selectedMonth.year,
+                          _selectedMonth
+                              .month), // Replace with actual number of days in a month
+                      itemBuilder: (context, index) {
+                        return _buildDailyRecord(index);
+                      },
+                      padding: EdgeInsets.only(bottom: 80),
+                    ),
                   ),
-                ),
-                const Divider(),
-                // Record list
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _getNumberOfDaysInMonth(
-                        _selectedMonth.year,
-                        _selectedMonth
-                            .month), // Replace with actual number of days in a month
-                    itemBuilder: (context, index) {
-                      return _buildDailyRecord(index);
-                    },
-                    padding: EdgeInsets.only(bottom: 80),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _handleAddRecordBtn();
@@ -179,6 +182,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           ),
       ],
     );
+  }
+
+  Future<void> _refresh() async {
+    _loadRecords();
   }
 
   // Method to show month picker
