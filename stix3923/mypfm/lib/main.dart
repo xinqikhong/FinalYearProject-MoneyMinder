@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         ),
         iconTheme: const IconThemeData(
           // Set icon theme for AppBar
-          color: Color.fromARGB(255, 240, 101, 1), // Set icon color to orange
+          //color: Color.fromARGB(255, 240, 101, 1), // Set icon color to orange
         ),
         
         fontFamily: 'Montserrat',

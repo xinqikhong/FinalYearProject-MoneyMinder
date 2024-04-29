@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 //import 'package:flutter_month_picker/flutter_month_picker.dart';
 import 'package:mypfm/model/config.dart';
@@ -175,6 +176,24 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       groupedRecords[date]!.add(record);
     }
 
+    // Sort records within each date group
+    groupedRecords.forEach((date, records) {
+      records.sort((a, b) {
+        var aCreationDate = DateTime.parse(
+            a['expense_creationdate'] ?? a['income_creationdate']);
+        var bCreationDate = DateTime.parse(
+            b['expense_creationdate'] ?? b['income_creationdate']);
+
+        // Sort by creation date if the dates are the same
+        if (aCreationDate != bCreationDate) {
+          return bCreationDate.compareTo(aCreationDate);
+        } else {
+          // Sort by date if creation dates are the same
+          return date.compareTo(date);
+        }
+      });
+    });
+
     // Get sorted dates
     var sortedDates = groupedRecords.keys.toList();
     sortedDates.sort((a, b) => b.compareTo(a));
@@ -240,50 +259,53 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         ),
         const Divider(height: 1),
         for (var record in recordsForDay)
-          Container(
-            color: Color.fromARGB(255, 255, 245, 230),
-            child: Column(
-              children: [
-                ListTile(
-                  visualDensity: VisualDensity(vertical: -4),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 1, horizontal: 16),
-                  leading: Icon(Icons.attach_money,
-                      color: record.containsKey('expense_amount')
-                          ? Colors.red
-                          : Colors.blue),
-                  title: Text(
-                    record.containsKey('expense_note')
-                        ? record['expense_note']
-                        : record['income_note'],
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  subtitle: Text(
-                    record.containsKey('expense_category')
-                        ? record['expense_category']
-                        : record['income_category'],
-                    style: const TextStyle(fontSize: 13),
-                    /*style: const TextStyle(
-                      fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
-                              record.containsKey('income_note') && record['income_note'] != '')
-                          ? 14 // Font size when note information is present
-                          : 18, // Font size when note information is absent
-                          
-                      fontWeight: FontWeight.bold, // Optional: Apply bold font weight
-                    ),
-                    */
-                  ),
-                  trailing: Text(
-                    '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
-                    style: TextStyle(
-                        fontSize: 14,
+          GestureDetector(
+            onTap: () => {_recordDetails(index)},
+            child: Container(
+              color: Color.fromARGB(255, 255, 245, 230),
+              child: Column(
+                children: [
+                  ListTile(
+                    visualDensity: VisualDensity(vertical: -4),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 1, horizontal: 16),
+                    leading: Icon(Icons.attach_money,
                         color: record.containsKey('expense_amount')
                             ? Colors.red
                             : Colors.blue),
+                    title: Text(
+                      record.containsKey('expense_note')
+                          ? record['expense_note']
+                          : record['income_note'],
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      record.containsKey('expense_category')
+                          ? record['expense_category']
+                          : record['income_category'],
+                      style: const TextStyle(fontSize: 13),
+                      /*style: const TextStyle(
+                        fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
+                                record.containsKey('income_note') && record['income_note'] != '')
+                            ? 14 // Font size when note information is present
+                            : 18, // Font size when note information is absent
+                            
+                        fontWeight: FontWeight.bold, // Optional: Apply bold font weight
+                      ),
+                      */
+                    ),
+                    trailing: Text(
+                      '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: record.containsKey('expense_amount')
+                              ? Colors.red
+                              : Colors.blue),
+                    ),
                   ),
-                ),
-                const Divider(height: 1),
-              ],
+                  const Divider(height: 1),
+                ],
+              ),
             ),
           ),
       ],
@@ -366,7 +388,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     return totalExpense;
   }
 
-  void _handleAddRecordBtn() {
+  Future<void> _handleAddRecordBtn() async {
     if (widget.user.id == "unregistered") {
       showDialog(
         context: context,
@@ -402,12 +424,13 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         },
       );
     } else {
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => AddRecordScreen(user: widget.user),
         ),
       );
+      _loadRecords(_selectedMonth.year, _selectedMonth.month);
     }
   }
 
@@ -496,5 +519,29 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         });
       }
     });
+  }
+
+  _recordDetails(int index) async {
+    Product product = Product(
+      productId: productlist[index]['product_id'],
+      productName: productlist[index]['product_name'],
+      productDesc: productlist[index]['product_desc'],
+      productPrice: productlist[index]['product_price'],
+      productQty: productlist[index]['product_qty'],
+      userEmail: productlist[index]['user_email'],
+      productState: productlist[index]['product_state'],
+      productLoc: productlist[index]['product_loc'],
+      productLat: productlist[index]['product_lat'],
+      productLong: productlist[index]['product_long'],
+      productDate: productlist[index]['product_date'],
+    );
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => PrDetailsOwnerPage(
+                  product: product,
+                )));
+    _loadProducts();
+  }
   }
 }

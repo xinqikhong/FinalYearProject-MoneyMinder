@@ -35,12 +35,22 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final focus4 = FocusNode();
   final focus5 = FocusNode();
 
-  final List<String> categories = [
+  final List<String> categoriesExpense = [
     "Food",
     "Rent",
     "Bills",
     "Transportation",
     "Entertainment",
+    "Other"
+  ];
+
+  final List<String> categoriesIncome = [
+    "Salary",
+    "Wages",
+    "Interest",
+    "Rental",
+    "Gifts",
+    "Awards",
     "Other"
   ];
 
@@ -199,7 +209,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) => CategorySelectionBottomSheet(
-                          categories: categories,
+                          categories: selectedType == "Expense"
+                              ? categoriesExpense
+                              : categoriesIncome,
                           onCategorySelected: (selectedCategory) {
                             setState(() {
                               _categoryController.text = selectedCategory;
