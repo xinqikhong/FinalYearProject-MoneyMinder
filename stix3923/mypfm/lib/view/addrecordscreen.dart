@@ -296,7 +296,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       decoration: const InputDecoration(
                           labelText: 'Description (Optional)',
                           alignLabelWithHint: true,
-                          labelStyle: TextStyle(),
+                          //labelStyle: TextStyle(),
                           icon: Icon(
                             Icons.description_outlined,
                           ),
@@ -329,8 +329,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text("Clear Form"),
-                              content: const Text(
-                                  "Are you sure?"),
+                              content: const Text("Are you sure?"),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -434,6 +433,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
   void _addRecord() {
     FocusScope.of(context).requestFocus(FocusNode());
+    String url = "";
     String _date = _dateController.text;
     String _amount = _amountController.text;
     String _category = _categoryController.text;
@@ -449,15 +449,20 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         message: const Text("Add record in progress.."),
         title: const Text("Adding..."));
     progressDialog.show();
+    if (selectedType == "Expense") {
+      url = "${MyConfig.server}/mypfm/php/addExpense.php";
+    } else {
+      url = "${MyConfig.server}/mypfm/php/addIncome.php";
+    }
 
-    http.post(Uri.parse("${MyConfig.server}/mypfm/php/addExpense.php"), body: {
+    http.post(Uri.parse(url), body: {
       "user_id": widget.user.id,
-      "expense_date": _date,
-      "expense_amount": _amount,
-      "expense_category": _category,
-      "expense_account": _account,
-      "expense_note": _note ?? "", // Send an empty string if note is null
-      "expense_desc": _desc ?? "" // Send an empty string if address is null
+      "date": _date,
+      "amount": _amount,
+      "category": _category,
+      "account": _account,
+      "note": _note ?? "", // Send an empty string if note is null
+      "desc": _desc ?? "" // Send an empty string if address is null
     }).then((response) {
       progressDialog.dismiss();
       print(widget.user.id);
