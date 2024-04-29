@@ -95,7 +95,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             Text(
                               '$currency ${totalIncome.toStringAsFixed(2)}',
                               style: const TextStyle(
-                                  fontSize: 15, color: Colors.blue),
+                                  fontSize: 15, color: Colors.blue, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -108,7 +108,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             Text(
                               '$currency ${totalExpense.toStringAsFixed(2)}',
                               style: const TextStyle(
-                                  fontSize: 15, color: Colors.red),
+                                  fontSize: 15, color: Colors.red, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -194,7 +194,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${sortedDates[index].day}/${sortedDates[index].month}/${sortedDates[index].year}',
+                '${sortedDates[index].day}/${sortedDates[index].month}',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -202,55 +202,61 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 children: [
                   Text(
                     '$currency ${dailyIncome.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 18, color: Colors.blue),
+                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 15, color: Colors.blue),
                   ),
                   const SizedBox(
                     width: 30,
                   ),
                   Text(
                     '$currency ${dailyExpense.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 18, color: Colors.red),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.red),
                   ),
                 ],
               ),
             ],
           ),
         ),
+        const Divider(),
         for (var record in recordsForDay)
-          ListTile(
-            leading: Text(
-              '${sortedDates[index].day}/${sortedDates[index].month}',
-              style: TextStyle(
-                  fontSize: 15,
-                  color: record.containsKey('expense_amount')
-                      ? Colors.red
-                      : Colors.blue),
-            ),
-            title: Text(record.containsKey('expense_note')
-                ? record['expense_note']
-                : record['income_note']),
-            subtitle: Text(
-              record.containsKey('expense_category')
-                  ? record['expense_category']
-                  : record['income_category'],
-              /*style: const TextStyle(
-                fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
-                        record.containsKey('income_note') && record['income_note'] != '')
-                    ? 14 // Font size when note information is present
-                    : 18, // Font size when note information is absent
-                    
-                fontWeight: FontWeight.bold, // Optional: Apply bold font weight
+          Column(
+            children: [
+              ListTile(
+                visualDensity: VisualDensity(vertical: -4),
+                contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 16),
+                leading: Icon(Icons.attach_money,
+                    color: record.containsKey('expense_amount')
+                        ? Colors.red
+                        : Colors.blue),
+                title: Text(record.containsKey('expense_note')
+                    ? record['expense_note']
+                    : record['income_note'],
+                    style: const TextStyle(fontSize: 14),),
+                subtitle: Text(
+                  record.containsKey('expense_category')
+                      ? record['expense_category']
+                      : record['income_category'],
+                      style: const TextStyle(fontSize: 13),
+                  /*style: const TextStyle(
+                    fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
+                            record.containsKey('income_note') && record['income_note'] != '')
+                        ? 14 // Font size when note information is present
+                        : 18, // Font size when note information is absent
+                        
+                    fontWeight: FontWeight.bold, // Optional: Apply bold font weight
+                  ),
+                  */
+                ),
+                trailing: Text(
+                  '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: record.containsKey('expense_amount')
+                          ? Colors.red
+                          : Colors.blue),
+                ),
               ),
-              */
-            ),
-            trailing: Text(
-              '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
-              style: TextStyle(
-                  fontSize: 15,
-                  color: record.containsKey('expense_amount')
-                      ? Colors.red
-                      : Colors.blue),
-            ),
+              const Divider(),
+            ],
           ),
       ],
     );
