@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mypfm/view/splashscreen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 
 void main() => runApp(const MyApp());
 
@@ -9,14 +11,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        // ... existing delegates
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        MonthYearPickerLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
+        primarySwatch: Colors.orange,
         primaryColor:
             const Color.fromARGB(255, 255, 147, 24), // Default primary color
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 255, 227,
-              186), // Default app bar background color // Default app bar text color
+          backgroundColor: Color.fromARGB(255, 255, 245,
+              230), // Default app bar background color // Default app bar text color
         ),
         /*buttonTheme: ButtonThemeData(
           buttonColor:
@@ -28,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),*/
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: Color.fromARGB(
+            foregroundColor: const Color.fromARGB(
                 255, 240, 101, 1), // Set text color for TextButtons
           ),
         ),
@@ -57,11 +66,11 @@ class MyApp extends StatelessWidget {
           surfaceTintColor: Colors.orange,
           backgroundColor: Colors.white,
         ),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           // Set icon theme for AppBar
-          color: Color.fromARGB(
-                255, 240, 101, 1), // Set icon color to orange
+          color: Color.fromARGB(255, 240, 101, 1), // Set icon color to orange
         ),
+        
         fontFamily: 'Montserrat',
         // Set your primary color here
       ),

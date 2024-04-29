@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:month_year_picker/month_year_picker.dart';
+//import 'package:flutter_month_picker/flutter_month_picker.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/addrecordscreen.dart';
@@ -47,7 +48,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             // Pagination for months
             Center(
               child: Container(
-                color: Color.fromARGB(255, 255, 227, 186),
+                color: Color.fromARGB(255, 255, 245, 230),
                 height: 40, // Adjust height as needed
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -60,7 +61,9 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: _showMonthPicker,
+                      onPressed: () async {
+                        await _showMonthPicker(context); // Call your function
+                      },
                       child: Text(
                         DateFormat('MMM yyyy').format(_selectedMonth),
                         style: const TextStyle(
@@ -79,10 +82,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 ),
               ),
             ),
-            const Divider(height:2),
+            const Divider(height: 2),
             // Total income and expenses
             Container(
-              color: Color.fromARGB(255, 255, 227, 186),
+              color: Color.fromARGB(255, 255, 245, 230),
               padding: const EdgeInsets.all(2),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -237,48 +240,51 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         ),
         const Divider(height: 1),
         for (var record in recordsForDay)
-          Column(
-            children: [
-              ListTile(
-                visualDensity: VisualDensity(vertical: -4),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 1, horizontal: 16),
-                leading: Icon(Icons.attach_money,
-                    color: record.containsKey('expense_amount')
-                        ? Colors.red
-                        : Colors.blue),
-                title: Text(
-                  record.containsKey('expense_note')
-                      ? record['expense_note']
-                      : record['income_note'],
-                  style: const TextStyle(fontSize: 14),
-                ),
-                subtitle: Text(
-                  record.containsKey('expense_category')
-                      ? record['expense_category']
-                      : record['income_category'],
-                  style: const TextStyle(fontSize: 13),
-                  /*style: const TextStyle(
-                    fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
-                            record.containsKey('income_note') && record['income_note'] != '')
-                        ? 14 // Font size when note information is present
-                        : 18, // Font size when note information is absent
-                        
-                    fontWeight: FontWeight.bold, // Optional: Apply bold font weight
-                  ),
-                  */
-                ),
-                trailing: Text(
-                  '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
-                  style: TextStyle(
-                      fontSize: 14,
+          Container(
+            color: Color.fromARGB(255, 255, 245, 230),
+            child: Column(
+              children: [
+                ListTile(
+                  visualDensity: VisualDensity(vertical: -4),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 1, horizontal: 16),
+                  leading: Icon(Icons.attach_money,
                       color: record.containsKey('expense_amount')
                           ? Colors.red
                           : Colors.blue),
+                  title: Text(
+                    record.containsKey('expense_note')
+                        ? record['expense_note']
+                        : record['income_note'],
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  subtitle: Text(
+                    record.containsKey('expense_category')
+                        ? record['expense_category']
+                        : record['income_category'],
+                    style: const TextStyle(fontSize: 13),
+                    /*style: const TextStyle(
+                      fontSize: (record.containsKey('expense_note') && record['expense_note'] != '' ||
+                              record.containsKey('income_note') && record['income_note'] != '')
+                          ? 14 // Font size when note information is present
+                          : 18, // Font size when note information is absent
+                          
+                      fontWeight: FontWeight.bold, // Optional: Apply bold font weight
+                    ),
+                    */
+                  ),
+                  trailing: Text(
+                    '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: record.containsKey('expense_amount')
+                            ? Colors.red
+                            : Colors.blue),
+                  ),
                 ),
-              ),
-              const Divider(height: 1),
-            ],
+                const Divider(height: 1),
+              ],
+            ),
           ),
       ],
     );
@@ -289,23 +295,38 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   // Method to show month picker
-  Future<void> _showMonthPicker() async {
-    final pickedMonth = await showDatePicker(
+  /*Future<void> _showMonthPicker() async {
+    final pickedMonth = await showMonthPicker(
       context: context,
-      initialDate: _selectedMonth,
       firstDate: DateTime(DateTime.now().year - 5),
       lastDate: DateTime(DateTime.now().year + 5),
-      initialDatePickerMode: DatePickerMode.year,
+      initialDate: _selectedMonth,
+      //locale: const Locale("en"), // Set the locale if needed
     );
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
       setState(() {
         _selectedMonth = pickedMonth;
         // Reload records for the selected month
-        //_loadExpense();
-        //_loadIncome();
         _loadRecords(_selectedMonth.year, _selectedMonth.month);
       });
     }
+  }*/
+
+  Future<DateTime?> _showMonthPicker(BuildContext context) async {
+    final pickedMonth = await showMonthYearPicker(
+      context: context,
+      initialDate: _selectedMonth,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2050),
+    );
+    if (pickedMonth != null && pickedMonth != _selectedMonth) {
+      setState(() {
+        _selectedMonth = pickedMonth;
+        // Reload records for the selected month
+        _loadRecords(_selectedMonth.year, _selectedMonth.month);
+      });
+    }
+    return null;
   }
 
   void _goToPreviousMonth() {
