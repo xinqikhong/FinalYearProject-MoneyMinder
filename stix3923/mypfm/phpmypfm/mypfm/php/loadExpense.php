@@ -8,7 +8,14 @@ if (!isset($_POST)) {
 include_once("dbconnect.php");
 
 $userId = $_POST['user_id'];
-$sqlloadexpense = "SELECT * FROM tbl_expense WHERE user_id = '$userId' ORDER BY expense_date DESC";
+$year = $_POST['year']; 
+$month = $_POST['month'];
+
+$start_date = date("$year-$month-01");
+$end_date = date("Y-m-t", strtotime("$year-$month-01"));
+
+$sqlloadexpense = "SELECT * FROM tbl_expense WHERE user_id = '$userId' AND expense_date BETWEEN '$start_date' AND '$end_date' ORDER BY expense_date DESC";
+
 $result = $conn->query($sqlloadexpense);
 if ($result->num_rows > 0) {
     $data["expense"] = array();
@@ -28,7 +35,7 @@ if ($result->num_rows > 0) {
     $response = array('status' => 'success', 'data' => $data["expense"]);
     sendJsonResponse($response);
 } else {
-    $response = array('status' => 'failed', 'data' => null);
+    $response = array('status' => 'failed', 'message' => 'No records found for the requested month and year');
     sendJsonResponse($response);
 }
 
