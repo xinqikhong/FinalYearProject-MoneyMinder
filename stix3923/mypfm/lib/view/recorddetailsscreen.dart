@@ -467,7 +467,6 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       print(recordId);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        print(data); //debug
         // Check if all fields were successfully updated
         if (data['status'] == 'success') {
           Fluttertoast.showToast(
@@ -478,17 +477,16 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               fontSize: 14.0);
           _formKey.currentState?.reset();
           _clearAllControllers();
-          return;
         } else {
-          print(response.body);
+          String errorMessage = data['error'] ?? "Edit Record Failed";
           Fluttertoast.showToast(
-              msg: data['error'] ?? "Edit Record Failed",
+              msg: errorMessage,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-          return;
         }
+        _loadRecordDetails();
       } else {
         print(response.body);
         print(
