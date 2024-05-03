@@ -632,12 +632,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     progressDialog.show();
     if (record.containsKey('expense_id')) {
       print(record['expense_id']);
-      http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
+      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
           body: {
             "expense_id": record['expense_id'],
           }).then((response) {
         progressDialog.dismiss();
-        print(record['expense_id']);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           print(record['expense_id']); //debug
@@ -648,12 +647,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
                 fontSize: 14.0);
-            _refresh();
             return;
           } else {
             print(response.body);
             Fluttertoast.showToast(
-                msg: data['error'] ?? "Delete Record Failed",
+                msg: "Delete Record Failed",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
@@ -671,7 +669,6 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
-        _refresh();
       }).catchError((error) {
         progressDialog.dismiss();
         logger.e("An error occurred: $error");
@@ -682,18 +679,16 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
       });
-      _refresh();
     } else if (record.containsKey('income_id')) {
       print(record['income_id']);
-      http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
+      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
           body: {
-            "incomme_id": record['incomme_id'],
+            "income_id": record['income_id'],
           }).then((response) {
         progressDialog.dismiss();
-        print(record['incomme_id']);
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
-          print(record['incomme_id']); //debug
+          print(record['income_id']); //debug
           if (data['status'] == 'success') {
             Fluttertoast.showToast(
                 msg: "Delete Record Success.",
@@ -701,12 +696,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
                 fontSize: 14.0);
-            _refresh();
             return;
           } else {
             print(response.body);
             Fluttertoast.showToast(
-                msg: data['error'] ?? "Delete Record Failed",
+                msg: "Delete Record Failed",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
@@ -724,7 +718,6 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
-        _refresh();
       }).catchError((error) {
         progressDialog.dismiss();
         logger.e("An error occurred: $error");
@@ -735,7 +728,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
       });
-      _refresh();
     }
+    _refresh();
   }
 }

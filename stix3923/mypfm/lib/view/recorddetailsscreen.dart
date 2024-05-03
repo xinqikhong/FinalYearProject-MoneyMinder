@@ -344,7 +344,9 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                       ElevatedButton(
                         //style: ElevatedButton.styleFrom(
                         //fixedSize: Size(screenWidth / 3, 50)),
-                        onPressed: _cancelEditDialog,
+                        onPressed: () async {
+                await _deleteRecordDialog(context); // Show delete confirmation dialog
+              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               Colors.white, // Set your desired background color
@@ -352,7 +354,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                               Colors.orange, // Set your desired text color
                         ),
                         child: const Text(
-                          'Cancel',
+                          'Delete',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         ),
@@ -593,6 +595,152 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         );
       },
     );
+  }
+
+  Future<void> _deleteRecordDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Delete record",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteRecord(context);
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteRecord(BuildContext context) async {
+    String? recordId;
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: const Text("Delete record in progress.."),
+        title: const Text("Deleting..."));
+    progressDialog.show();
+    if (widget.record is Expense) {
+      recordId = (widget.record as Expense).expenseId;
+      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
+          body: {
+            "expense_id": recordId,
+          }).then((response) {
+        progressDialog.dismiss();
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          print("Expense ID: $recordId"); //debug
+          if (data['status'] == 'success') {
+            Fluttertoast.showToast(
+                msg: "Delete Record Success.",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                fontSize: 14.0);
+            Navigator.pop(context, true);
+          } else {
+            print(response.body);
+            Fluttertoast.showToast(
+                msg: "Delete Record Failed",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                fontSize: 14.0);
+            return;
+          }
+        } else {
+          print(response.body);
+          print(
+              "Failed to connect to the server. Status code: ${response.statusCode}");
+          Fluttertoast.showToast(
+              msg: "Failed to connect to the server",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+        }
+      }).catchError((error) {
+        progressDialog.dismiss();
+        logger.e("An error occurred: $error");
+        Fluttertoast.showToast(
+            msg: "An error occurred: $error",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      });
+    } else if (widget.record is Income) {
+      recordId = (widget.record as Income).incomeId;
+      print(recordId);
+      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
+          body: {
+            "income_id": recordId,
+          }).then((response) {
+        progressDialog.dismiss();
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          print("Income ID: $recordId"); //debug
+          if (data['status'] == 'success') {
+            Fluttertoast.showToast(
+                msg: "Delete Record Success.",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                fontSize: 14.0);
+            return;
+          } else {
+            print(response.body);
+            Fluttertoast.showToast(
+                msg: "Delete Record Failed",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                fontSize: 14.0);
+            return;
+          }
+        } else {
+          print(response.body);
+          print(
+              "Failed to connect to the server. Status code: ${response.statusCode}");
+          Fluttertoast.showToast(
+              msg: "Failed to connect to the server",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+        }
+      }).catchError((error) {
+        progressDialog.dismiss();
+        logger.e("An error occurred: $error");
+        Fluttertoast.showToast(
+            msg: "An error occurred: $error",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      });
+    }
   }
 }
 
