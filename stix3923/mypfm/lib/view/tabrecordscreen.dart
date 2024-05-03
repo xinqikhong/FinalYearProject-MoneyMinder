@@ -554,6 +554,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         MaterialPageRoute(
           builder: (BuildContext context) => RecordDetailsScreen(
             record: expense,
+            user: widget.user
           ),
         ),
       );
@@ -579,6 +580,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         MaterialPageRoute(
           builder: (BuildContext context) => RecordDetailsScreen(
             record: income,
+            user: widget.user
           ),
         ),
       );

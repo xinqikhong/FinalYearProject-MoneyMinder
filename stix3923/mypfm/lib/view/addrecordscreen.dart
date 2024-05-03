@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:logger/logger.dart';
 
 class AddRecordScreen extends StatefulWidget {
   final User user;
@@ -59,7 +58,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
   List<String> inCat = [];
   List<String> exCat = [];
-  List<String> account = [];
+  List<String> accounts = [];
 
   @override
   void initState() {
@@ -267,14 +266,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) => AccountSelectionBottomSheet(
-                          accounts: account, // Pass your accounts list
-                          onAccountSelected: (selectedAccount) {
-                            setState(() {
-                              _accountController.text = selectedAccount;
-                            });
-                            _focusScopeNode.requestFocus(focus3);
-                          },
-                        ),
+                            accounts: accounts, // Pass your accounts list
+                            onAccountSelected: (selectedAccount) {
+                              setState(() {
+                                _accountController.text = selectedAccount;
+                              });
+                              _focusScopeNode.requestFocus(focus3);
+                            },
+                            user: widget.user),
                       );
                     },
                   ),
@@ -497,15 +496,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         print(data); //debug
         // Check if all fields were successfully updated
         if (data['status'] == 'success') {
+          Navigator.pop(context);
           Fluttertoast.showToast(
               msg: "Add Record Success.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-          _formKey.currentState?.reset();
-          _clearAllControllers();
-          return;
         } else {
           print(response.body);
           Fluttertoast.showToast(
@@ -587,10 +584,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         final List<String> accList =
             (accData as List).cast<String>(); // Cast to List<String>
         setState(() {
-          account = accList;
+          accounts = accList;
         });
       }
-      print(account);
+      print(accounts);
     } catch (e) {
       logger.e("Error fetching account: $e");
     }
@@ -713,7 +710,7 @@ class _CategorySelectionBottomSheetState
       builder: (BuildContext context) {
         String newCategoryName = '';
         return AlertDialog(
-          title: const Text('Add New Category'),
+          title: const Text('Add'),
           content: TextField(
             onChanged: (value) {
               newCategoryName = value;
@@ -759,6 +756,7 @@ class _CategorySelectionBottomSheetState
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
+                            Navigator.pop(context);
                           } else {
                             // Handle error
                             Fluttertoast.showToast(
@@ -817,6 +815,7 @@ class _CategorySelectionBottomSheetState
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
+                            Navigator.pop(context);
                           } else {
                             // Handle error
                             Fluttertoast.showToast(
@@ -913,11 +912,13 @@ class _CategoryItem extends StatelessWidget {
 class AccountSelectionBottomSheet extends StatefulWidget {
   final List<String> accounts; // List of predefined accounts
   final Function(String) onAccountSelected;
+  final User user;
 
   const AccountSelectionBottomSheet({
     Key? key,
     required this.accounts,
     required this.onAccountSelected,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -928,6 +929,7 @@ class AccountSelectionBottomSheet extends StatefulWidget {
 class _AccountSelectionBottomSheetState
     extends State<AccountSelectionBottomSheet> {
   final FocusScopeNode _focusScopeNode = FocusScopeNode();
+  var logger = Logger();
 
   @override
   Widget build(BuildContext context) {
@@ -1015,7 +1017,115 @@ class _AccountSelectionBottomSheetState
     super.dispose();
   }
 
-  void _addAcc() {}
+  void _addAcc() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newAccountName = '';
+        return AlertDialog(
+          title: const Text('Add'),
+          content: TextField(
+            onChanged: (value) {
+              newAccountName = value;
+            },
+            decoration: const InputDecoration(hintText: 'Enter account name'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Validate if the account name is not empty
+                if (newAccountName.isNotEmpty) {
+                  // Validate if the account name is not already in the list
+                  if (!widget.accounts.contains(newAccountName)) {
+                    // Add to account list
+                    setState(() {
+                      widget.accounts.add(newAccountName);
+                    });
+                    // Add logic to add new account to the database
+                    try {
+                      final response = await http.post(
+                        Uri.parse("${MyConfig.server}/mypfm/php/addAccount.php"),
+                        body: {
+                          "user_id": widget.user.id,
+                          "account_name": newAccountName,
+                        },
+                      );
+                      if (response.statusCode == 200) {
+                        // account added successfully
+                        var data = jsonDecode(response.body);
+                        print(data);
+                        if (data['status'] == 'success') {
+                          Fluttertoast.showToast(
+                              msg: "Add Account Success.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              fontSize: 14.0);
+                          Navigator.pop(context);
+                        } else {
+                          // Handle error
+                          Fluttertoast.showToast(
+                              msg: "Add Account Failed",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              fontSize: 14.0);
+                        }
+                        return;
+                      } else {
+                        print(response.body);
+                        print(
+                            "Failed to connect to the server. Status code: ${response.statusCode}");
+                        Fluttertoast.showToast(
+                            msg: "Failed to connect to the server",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            fontSize: 14.0);
+                        return;
+                      }
+                    } catch (e) {
+                      logger.e("Error adding account: $e");
+                      // Handle error
+                      Fluttertoast.showToast(
+                          msg: "An error occurred: $e",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          fontSize: 14.0);
+                    }
+                  } else {
+                    // Show error message if account name already exists
+                    Fluttertoast.showToast(
+                        msg: "Account name already exists.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        fontSize: 14.0);
+                  }
+                } else {
+                  // Show error message if category name is empty
+                  Fluttertoast.showToast(
+                      msg: "Please enter account name.",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      fontSize: 14.0);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _editAcc() {}
 }
