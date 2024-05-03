@@ -345,8 +345,9 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                         //style: ElevatedButton.styleFrom(
                         //fixedSize: Size(screenWidth / 3, 50)),
                         onPressed: () async {
-                await _deleteRecordDialog(context); // Show delete confirmation dialog
-              },
+                          await _deleteRecordDialog(
+                              context); // Show delete confirmation dialog
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               Colors.white, // Set your desired background color
@@ -635,7 +636,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
     );
   }
 
-  Future<void> _deleteRecord(BuildContext context) async {
+  _deleteRecord(BuildContext context) async {
     String? recordId;
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Delete record in progress.."),
@@ -643,7 +644,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
     progressDialog.show();
     if (widget.record is Expense) {
       recordId = (widget.record as Expense).expenseId;
-      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
+      await http.post(
+          Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
           body: {
             "expense_id": recordId,
           }).then((response) {
@@ -658,7 +660,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
                 fontSize: 14.0);
-            Navigator.pop(context, true);
+            Navigator.pop(context);
           } else {
             print(response.body);
             Fluttertoast.showToast(
@@ -693,7 +695,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
     } else if (widget.record is Income) {
       recordId = (widget.record as Income).incomeId;
       print(recordId);
-      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
+      await http.post(
+          Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
           body: {
             "income_id": recordId,
           }).then((response) {
@@ -708,7 +711,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 1,
                 fontSize: 14.0);
-            return;
+            Navigator.pop(context);
           } else {
             print(response.body);
             Fluttertoast.showToast(
