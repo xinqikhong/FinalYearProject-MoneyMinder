@@ -468,10 +468,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
-        // Check if all fields were successfully updated
-        bool allSuccess =
-            data.values.every((value) => value['status'] == 'success');
-        if (allSuccess) {
+        if (response.statusCode == 200 && data['status'] == 'success') {
           Fluttertoast.showToast(
               msg: "Edit Record Success.",
               toastLength: Toast.LENGTH_SHORT,
@@ -479,20 +476,14 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         } else {
-          String errorMessage = data.values.firstWhere(
-                  (value) => value['status'] != 'success',
-                  orElse: () => {})['error'] ??
-              "Edit Record Failed";
           Fluttertoast.showToast(
-              msg: errorMessage,
+              msg: "Edit Record Failed",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
-        _formKey.currentState?.reset();
-        _clearAllControllers();
-        _loadRecordDetails();
+        return;
       } else {
         print(response.body);
         print(
@@ -503,6 +494,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
+        return;
       }
     }).catchError((error) {
       progressDialog.dismiss();
@@ -522,7 +514,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         selectedType = "Expense";
         Expense expense = widget.record as Expense;
         print('Expense ID: ${expense.expenseId}');
-        _dateController.text = (widget.record as Expense).expenseDate!;
+        String date = (widget.record as Expense).expenseDate!;
+        _dateController.text = _formatDate(date);
         _amountController.text = (widget.record as Expense).expenseAmount!;
         _categoryController.text = (widget.record as Expense).expenseCategory!;
         _accountController.text = (widget.record as Expense).expenseAccount!;
@@ -532,7 +525,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         selectedType = "Income";
         Income income = widget.record as Income;
         print('Income ID: ${income.incomeId}');
-        _dateController.text = (widget.record as Income).incomeDate!;
+        String date = (widget.record as Income).incomeDate!;
+        _dateController.text = _formatDate(date);
         _amountController.text = (widget.record as Income).incomeAmount!;
         _categoryController.text = (widget.record as Income).incomeCategory!;
         _accountController.text = (widget.record as Income).incomeAccount!;
@@ -541,6 +535,13 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       }
     });
   }
+
+  String _formatDate(String date) {
+      // Split the date into year, month, and day
+      List<String> parts = date.split("-");
+      // Reconstruct the date in DD/MM/YYYY format
+      return "${parts[2]}/${parts[1]}/${parts[0]}";
+    }
 
   void _cancelEditDialog() {
     showDialog(
