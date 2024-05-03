@@ -238,8 +238,21 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                           labelText: "Category",
                           icon: Icon(Icons.category),
                         ),
-                        validator: (value) =>
-                            value!.isEmpty ? "Please select category" : null,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please select category";
+                          }
+                          // Check if the selected category is valid
+                          String selectedCategory = value.trim();
+                          List<String> validCategories =
+                              selectedType == "Expense"
+                                  ? categoriesExpense
+                                  : categoriesIncome;
+                          if (!validCategories.contains(selectedCategory)) {
+                            return "Please select a valid category";
+                          }
+                          return null; // Return null if validation passes
+                        },
                         focusNode: focus1,
                       ),
                     ),
@@ -537,11 +550,11 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
   }
 
   String _formatDate(String date) {
-      // Split the date into year, month, and day
-      List<String> parts = date.split("-");
-      // Reconstruct the date in DD/MM/YYYY format
-      return "${parts[2]}/${parts[1]}/${parts[0]}";
-    }
+    // Split the date into year, month, and day
+    List<String> parts = date.split("-");
+    // Reconstruct the date in DD/MM/YYYY format
+    return "${parts[2]}/${parts[1]}/${parts[0]}";
+  }
 
   void _cancelEditDialog() {
     showDialog(
