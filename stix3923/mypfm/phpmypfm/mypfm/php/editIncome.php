@@ -6,27 +6,29 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Include the database connection
-include_once ("dbconnect.php");
-
 // Check if the required parameters are present in the POST data
 if (empty($_POST['record_id']) || empty($_POST['selected_type'])) {
     sendJsonResponse(['status' => 'failed', 'error' => 'Missing required parameters']);
     exit;
 }
 
+// Include the database connection
+include_once ("dbconnect.php");
+
 $responses = [];
 
 // Check if the selected record type is Expense
 if ($_POST['selected_type'] === "Expense") {
-    $expenseId = $_POST['record_id'];
+    //$expenseId = $_POST['record_id'];
 
     // Delete the current income record from the income table based on the expense_id
-    $sqlDeleteIncome = "DELETE FROM tbl_income WHERE expense_id = ?";
+    $sqlDeleteIncome = "DELETE FROM tbl_income WHERE income_id = ?";
     $stmtDeleteIncome = $conn->prepare($sqlDeleteIncome);
-    $stmtDeleteIncome->bind_param("i", $expenseId);
+    $stmtDeleteIncome->bind_param("i", $incomeId);
 
     if ($stmtDeleteIncome->execute()) {
+        //handle response
+
         // Create a new income record in the income table
         $userId = $_POST['user_id'];
         $incomeDate = $_POST['date'];
@@ -51,76 +53,84 @@ if ($_POST['selected_type'] === "Expense") {
         $response = ['status' => 'failed', 'error' => 'Failed to delete current income record'];
     }
 } else { // Assuming the selected type is Income
-    // Update fields if provided
-    $incomeId = $_POST['record_id'];
-    $incomeDate = $_POST['date'];
-    $incomeAmount = $_POST['amount'];
-    $incomeCategory = $_POST['category'];
-    $incomeNote = $_POST['note'];
-    $incomeDesc = $_POST['desc'];
-    $incomeAccount = $_POST['account'];
-
-    // Prepare and execute SQL update statements
-    $sqlUpdate = "UPDATE tbl_income SET ";
-    $updates = array();
-
-    // Check and add fields to update array
-    if (!empty($incomeDate)) {
-        $updates[] = "income_date = '$incomeDate'";
-    }
-    if (!empty($incomeAmount)) {
-        $updates[] = "income_amount = '$incomeAmount'";
-    }
-    if (!empty($incomeCategory)) {
-        $updates[] = "income_category = '$incomeCategory'";
-    }
-    if (!empty($incomeAccount)) {
-        $updates[] = "income_account = '$incomeAccount'";
-    }
-    if (!empty($incomeNote)) {
-        $updates[] = "income_note = '$incomeNote'";
-    }
-    if (!empty($incomeDesc)) {
-        $updates[] = "income_desc = '$incomeDesc'";
+    // Update date if provided
+    if (!empty($_POST['date'])) {
+        $incomeDate = $_POST['date'];
+        $incomeDateObj = DateTime::createFromFormat('d/m/Y', $incomeDate);
+        $incomeDateFormatted = $incomeDateObj->format('Y-m-d');
+        $incomeId = $_POST['record_id'];
+        $sqlupdate = "UPDATE tbl_income SET income_date = ? WHERE income_id = ?";
+        $stmt = $conn->prepare($sqlupdate);
+        $stmt->bind_param("si", $incomeDateFormatted, $incomeId);
+        $responses['date'] = executeUpdate($stmt);
     }
 
-    // Construct the update query
-    $sqlUpdate .= implode(", ", $updates);
-    $sqlUpdate .= " WHERE income_id = '$incomeId'";
+    // Update amount if provided
+    if (!empty($_POST['amount'])) {
+        $incomeAmount = $_POST['amount'];
+        $incomeId = $_POST['record_id'];
+        $sqlupdate = "UPDATE tbl_income SET income_amount = ? WHERE income_id = ?";
+        $stmt = $conn->prepare($sqlupdate);
+        $stmt->bind_param("di", $incomeAmount, $incomeId);
+        $responses['amount'] = executeUpdate($stmt);
+    }
 
-    // Execute the update query
-    if ($conn->query($sqlUpdate) === TRUE) {
-        $response = array('status' => 'success', 'message' => 'Income record updated successfully');
-        //sendJsonResponse($response);
-    } else {
-        $response = array('status' => 'failed', 'error' => $conn->error);
-        //sendJsonResponse($response);
+    // Update category if provided
+    if (!empty($_POST['category'])) {
+        $incomeCategory = $_POST['category'];
+        $incomeId = $_POST['record_id'];
+        $sqlupdate = "UPDATE tbl_income SET income_category = ? WHERE income_id = ?";
+        $stmt = $conn->prepare($sqlupdate);
+        $stmt->bind_param("si", $incomeCategory, $incomeId);
+        $responses['category'] = executeUpdate($stmt);
+    }
+
+    // Update account if provided
+    if (!empty($_POST['account'])) {
+        $incomeAccount = $_POST['account'];
+        $incomeId = $_POST['record_id'];
+        $sqlupdate = "UPDATE tbl_income SET income_account = ? WHERE income_id = ?";
+        $stmt = $conn->prepare($sqlupdate);
+        $stmt->bind_param("si", $incomeAccount, $incomeId);
+        $responses['account'] = executeUpdate($stmt);
+    }
+
+    // Update note if provided
+    if (!empty($_POST['note'])) {
+        $incomeNote = $_POST['note'];
+        $incomeId = $_POST['record_id'];
+        $sqlupdate = "UPDATE tbl_income SET income_note = ? WHERE income_id = ?";
+        $stmt = $conn->prepare($sqlupdate);
+        $stmt->bind_param("si", $incomeNote, $incomeId);
+        $responses['note'] = executeUpdate($stmt);
+    }
+
+    // Update desc if provided
+    if (!empty($_POST['desc'])) {
+        $incomeDesc = $_POST['desc'];
+        $incomeId = $_POST['record_id'];
+        $sqlupdate = "UPDATE tbl_income SET income_desc = ? WHERE income_id = ?";
+        $stmt = $conn->prepare($sqlupdate);
+        $stmt->bind_param("si", $incomeDesc, $incomeId);
+        $responses['desc'] = executeUpdate($stmt);
     }
 }
 
-
-// Function to update a field in the tbl_income table
-/*function updateField($field, $value, $incomeId)
-{
-    global $conn;
-    $sqlUpdate = "UPDATE tbl_income SET $field = ? WHERE income_id = ?";
-    $stmt = $conn->prepare($sqlUpdate);
-    $stmt->bind_param("si", $value, $incomeId);
+// Function to execute the SQL update statement
+function executeUpdate($stmt) {
     if ($stmt->execute()) {
         return ['status' => 'success'];
     } else {
         return ['status' => 'failed', 'error' => $stmt->error];
     }
-}*/
+}
 
 // Function to send JSON response
-function sendJsonResponse($response)
-{
+function sendJsonResponse($response) {
     header('Content-Type: application/json');
     echo json_encode($response);
 }
 
-// Send the responses
+// Send the combined responses
 sendJsonResponse($responses);
-
 ?>

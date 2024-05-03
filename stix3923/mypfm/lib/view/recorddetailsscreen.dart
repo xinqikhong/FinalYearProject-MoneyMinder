@@ -227,7 +227,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                           },
                         ),
                       );
-                    },                    
+                    },
                     child: AbsorbPointer(
                       // Disable text field interaction to prevent keyboard from showing
                       absorbing: true,
@@ -437,8 +437,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       userId = (widget.record as Income).userId;
     }
 
-    print(recordId);
-    print("Check data: $_date $_amount $_category $_account $_note $_desc");
+    print(
+        "Check data: $recordId $_date $_amount $_category $_account $_note $_desc");
 
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
@@ -467,18 +467,22 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       print(recordId);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
+        print(data);
         // Check if all fields were successfully updated
-        if (data['status'] == 'success') {
+        bool allSuccess =
+            data.values.every((value) => value['status'] == 'success');
+        if (allSuccess) {
           Fluttertoast.showToast(
               msg: "Edit Record Success.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-          _formKey.currentState?.reset();
-          _clearAllControllers();
         } else {
-          String errorMessage = data['error'] ?? "Edit Record Failed";
+          String errorMessage = data.values.firstWhere(
+                  (value) => value['status'] != 'success',
+                  orElse: () => {})['error'] ??
+              "Edit Record Failed";
           Fluttertoast.showToast(
               msg: errorMessage,
               toastLength: Toast.LENGTH_SHORT,
@@ -486,6 +490,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
+        _formKey.currentState?.reset();
+        _clearAllControllers();
         _loadRecordDetails();
       } else {
         print(response.body);
