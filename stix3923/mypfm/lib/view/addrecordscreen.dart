@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:logger/logger.dart';
 
 class AddRecordScreen extends StatefulWidget {
   final User user;
@@ -35,7 +36,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final focus4 = FocusNode();
   final focus5 = FocusNode();
 
-  final List<String> categoriesExpense = [
+  /*final List<String> categoriesExpense = [
     "Food",
     "Rent",
     "Bills",
@@ -54,7 +55,18 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     "Other"
   ];
 
-  final List<String> accounts = ["Cash", "Bank Account", "E-wallet", "Other"];
+  final List<String> accounts = ["Cash", "Bank Account", "E-wallet", "Other"];*/
+
+  List<String> inCat = [];
+  List<String> exCat = [];
+  List<String> account = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCat();
+    fetchAccount();
+  }
 
   @override
   void dispose() {
@@ -209,16 +221,16 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) => CategorySelectionBottomSheet(
-                          categories: selectedType == "Expense"
-                              ? categoriesExpense
-                              : categoriesIncome,
-                          onCategorySelected: (selectedCategory) {
-                            setState(() {
-                              _categoryController.text = selectedCategory;
-                            });
-                            _focusScopeNode.requestFocus(focus2);
-                          },
-                        ),
+                            categories:
+                                selectedType == "Expense" ? exCat : inCat,
+                            onCategorySelected: (selectedCategory) {
+                              setState(() {
+                                _categoryController.text = selectedCategory;
+                              });
+                              _focusScopeNode.requestFocus(focus2);
+                            },
+                            selectedType: selectedType,
+                            user: widget.user),
                       );
                     },
                     child: AbsorbPointer(
@@ -255,7 +267,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) => AccountSelectionBottomSheet(
-                          accounts: accounts, // Pass your accounts list
+                          accounts: account, // Pass your accounts list
                           onAccountSelected: (selectedAccount) {
                             setState(() {
                               _accountController.text = selectedAccount;
@@ -526,16 +538,77 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
           fontSize: 14.0);
     });
   }
+
+  Future<void> fetchCat() async {
+    try {
+      // Fetch expense categories
+      final exCatResponse = await http.post(
+        Uri.parse("${MyConfig.server}/mypfm/php/getExCat.php"),
+        body: {"user_id": widget.user.id},
+      );
+      if (exCatResponse.statusCode == 200) {
+        final dynamic exCatData = jsonDecode(exCatResponse.body)['categories'];
+        final List<String> exCatList =
+            (exCatData as List).cast<String>(); // Cast to List<String>
+        setState(() {
+          exCat = exCatList;
+        });
+      }
+      print(exCat);
+
+      // Fetch income categories
+      final inCatResponse = await http.post(
+        Uri.parse("${MyConfig.server}/mypfm/php/getInCat.php"),
+        body: {"user_id": widget.user.id},
+      );
+      if (inCatResponse.statusCode == 200) {
+        final dynamic inCatData = jsonDecode(inCatResponse.body)['categories'];
+        final List<String> inCatList =
+            (inCatData as List).cast<String>(); // Cast to List<String>
+        setState(() {
+          inCat = inCatList;
+        });
+      }
+      print(inCat);
+    } catch (e) {
+      logger.e("Error fetching categories: $e");
+    }
+  }
+
+  Future<void> fetchAccount() async {
+    try {
+      // Fetch expense categories
+      final accountResponse = await http.post(
+        Uri.parse("${MyConfig.server}/mypfm/php/getAccount.php"),
+        body: {"user_id": widget.user.id},
+      );
+      if (accountResponse.statusCode == 200) {
+        final dynamic accData = jsonDecode(accountResponse.body)['account'];
+        final List<String> accList =
+            (accData as List).cast<String>(); // Cast to List<String>
+        setState(() {
+          account = accList;
+        });
+      }
+      print(account);
+    } catch (e) {
+      logger.e("Error fetching account: $e");
+    }
+  }
 }
 
 class CategorySelectionBottomSheet extends StatefulWidget {
   final List<String> categories;
   final Function(String) onCategorySelected;
+  final String selectedType;
+  final User user;
 
   const CategorySelectionBottomSheet({
     Key? key,
     required this.categories,
     required this.onCategorySelected,
+    required this.selectedType,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -546,6 +619,7 @@ class CategorySelectionBottomSheet extends StatefulWidget {
 class _CategorySelectionBottomSheetState
     extends State<CategorySelectionBottomSheet> {
   final FocusScopeNode _focusScopeNode = FocusScopeNode();
+  var logger = Logger();
 
   @override
   Widget build(BuildContext context) {
@@ -573,7 +647,7 @@ class _CategorySelectionBottomSheetState
                       IconButton(
                         onPressed: () {
                           // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _handleEditCategoryBtn();
+                          _editCategory();
                           print("Edit button pressed!"); // Placeholder for now
                         },
                         icon: const Icon(Icons.edit),
@@ -611,7 +685,7 @@ class _CategorySelectionBottomSheetState
                   FloatingActionButton(
                       onPressed: () {
                         // Handle "Add" button press (navigate to add category screen or implement logic here)
-                        _handleAddCategoryBtn(); // Placeholder for now
+                        _addCategory(); // Placeholder for now
                       },
                       tooltip: "Add Category",
                       shape: RoundedRectangleBorder(
@@ -633,9 +707,177 @@ class _CategorySelectionBottomSheetState
     super.dispose();
   }
 
-  void _handleAddCategoryBtn() {}
+  void _addCategory() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newCategoryName = '';
+        return AlertDialog(
+          title: const Text('Add New Category'),
+          content: TextField(
+            onChanged: (value) {
+              newCategoryName = value;
+            },
+            decoration: const InputDecoration(hintText: 'Enter category name'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Validate if the category name is not empty
+                if (newCategoryName.isNotEmpty) {
+                  // Validate if the category name is not already in the list
+                  if (!widget.categories.contains(newCategoryName)) {
+                    if (widget.selectedType == "Income") {
+                      // Add to income categories list
+                      setState(() {
+                        widget.categories.add(newCategoryName);
+                      });
+                      // Add logic to add new category to the database
+                      try {
+                        final response = await http.post(
+                          Uri.parse(
+                              "${MyConfig.server}/mypfm/php/addInCat.php"),
+                          body: {
+                            "user_id": widget.user.id,
+                            "category_name": newCategoryName,
+                          },
+                        );
+                        if (response.statusCode == 200) {
+                          // Category added successfully
+                          var data = jsonDecode(response.body);
+                          print(data);
+                          if (data['status'] == 'success') {
+                            Fluttertoast.showToast(
+                                msg: "Add Category Success.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          } else {
+                            // Handle error
+                            Fluttertoast.showToast(
+                                msg: "Add Category Failed",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          }
+                          return;
+                        } else {
+                          print(response.body);
+                          print(
+                              "Failed to connect to the server. Status code: ${response.statusCode}");
+                          Fluttertoast.showToast(
+                              msg: "Failed to connect to the server",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              fontSize: 14.0);
+                          return;
+                        }
+                      } catch (e) {
+                        logger.e("Error adding category: $e");
+                        // Handle error
+                        Fluttertoast.showToast(
+                            msg: "An error occurred: $e",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            fontSize: 14.0);
+                      }
+                    } else if (widget.selectedType == "Expense") {
+                      // Add to expense categories list
+                      setState(() {
+                        widget.categories.add(newCategoryName);
+                      });
+                      // Add logic to add new category to the database
+                      try {
+                        final response = await http.post(
+                          Uri.parse(
+                              "${MyConfig.server}/mypfm/php/addExCat.php"),
+                          body: {
+                            "user_id": widget.user.id,
+                            "category_name": newCategoryName,
+                          },
+                        );
+                        if (response.statusCode == 200) {
+                          // Category added successfully
+                          var data = jsonDecode(response.body);
+                          print(data);
+                          if (data['status'] == 'success') {
+                            Fluttertoast.showToast(
+                                msg: "Add Category Success.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          } else {
+                            // Handle error
+                            Fluttertoast.showToast(
+                                msg: "Add Category Failed",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          }
+                          return;
+                        } else {
+                          print(response.body);
+                          print(
+                              "Failed to connect to the server. Status code: ${response.statusCode}");
+                          Fluttertoast.showToast(
+                              msg: "Failed to connect to the server",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              fontSize: 14.0);
+                          return;
+                        }
+                      } catch (e) {
+                        logger.e("Error adding category: $e");
+                        // Handle error
+                        Fluttertoast.showToast(
+                            msg: "An error occurred: $e",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            fontSize: 14.0);
+                      }
+                    }
+                  } else {
+                    // Show error message if category name already exists
+                    Fluttertoast.showToast(
+                        msg: "Category name already exists.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        fontSize: 14.0);
+                  }
+                } else {
+                  // Show error message if category name is empty
+                  Fluttertoast.showToast(
+                      msg: "Please enter a category name.",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      fontSize: 14.0);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-  void _handleEditCategoryBtn() {}
+  void _editCategory() {}
 }
 
 class _CategoryItem extends StatelessWidget {
@@ -711,7 +953,7 @@ class _AccountSelectionBottomSheetState
                       IconButton(
                         onPressed: () {
                           // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _handleEditAccountBtn();
+                          _editAcc();
                           print("Edit button pressed!"); // Placeholder for now
                         },
                         icon: const Icon(Icons.edit),
@@ -751,7 +993,7 @@ class _AccountSelectionBottomSheetState
                   FloatingActionButton(
                       onPressed: () {
                         // Handle "Add" button press (navigate to add category screen or implement logic here)
-                        _handleAddAccountBtn(); // Placeholder for now
+                        _addAcc(); // Placeholder for now
                       },
                       tooltip: "Add Account",
                       shape: RoundedRectangleBorder(
@@ -773,9 +1015,9 @@ class _AccountSelectionBottomSheetState
     super.dispose();
   }
 
-  void _handleEditAccountBtn() {}
+  void _addAcc() {}
 
-  void _handleAddAccountBtn() {}
+  void _editAcc() {}
 }
 
 class _AccountItem extends StatelessWidget {
