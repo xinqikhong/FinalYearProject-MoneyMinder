@@ -18,7 +18,7 @@ if (!isset($_POST)) {
     die();
 }
 
-include_once("dbconnect.php");
+include_once ("dbconnect.php");
 
 $name = $_POST['name'];
 $email = $_POST['email'];
@@ -30,11 +30,43 @@ $sqlregister = "INSERT INTO `tbl_users`(`user_name`, `user_email`, `user_passwor
 
 try {
     if ($conn->query($sqlregister) === TRUE) {
+        $userId = $conn->insert_id;
+
         // Attempt to send the email
         $mailResult = sendMail($email, $otp, $pass);
 
         if ($mailResult) {
             // Email sent successfully
+
+            // Insert default income categories for the user
+            $sqlinsertincat = "INSERT INTO tbl_incat (incat_name, user_id) VALUES 
+            ('Salary', $userId),
+            ('Wages', $userId),
+            ('Interest', $userId),
+            ('Rental', $userId),
+            ('Gifts', $userId),
+            ('Awards', $userId),
+            ('Other', $userId)";
+            $conn->query($sqlinsertincat);
+
+            // Insert default expense categories for the user
+            $sqlinsertexcat = "INSERT INTO tbl_excat (excat_name, user_id) VALUES 
+            ('Food', $userId),
+            ('Rent', $userId),
+            ('Bills', $userId),
+            ('Transportation', $userId),
+            ('Entertainment', $userId),
+            ('Other', $userId)";
+            $conn->query($sqlinsertexcat);
+
+            // Insert default account for the user
+            $sqlinsertaccount = "INSERT INTO tbl_account (account_name, user_id) VALUES 
+            ('Cash', $userId),
+            ('Bank Account', $userId),
+            ('E-wallet', $userId),
+            ('Other', $userId)";
+            $conn->query($sqlinsertaccount);
+
             $response = array('status' => 'success', 'data' => null);
         } else {
             // Email sending failed
@@ -108,7 +140,7 @@ function sendMail($email, $otp, $pass)
             <body>
             <h3>Thank you for your registration - DO NOT REPLY TO THIS EMAIL</h3>
             <p>
-                <a href='http://192.168.144.1/mypfm/php/verify_email.php?email=$email&otp=$otp'>Click here to verify your account</a><br><br>
+                <a href='http://10.19.33.28/mypfm/php/verify_email.php?email=$email&otp=$otp'>Click here to verify your account</a><br><br>
             </p>
             <table>
             <tr>

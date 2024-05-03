@@ -448,7 +448,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   void _loadRecords(int year, int month) {
     if (widget.user.id == "unregistered") {
       setState(() {
-        titlecenter = "Unregistered User";
+        titlecenter = "No Records Found";
       });
       return;
     }
