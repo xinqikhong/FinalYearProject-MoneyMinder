@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:intl/intl.dart';
+import 'package:mypfm/view/accountlistscreen.dart';
 import 'package:mypfm/view/categorylistscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
@@ -275,7 +276,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                               });
                               _focusScopeNode.requestFocus(focus3);
                             },
-                            user: widget.user),
+                            user: widget.user,
+                            fetchAccount: fetchAccount),
                       );
                     },
                   ),
@@ -956,12 +958,14 @@ class AccountSelectionBottomSheet extends StatefulWidget {
   final List<String> accounts; // List of predefined accounts
   final Function(String) onAccountSelected;
   final User user;
+  final Function fetchAccount;
 
   const AccountSelectionBottomSheet({
     Key? key,
     required this.accounts,
     required this.onAccountSelected,
     required this.user,
+    required this.fetchAccount,
   }) : super(key: key);
 
   @override
@@ -998,7 +1002,7 @@ class _AccountSelectionBottomSheetState
                       IconButton(
                         onPressed: () {
                           // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _editAcc();
+                          _editAccScreen();
                           print("Edit button pressed!"); // Placeholder for now
                         },
                         icon: const Icon(Icons.edit),
@@ -1171,7 +1175,39 @@ class _AccountSelectionBottomSheetState
     );
   }
 
-  void _editAcc() {}
+  Future<void> _editAccScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AccountListScreen(
+              user: widget.user)),
+    );
+    //Navigator.pop(context);
+    widget.fetchAccount();
+    fetchAccount();
+  }
+
+  Future<void> fetchAccount() async {
+    String url = "${MyConfig.server}/mypfm/php/getAccount.php";
+    List<String> accList = [];
+    try {
+      final accResponse = await http.post(
+        Uri.parse(url),
+        body: {"user_id": widget.user.id},
+      );
+      if (accResponse.statusCode == 200) {
+        final dynamic accData = jsonDecode(accResponse.body)['account'];
+        accList =
+            (accData as List).cast<String>(); // Cast to List<String>        
+        setState(() {
+          widget.accounts.setAll(0, accList);
+        });
+      }
+      print(accList);
+    } catch (e) {
+      logger.e("Error fetching account: $e");
+    }
+  }
 }
 
 class _AccountItem extends StatelessWidget {

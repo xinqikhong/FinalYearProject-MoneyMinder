@@ -15,7 +15,7 @@ if (empty($_POST['user_id'])) {
 }
 
 $userId = $_POST['user_id'];
-$accountName = $_POST['account_name'];
+$accountName = $_POST['old_name'];
 $newName = $_POST['new_name'];
 $sqlUpdate = "UPDATE tbl_account SET account_name = '$newName' WHERE user_id = '$userId' AND account_name = '$accountName'";
 

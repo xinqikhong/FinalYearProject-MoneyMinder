@@ -1,59 +1,55 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
-import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 
-class CategoryListScreen extends StatefulWidget {
+class AccountListScreen extends StatefulWidget {
   final User user;
-  final String selectedType;
-  const CategoryListScreen(
-      {Key? key, required this.user, required this.selectedType})
-      : super(key: key);
+  const AccountListScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<CategoryListScreen> createState() => _CategoryListScreenState();
+  State<AccountListScreen> createState() => _AccountListScreenState();
 }
 
-class _CategoryListScreenState extends State<CategoryListScreen> {
-  List<String> categories = [];
+class _AccountListScreenState extends State<AccountListScreen> {
+  List<String> accounts = [];
   var logger = Logger();
 
   @override
   void initState() {
     super.initState();
-    fetchCat();
+    fetchAccount();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.selectedType,
-            style: const TextStyle(
+        title: const Text("Account",
+            style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
             )),
         centerTitle: true,
       ),
       body: ListView.builder(
-        itemCount: categories.length,
+        itemCount: accounts.length,
         itemBuilder: (context, index) {
-          String categoryName = categories[index];
+          String accountName = accounts[index];
           return ListTile(
             leading: const Icon(Icons.remove_circle_rounded,
                 color: Colors.red), // Red minus icon
-            title: Text(categoryName),
+            title: Text(accountName),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   onPressed: () {
                     // Handle edit button press for the category
-                    _editCategoryName(categoryName);
+                    _editAccountName(accountName);
                   },
                   icon: const Icon(Icons.edit),
                 ),
@@ -65,51 +61,32 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     );
   }
 
-  Future<void> fetchCat() async {
+  Future<void> fetchAccount() async {
     try {
-      if (widget.selectedType == "Expense") {
-        // Fetch expense categories
-        final exCatResponse = await http.post(
-          Uri.parse("${MyConfig.server}/mypfm/php/getExCat.php"),
-          body: {"user_id": widget.user.id},
-        );
-        if (exCatResponse.statusCode == 200) {
-          final dynamic exCatData =
-              jsonDecode(exCatResponse.body)['categories'];
-          final List<String> exCatList =
-              (exCatData as List).cast<String>(); // Cast to List<String>
-          setState(() {
-            categories = exCatList;
-          });
-        }
-        print(categories);
-      } else {
-        // Fetch income categories
-        final inCatResponse = await http.post(
-          Uri.parse("${MyConfig.server}/mypfm/php/getInCat.php"),
-          body: {"user_id": widget.user.id},
-        );
-        if (inCatResponse.statusCode == 200) {
-          final dynamic inCatData =
-              jsonDecode(inCatResponse.body)['categories'];
-          final List<String> inCatList =
-              (inCatData as List).cast<String>(); // Cast to List<String>
-          setState(() {
-            categories = inCatList;
-          });
-        }
-        print(categories);
+      // Fetch income categories
+      final accResponse = await http.post(
+        Uri.parse("${MyConfig.server}/mypfm/php/getAccount.php"),
+        body: {"user_id": widget.user.id},
+      );
+      if (accResponse.statusCode == 200) {
+        final dynamic accData = jsonDecode(accResponse.body)['account'];
+        final List<String> accList =
+            (accData as List).cast<String>(); // Cast to List<String>
+        setState(() {
+          accounts = accList;
+        });
       }
+      print(accounts);
     } catch (e) {
-      logger.e("Error fetching categories: $e");
+      logger.e("Error fetching accounts: $e");
     }
   }
 
-  void _editCategoryName(String categoryName) {
+  void _editAccountName(String accountName) {
     String url = "";
-    final TextEditingController _categoryController =
-        TextEditingController(text: categoryName);
-    String newCategoryName = "";
+    final TextEditingController _accountController =
+        TextEditingController(text: accountName);
+    String newAccountName = "";
 
     showDialog(
       context: context,
@@ -117,8 +94,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         return AlertDialog(
           title: const Text('Edit'),
           content: TextField(
-            controller: _categoryController,
-            decoration: InputDecoration(hintText: categoryName),
+            controller: _accountController,
+            decoration: InputDecoration(hintText: accountName),
           ),
           actions: <Widget>[
             TextButton(
@@ -131,28 +108,24 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
               onPressed: () async {
                 // Add to income categories list
                 setState(() {
-                  newCategoryName = _categoryController.text;
+                  newAccountName = _accountController.text;
                 });
                 // Validate if the category name is not empty
-                if (newCategoryName.isNotEmpty) {
+                if (newAccountName.isNotEmpty) {
                   // Validate if the category name is not already in the list
-                  if (!categories.contains(newCategoryName)) {
-                    if (widget.selectedType == "Income") {
-                      url = "${MyConfig.server}/mypfm/php/editInCat.php";
-                    } else {
-                      url = "${MyConfig.server}/mypfm/php/editExCat.php";
-                    }
+                  if (!accounts.contains(newAccountName)) {
+                      url = "${MyConfig.server}/mypfm/php/editAccount.php";
                     print(widget.user.id);
-                    print("Check selected category: $categoryName");
-                    print("Check new category: $newCategoryName");
+                    print("Check selected category: $accountName");
+                    print("Check new category: $newAccountName");
                     // Add logic to add new category to the database
                     try {
                       final response = await http.post(
                         Uri.parse(url),
                         body: {
                           "user_id": widget.user.id,
-                          "old_name": categoryName,
-                          "new_name": newCategoryName
+                          "old_name": accountName,
+                          "new_name": newAccountName
                         },
                       );
                       if (response.statusCode == 200) {
@@ -161,14 +134,14 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         print(data);
                         if (data['status'] == 'success') {
                           setState(() {
-                            categories.remove(
-                                categoryName); // Remove old category name
-                            categories
-                                .add(newCategoryName); // Add new category name
+                            accounts.remove(
+                                accountName); // Remove old category name
+                            accounts
+                                .add(newAccountName); // Add new category name
                           });
                           Navigator.pop(context);
                           Fluttertoast.showToast(
-                              msg: "Edit Category Success.",
+                              msg: "Edit Account Success.",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
@@ -176,7 +149,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         } else {
                           // Handle error
                           Fluttertoast.showToast(
-                              msg: "Edit Category Failed",
+                              msg: "Edit Account Failed",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
@@ -196,7 +169,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         return;
                       }
                     } catch (e) {
-                      logger.e("Error edit category: $e");
+                      logger.e("Error edit account: $e");
                       // Handle error
                       Fluttertoast.showToast(
                           msg: "An error occurred: $e",
@@ -208,7 +181,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                   } else {
                     // Show error message if category name already exists
                     Fluttertoast.showToast(
-                        msg: "Category name already exists.",
+                        msg: "Account name already exists.",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
@@ -217,7 +190,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                 } else {
                   // Show error message if category name is empty
                   Fluttertoast.showToast(
-                      msg: "Please enter category name.",
+                      msg: "Please enter account name.",
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                       timeInSecForIosWeb: 1,
