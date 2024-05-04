@@ -1400,7 +1400,7 @@ class _AccountSelectionBottomSheetState
       context,
       MaterialPageRoute(
           builder: (context) => AccountListScreen(
-              user: widget.user)),
+              user: widget.user, accounts: widget.accounts)),
     );
     //Navigator.pop(context);
     widget.fetchAccount();

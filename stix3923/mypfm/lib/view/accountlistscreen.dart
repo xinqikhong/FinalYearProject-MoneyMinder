@@ -8,14 +8,15 @@ import 'package:mypfm/model/user.dart';
 
 class AccountListScreen extends StatefulWidget {
   final User user;
-  const AccountListScreen({Key? key, required this.user}) : super(key: key);
+  final List<String> accounts;
+  const AccountListScreen({Key? key, required this.user, required this.accounts}) : super(key: key);
 
   @override
   State<AccountListScreen> createState() => _AccountListScreenState();
 }
 
 class _AccountListScreenState extends State<AccountListScreen> {
-  List<String> accounts = [];
+  //List<String> accounts = [];
   var logger = Logger();
 
   @override
@@ -36,14 +37,22 @@ class _AccountListScreenState extends State<AccountListScreen> {
         centerTitle: true,
       ),
       body: ListView.builder(
-        itemCount: accounts.length,
+        itemCount: widget.accounts.length,
         itemBuilder: (context, index) {
-          String accountName = accounts[index];
+          String accountName = widget.accounts[index];
           return Column(
             children: [
               ListTile(
-                leading: const Icon(Icons.remove_circle_rounded,
-                    color: Colors.red), // Red minus icon
+                leading: IconButton(
+                  onPressed: () async {
+                    // Call deleteCategory function here
+                    await _deleteAccountDialog(context, accountName);
+                  },
+                  icon: const Icon(
+                    Icons.remove_circle_rounded,
+                    color: Colors.red,
+                  ),
+                ), // Red minus icon
                 title: Text(accountName),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -78,10 +87,10 @@ class _AccountListScreenState extends State<AccountListScreen> {
         final List<String> accList =
             (accData as List).cast<String>(); // Cast to List<String>
         setState(() {
-          accounts = accList;
+          widget.accounts.setAll(0, accList);
         });
       }
-      print(accounts);
+      print(widget.accounts);
     } catch (e) {
       logger.e("Error fetching accounts: $e");
     }
@@ -118,8 +127,8 @@ class _AccountListScreenState extends State<AccountListScreen> {
                 // Validate if the category name is not empty
                 if (newAccountName.isNotEmpty) {
                   // Validate if the category name is not already in the list
-                  if (!accounts.contains(newAccountName)) {
-                      url = "${MyConfig.server}/mypfm/php/editAccount.php";
+                  if (!widget.accounts.contains(newAccountName)) {
+                    url = "${MyConfig.server}/mypfm/php/editAccount.php";
                     print(widget.user.id);
                     print("Check selected category: $accountName");
                     print("Check new category: $newAccountName");
@@ -139,9 +148,9 @@ class _AccountListScreenState extends State<AccountListScreen> {
                         print(data);
                         if (data['status'] == 'success') {
                           setState(() {
-                            accounts.remove(
+                            widget.accounts.remove(
                                 accountName); // Remove old category name
-                            accounts
+                            widget.accounts
                                 .add(newAccountName); // Add new category name
                           });
                           Navigator.pop(context);
@@ -208,5 +217,106 @@ class _AccountListScreenState extends State<AccountListScreen> {
         );
       },
     );
+  }
+
+  Future<void> _deleteAccountDialog(
+      BuildContext context, String accountName) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Delete",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                _deleteAccount(context, accountName);
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteAccount(BuildContext context, String accountName) async {
+    String url = "";
+
+    url = "${MyConfig.server}/mypfm/php/deleteAccount.php";
+
+    try {
+      // Make an HTTP request to delete the category
+      final response = await http.post(
+        Uri.parse(url),
+        body: {
+          "account_name": accountName,
+          "user_id": widget.user.id,
+        },
+      );
+      print(accountName);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          setState(() {
+            widget.accounts.remove(
+                accountName); // Remove old category name // Add new category name
+          });
+          Fluttertoast.showToast(
+              msg: "Delete Account Success.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          Navigator.of(context).pop();
+          //fetchCat();
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: "Delete Account Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          //fetchCat();
+        }
+        return;
+      } else {
+        // Handle error
+        logger.e("Failed to connect to the server. ${response.body}");
+        Fluttertoast.showToast(
+            msg: "Failed to connect to the server",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    } catch (e) {
+      // Handle error
+      logger.e("Error deleting category: $e");
+      Fluttertoast.showToast(
+          msg: "An error occurred: $ElasticInOutCurve",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    }
   }
 }

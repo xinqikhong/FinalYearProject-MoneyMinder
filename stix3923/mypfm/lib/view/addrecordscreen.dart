@@ -220,20 +220,19 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     onTap: () {
                       // Open bottom sheet when tapped
                       showModalBottomSheet(
-                        context: context,
-                        builder: (context) => CategorySelectionBottomSheet(
-                            categories:
-                                selectedType == "Expense" ? exCat : inCat,
-                            onCategorySelected: (selectedCategory) {
-                              setState(() {
-                                _categoryController.text = selectedCategory;
-                              });
-                              _focusScopeNode.requestFocus(focus2);
-                            },
-                            selectedType: selectedType,
-                            user: widget.user,
-                            fetchCat: fetchCat)
-                      );
+                          context: context,
+                          builder: (context) => CategorySelectionBottomSheet(
+                              categories:
+                                  selectedType == "Expense" ? exCat : inCat,
+                              onCategorySelected: (selectedCategory) {
+                                setState(() {
+                                  _categoryController.text = selectedCategory;
+                                });
+                                _focusScopeNode.requestFocus(focus2);
+                              },
+                              selectedType: selectedType,
+                              user: widget.user,
+                              fetchCat: fetchCat));
                     },
                     child: AbsorbPointer(
                       // Disable text field interaction to prevent keyboard from showing
@@ -887,7 +886,9 @@ class _CategorySelectionBottomSheetState
       context,
       MaterialPageRoute(
           builder: (context) => CategoryListScreen(
-              user: widget.user, selectedType: widget.selectedType, categories: widget.categories)),
+              user: widget.user,
+              selectedType: widget.selectedType,
+              categories: widget.categories)),
     );
     //Navigator.pop(context);
     fetchCat();
@@ -905,15 +906,14 @@ class _CategorySelectionBottomSheetState
         url = "${MyConfig.server}/mypfm/php/getInCat.php";
       }
       // Fetch expense categories
-      
+
       final catResponse = await http.post(
         Uri.parse(url),
         body: {"user_id": widget.user.id},
       );
       if (catResponse.statusCode == 200) {
         final dynamic catData = jsonDecode(catResponse.body)['categories'];
-        catList =
-            (catData as List).cast<String>(); // Cast to List<String>        
+        catList = (catData as List).cast<String>(); // Cast to List<String>
         setState(() {
           widget.categories.setAll(0, catList);
         });
@@ -1180,12 +1180,12 @@ class _AccountSelectionBottomSheetState
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => AccountListScreen(
-              user: widget.user)),
+          builder: (context) =>
+              AccountListScreen(user: widget.user, accounts: widget.accounts)),
     );
     //Navigator.pop(context);
-    widget.fetchAccount();
     fetchAccount();
+    widget.fetchAccount();
   }
 
   Future<void> fetchAccount() async {
@@ -1198,8 +1198,7 @@ class _AccountSelectionBottomSheetState
       );
       if (accResponse.statusCode == 200) {
         final dynamic accData = jsonDecode(accResponse.body)['account'];
-        accList =
-            (accData as List).cast<String>(); // Cast to List<String>        
+        accList = (accData as List).cast<String>(); // Cast to List<String>
         setState(() {
           widget.accounts.setAll(0, accList);
         });
