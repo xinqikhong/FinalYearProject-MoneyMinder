@@ -15,7 +15,7 @@ if (empty($_POST['user_id'])) {
 }
 
 $userId = $_POST['user_id'];
-$excatName = $_POST['excat_name'];
+$excatName = $_POST['old_name'];
 $newName = $_POST['new_name'];
 $sqlUpdate = "UPDATE tbl_excat SET excat_name = '$newName' WHERE user_id = '$userId' AND excat_name = '$excatName'";
 

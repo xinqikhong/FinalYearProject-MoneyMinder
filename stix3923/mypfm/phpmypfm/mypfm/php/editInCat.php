@@ -15,7 +15,7 @@ if (empty($_POST['user_id'])) {
 }
 
 $userId = $_POST['user_id'];
-$incatName = $_POST['incat_name'];
+$incatName = $_POST['old_name'];
 $newName = $_POST['new_name'];
 $sqlUpdate = "UPDATE tbl_incat SET incat_name = '$newName' WHERE user_id = '$userId' AND incat_name = '$incatName'";
 
