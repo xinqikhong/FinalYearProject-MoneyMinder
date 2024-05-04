@@ -70,5 +70,4 @@ function sendJsonResponse($response) {
 
 // Send the combined responses
 sendJsonResponse($responses);
-
 ?>

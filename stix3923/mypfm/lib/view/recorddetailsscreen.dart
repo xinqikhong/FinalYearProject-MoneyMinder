@@ -969,13 +969,13 @@ class _CategorySelectionBottomSheetState
                           var data = jsonDecode(response.body);
                           print(data);
                           if (data['status'] == 'success') {
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Add Category Success.",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
-                            Navigator.pop(context);
                           } else {
                             // Handle error
                             Fluttertoast.showToast(
@@ -1028,13 +1028,13 @@ class _CategorySelectionBottomSheetState
                           var data = jsonDecode(response.body);
                           print(data);
                           if (data['status'] == 'success') {
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Add Category Success.",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
-                            Navigator.pop(context);
                           } else {
                             // Handle error
                             Fluttertoast.showToast(
@@ -1281,13 +1281,13 @@ class _AccountSelectionBottomSheetState
                         var data = jsonDecode(response.body);
                         print(data);
                         if (data['status'] == 'success') {
+                          Navigator.pop(context);
                           Fluttertoast.showToast(
                               msg: "Add Account Success.",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               fontSize: 14.0);
-                          Navigator.pop(context);
                         } else {
                           // Handle error
                           Fluttertoast.showToast(

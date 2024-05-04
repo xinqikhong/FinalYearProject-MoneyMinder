@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:intl/intl.dart';
+import 'package:mypfm/view/categorylistscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -644,7 +645,7 @@ class _CategorySelectionBottomSheetState
                       IconButton(
                         onPressed: () {
                           // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _editCategory();
+                          _editCategoryScreen();
                           print("Edit button pressed!"); // Placeholder for now
                         },
                         icon: const Icon(Icons.edit),
@@ -750,13 +751,13 @@ class _CategorySelectionBottomSheetState
                           var data = jsonDecode(response.body);
                           print(data);
                           if (data['status'] == 'success') {
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Add Category Success.",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
-                            Navigator.pop(context);
                           } else {
                             // Handle error
                             Fluttertoast.showToast(
@@ -809,13 +810,13 @@ class _CategorySelectionBottomSheetState
                           var data = jsonDecode(response.body);
                           print(data);
                           if (data['status'] == 'success') {
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Add Category Success.",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
-                            Navigator.pop(context);
                           } else {
                             // Handle error
                             Fluttertoast.showToast(
@@ -876,7 +877,14 @@ class _CategorySelectionBottomSheetState
     );
   }
 
-  void _editCategory() {}
+  void _editCategoryScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CategoryListScreen(
+              user: widget.user, selectedType: widget.selectedType)),
+    );
+  }
 }
 
 class _CategoryItem extends StatelessWidget {
@@ -1050,7 +1058,8 @@ class _AccountSelectionBottomSheetState
                     // Add logic to add new account to the database
                     try {
                       final response = await http.post(
-                        Uri.parse("${MyConfig.server}/mypfm/php/addAccount.php"),
+                        Uri.parse(
+                            "${MyConfig.server}/mypfm/php/addAccount.php"),
                         body: {
                           "user_id": widget.user.id,
                           "account_name": newAccountName,
@@ -1061,13 +1070,13 @@ class _AccountSelectionBottomSheetState
                         var data = jsonDecode(response.body);
                         print(data);
                         if (data['status'] == 'success') {
+                          Navigator.pop(context);
                           Fluttertoast.showToast(
                               msg: "Add Account Success.",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               fontSize: 14.0);
-                          Navigator.pop(context);
                         } else {
                           // Handle error
                           Fluttertoast.showToast(
