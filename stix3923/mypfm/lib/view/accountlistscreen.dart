@@ -39,22 +39,27 @@ class _AccountListScreenState extends State<AccountListScreen> {
         itemCount: accounts.length,
         itemBuilder: (context, index) {
           String accountName = accounts[index];
-          return ListTile(
-            leading: const Icon(Icons.remove_circle_rounded,
-                color: Colors.red), // Red minus icon
-            title: Text(accountName),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // Handle edit button press for the category
-                    _editAccountName(accountName);
-                  },
-                  icon: const Icon(Icons.edit),
+          return Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.remove_circle_rounded,
+                    color: Colors.red), // Red minus icon
+                title: Text(accountName),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        // Handle edit button press for the category
+                        _editAccountName(accountName);
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const Divider(height: 1),
+            ],
           );
         },
       ),

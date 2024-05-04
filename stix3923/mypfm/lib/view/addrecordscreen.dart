@@ -232,7 +232,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                             },
                             selectedType: selectedType,
                             user: widget.user,
-                            fetchCat: fetchCat),
+                            fetchCat: fetchCat)
                       );
                     },
                     child: AbsorbPointer(
@@ -887,11 +887,12 @@ class _CategorySelectionBottomSheetState
       context,
       MaterialPageRoute(
           builder: (context) => CategoryListScreen(
-              user: widget.user, selectedType: widget.selectedType)),
+              user: widget.user, selectedType: widget.selectedType, categories: widget.categories)),
     );
     //Navigator.pop(context);
-    widget.fetchCat();
     fetchCat();
+    widget.fetchCat();
+    //fetchCat();
   }
 
   Future<void> fetchCat() async {
@@ -917,7 +918,7 @@ class _CategorySelectionBottomSheetState
           widget.categories.setAll(0, catList);
         });
       }
-      print(catList);
+      print("921: $catList");
     } catch (e) {
       logger.e("Error fetching categories: $e");
     }

@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:mypfm/model/expense.dart';
 import 'package:mypfm/model/income.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:mypfm/view/accountlistscreen.dart';
+import 'package:mypfm/view/categorylistscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -235,7 +237,9 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                               _focusScopeNode.requestFocus(focus2);
                             },
                             selectedType: selectedType,
-                            user: widget.user),
+                            user: widget.user,
+                            fetchCat: fetchCat
+                            ),
                       );
                     },
                     child: AbsorbPointer(
@@ -290,7 +294,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                               });
                               _focusScopeNode.requestFocus(focus3);
                             },
-                            user: widget.user),
+                            user: widget.user,
+                            fetchAccount: fetchAccount),
                       );
                     },
                   ),
@@ -818,6 +823,7 @@ class CategorySelectionBottomSheet extends StatefulWidget {
   final Function(String) onCategorySelected;
   final String selectedType;
   final User user;
+  final Function fetchCat;
 
   const CategorySelectionBottomSheet({
     Key? key,
@@ -825,6 +831,7 @@ class CategorySelectionBottomSheet extends StatefulWidget {
     required this.onCategorySelected,
     required this.selectedType,
     required this.user,
+    required this.fetchCat,
   }) : super(key: key);
 
   @override
@@ -863,7 +870,7 @@ class _CategorySelectionBottomSheetState
                       IconButton(
                         onPressed: () {
                           // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _editCategory();
+                          _editCategoryScreen();
                           print("Edit button pressed!"); // Placeholder for now
                         },
                         icon: const Icon(Icons.edit),
@@ -1094,8 +1101,47 @@ class _CategorySelectionBottomSheetState
       },
     );
   }
+  
+  Future<void> _editCategoryScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CategoryListScreen(
+              user: widget.user, selectedType: widget.selectedType, categories: widget.categories)),
+    );
+    //Navigator.pop(context);
+    widget.fetchCat();
+    fetchCat();
+  }
 
-  void _editCategory() {}
+  Future<void> fetchCat() async {
+    String url;
+    List<String> catList = [];
+    try {
+      if (widget.selectedType == "Expense") {
+        url = "${MyConfig.server}/mypfm/php/getExCat.php";
+      } else {
+        url = "${MyConfig.server}/mypfm/php/getInCat.php";
+      }
+      // Fetch expense categories
+      
+      final catResponse = await http.post(
+        Uri.parse(url),
+        body: {"user_id": widget.user.id},
+      );
+      if (catResponse.statusCode == 200) {
+        final dynamic catData = jsonDecode(catResponse.body)['categories'];
+        catList =
+            (catData as List).cast<String>(); // Cast to List<String>        
+        setState(() {
+          widget.categories.setAll(0, catList);
+        });
+      }
+      print(catList);
+    } catch (e) {
+      logger.e("Error fetching categories: $e");
+    }
+  }
 }
 
 class _CategoryItem extends StatelessWidget {
@@ -1132,12 +1178,14 @@ class AccountSelectionBottomSheet extends StatefulWidget {
   final List<String> accounts; // List of predefined accounts
   final Function(String) onAccountSelected;
   final User user;
+  final Function fetchAccount;
 
   const AccountSelectionBottomSheet({
     Key? key,
     required this.accounts,
     required this.onAccountSelected,
     required this.user,
+    required this.fetchAccount,
   }) : super(key: key);
 
   @override
@@ -1174,7 +1222,7 @@ class _AccountSelectionBottomSheetState
                       IconButton(
                         onPressed: () {
                           // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _editAcc();
+                          _editAccScreen();
                           print("Edit button pressed!"); // Placeholder for now
                         },
                         icon: const Icon(Icons.edit),
@@ -1346,8 +1394,40 @@ class _AccountSelectionBottomSheetState
       },
     );
   }
+  
+  Future<void> _editAccScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AccountListScreen(
+              user: widget.user)),
+    );
+    //Navigator.pop(context);
+    widget.fetchAccount();
+    fetchAccount();
+  }
 
-  void _editAcc() {}
+  Future<void> fetchAccount() async {
+    String url = "${MyConfig.server}/mypfm/php/getAccount.php";
+    List<String> accList = [];
+    try {
+      final accResponse = await http.post(
+        Uri.parse(url),
+        body: {"user_id": widget.user.id},
+      );
+      if (accResponse.statusCode == 200) {
+        final dynamic accData = jsonDecode(accResponse.body)['account'];
+        accList =
+            (accData as List).cast<String>(); // Cast to List<String>        
+        setState(() {
+          widget.accounts.setAll(0, accList);
+        });
+      }
+      print(accList);
+    } catch (e) {
+      logger.e("Error fetching account: $e");
+    }
+  }
 }
 
 class _AccountItem extends StatelessWidget {

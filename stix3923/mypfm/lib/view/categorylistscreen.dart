@@ -10,8 +10,9 @@ import 'package:logger/logger.dart';
 class CategoryListScreen extends StatefulWidget {
   final User user;
   final String selectedType;
+  final List<String> categories;
   const CategoryListScreen(
-      {Key? key, required this.user, required this.selectedType})
+      {Key? key, required this.user, required this.selectedType, required this.categories})
       : super(key: key);
 
   @override
@@ -19,7 +20,7 @@ class CategoryListScreen extends StatefulWidget {
 }
 
 class _CategoryListScreenState extends State<CategoryListScreen> {
-  List<String> categories = [];
+  //List<String> categories = [];
   var logger = Logger();
 
   @override
@@ -40,25 +41,38 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         centerTitle: true,
       ),
       body: ListView.builder(
-        itemCount: categories.length,
+        itemCount: widget.categories.length,
         itemBuilder: (context, index) {
-          String categoryName = categories[index];
-          return ListTile(
-            leading: const Icon(Icons.remove_circle_rounded,
-                color: Colors.red), // Red minus icon
-            title: Text(categoryName),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // Handle edit button press for the category
-                    _editCategoryName(categoryName);
+          String categoryName = widget.categories[index];
+          return Column(
+            children: [
+              ListTile(
+                leading: IconButton(
+                  onPressed: () async {
+                    // Call deleteCategory function here
+                    await _deleteCategoryDialog(context, categoryName);
                   },
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(
+                    Icons.remove_circle_rounded,
+                    color: Colors.red,
+                  ),
+                ), // Red minus icon
+                title: Text(categoryName),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        // Handle edit button press for the category
+                        _editCategoryName(categoryName);
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const Divider(height: 1),
+            ],
           );
         },
       ),
@@ -79,10 +93,10 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           final List<String> exCatList =
               (exCatData as List).cast<String>(); // Cast to List<String>
           setState(() {
-            categories = exCatList;
+            widget.categories.setAll(0, exCatList);
           });
         }
-        print(categories);
+        print(widget.categories);
       } else {
         // Fetch income categories
         final inCatResponse = await http.post(
@@ -95,10 +109,10 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           final List<String> inCatList =
               (inCatData as List).cast<String>(); // Cast to List<String>
           setState(() {
-            categories = inCatList;
+            widget.categories.setAll(0, inCatList);
           });
         }
-        print(categories);
+        print(widget.categories);
       }
     } catch (e) {
       logger.e("Error fetching categories: $e");
@@ -136,7 +150,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                 // Validate if the category name is not empty
                 if (newCategoryName.isNotEmpty) {
                   // Validate if the category name is not already in the list
-                  if (!categories.contains(newCategoryName)) {
+                  if (!widget.categories.contains(newCategoryName)) {
                     if (widget.selectedType == "Income") {
                       url = "${MyConfig.server}/mypfm/php/editInCat.php";
                     } else {
@@ -161,9 +175,9 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         print(data);
                         if (data['status'] == 'success') {
                           setState(() {
-                            categories.remove(
+                            widget.categories.remove(
                                 categoryName); // Remove old category name
-                            categories
+                            widget.categories
                                 .add(newCategoryName); // Add new category name
                           });
                           Navigator.pop(context);
@@ -230,5 +244,109 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         );
       },
     );
+  }
+
+  Future<void> _deleteCategoryDialog(
+      BuildContext context, String categoryName) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Delete",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                _deleteCategory(context, categoryName);
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteCategory(BuildContext context, String categoryName) async {
+    String url = "";
+    if (widget.selectedType == "Expense") {
+      url = "${MyConfig.server}/mypfm/php/deleteExCat.php";
+    } else {
+      url = "${MyConfig.server}/mypfm/php/deleteInCat.php";
+    }
+    try {
+      // Make an HTTP request to delete the category
+      final response = await http.post(
+        Uri.parse(url),
+        body: {
+          "category_name": categoryName,
+          "user_id": widget.user.id,
+        },
+      );
+      print(categoryName);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          setState(() {
+            widget.categories.remove(
+                categoryName); // Remove old category name // Add new category name
+          });
+
+          Fluttertoast.showToast(
+              msg: "Delete Category Success.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          Navigator.of(context).pop();
+          //fetchCat();
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: "Delete Record Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          //fetchCat();
+        }
+        return;
+      } else {
+        // Handle error
+        logger.e("Failed to connect to the server. ${response.body}");
+        Fluttertoast.showToast(
+            msg: "Failed to connect to the server",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    } catch (e) {
+      // Handle error
+      logger.e("Error deleting category: $e");
+      Fluttertoast.showToast(
+          msg: "An error occurred: $ElasticInOutCurve",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    }
   }
 }
