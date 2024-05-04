@@ -151,7 +151,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         Uri.parse(url),
                         body: {
                           "user_id": widget.user.id,
-                          "incat_name": categoryName,
+                          "old_name": categoryName,
                           "new_name": newCategoryName
                         },
                       );
