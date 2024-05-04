@@ -230,7 +230,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                               _focusScopeNode.requestFocus(focus2);
                             },
                             selectedType: selectedType,
-                            user: widget.user),
+                            user: widget.user,
+                            fetchCat: fetchCat),
                       );
                     },
                     child: AbsorbPointer(
@@ -600,6 +601,7 @@ class CategorySelectionBottomSheet extends StatefulWidget {
   final Function(String) onCategorySelected;
   final String selectedType;
   final User user;
+  final Function fetchCat;
 
   const CategorySelectionBottomSheet({
     Key? key,
@@ -607,6 +609,7 @@ class CategorySelectionBottomSheet extends StatefulWidget {
     required this.onCategorySelected,
     required this.selectedType,
     required this.user,
+    required this.fetchCat,
   }) : super(key: key);
 
   @override
@@ -877,13 +880,45 @@ class _CategorySelectionBottomSheetState
     );
   }
 
-  void _editCategoryScreen() {
-    Navigator.push(
+  Future<void> _editCategoryScreen() async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => CategoryListScreen(
               user: widget.user, selectedType: widget.selectedType)),
     );
+    //Navigator.pop(context);
+    widget.fetchCat();
+    fetchCat();
+  }
+
+  Future<void> fetchCat() async {
+    String url;
+    List<String> catList = [];
+    try {
+      if (widget.selectedType == "Expense") {
+        url = "${MyConfig.server}/mypfm/php/getExCat.php";
+      } else {
+        url = "${MyConfig.server}/mypfm/php/getInCat.php";
+      }
+      // Fetch expense categories
+      
+      final catResponse = await http.post(
+        Uri.parse(url),
+        body: {"user_id": widget.user.id},
+      );
+      if (catResponse.statusCode == 200) {
+        final dynamic catData = jsonDecode(catResponse.body)['categories'];
+        catList =
+            (catData as List).cast<String>(); // Cast to List<String>        
+        setState(() {
+          widget.categories.setAll(0, catList);
+        });
+      }
+      print(catList);
+    } catch (e) {
+      logger.e("Error fetching categories: $e");
+    }
   }
 }
 
