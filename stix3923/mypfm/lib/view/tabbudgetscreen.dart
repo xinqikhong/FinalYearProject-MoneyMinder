@@ -7,6 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:mypfm/view/addbudgetscreen.dart';
+import 'package:mypfm/view/registerscreen.dart';
 
 class TabBudgetScreen extends StatefulWidget {
   final User user;
@@ -277,13 +279,18 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       child: Column(
         children: [
           ListTile(
-            title: Text(budget['budget_category']),
+            title: Text(
+              budget['budget_category'],
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             //subtitle: Text('$currency ${budget_amount.toStringAsFixed(2)}'), // Replace with actual budget
-            trailing: Text('$currency ${budget_amount.toStringAsFixed(2)}', // Replace with actual expenses
+            trailing: Text(
+              '$currency ${budget_amount.toStringAsFixed(2)}', // Replace with actual expenses
               style: TextStyle(
-                color: Color.fromARGB(255, 0, 121, 46),
-                fontSize: 14 // For expenses
-              ),
+                  color: Color.fromARGB(255, 3, 171, 68),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold // For expenses
+                  ),
             ),
             onTap: () {
               // Budget tap logic
@@ -294,6 +301,53 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       ),
     );
   }
-  
-  void _handleAddBudgetBtn() {}
+
+  Future<void> _handleAddBudgetBtn() async {
+    if (widget.user.id == "unregistered") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Register to Add Budget',
+              style: TextStyle(
+                fontSize: 20, // Adjust the font size as needed
+              ),
+            ),
+            content: const Text('You need to register first to add budget.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Register'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddBudgetScreen(
+              user: widget.user,
+              //budgetlist: budgetlist,
+              selectedMonth: _selectedMonth),
+        ),
+      );
+      _loadBudget(_selectedMonth.year, _selectedMonth.month);
+    }
+  }
 }
