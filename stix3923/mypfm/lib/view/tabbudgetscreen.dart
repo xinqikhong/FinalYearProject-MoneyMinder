@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:mypfm/view/addbudgetscreen.dart';
 import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
+import 'package:ndialog/ndialog.dart';
 
 class TabBudgetScreen extends StatefulWidget {
   final User user;
@@ -277,7 +278,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
 
     return GestureDetector(
       //onTap: () => _budgetDetails(budget),
-      onLongPress: () => _deleteRecordDialog(budget),
+      onLongPress: () => _deleteBudgetDialog(budget),
       child: Container(
         color: Color.fromARGB(255, 255, 245, 230),
         child: Column(
@@ -369,5 +370,98 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     _loadBudget(_selectedMonth.year, _selectedMonth.month);
   }
 
-  _deleteRecordDialog(budget) {}
+  void _deleteBudgetDialog(var budget) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Delete budget",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteBudget(budget);
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _deleteBudget(var budget) async {
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: const Text("Delete budget in progress.."),
+        title: const Text("Deleting..."));
+    progressDialog.show();
+
+    print(budget['budget_id']);
+    await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteBudget.php"),
+        body: {
+          "budget_id": budget['budget_id'],
+        }).then((response) {
+      progressDialog.dismiss();
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(budget['budget_id']); //debug
+        if (data['status'] == 'success') {
+          Fluttertoast.showToast(
+              msg: "Delete Budget Success.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          return;
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: "Delete Budget Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          return;
+        }
+      } else {
+        print(response.body);
+        print(
+            "Failed to connect to the server. Status code: ${response.statusCode}");
+        Fluttertoast.showToast(
+            msg: "Failed to connect to the server.\nPlease try again later.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    }).catchError((error) {
+      progressDialog.dismiss();
+      logger.e("An error occurred: $error");
+      Fluttertoast.showToast(
+          msg: "An error occurred:\nPlease try again later.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    });
+    _loadBudget(_selectedMonth.year, _selectedMonth.month);
+  }
 }

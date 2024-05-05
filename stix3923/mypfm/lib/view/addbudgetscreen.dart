@@ -33,7 +33,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
   @override
   void initState() {
     super.initState();
-    _loadBudget(widget.selectedMonth.year,widget.selectedMonth.month);        
+    _loadBudget(widget.selectedMonth.year,widget.selectedMonth.month);     
   }
 
   @override
@@ -125,7 +125,6 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       ),
     );
     _loadBudget(widget.selectedMonth.year,widget.selectedMonth.month);
-    _loadExCat();
   }
 
   void _loadDisplayCat() {

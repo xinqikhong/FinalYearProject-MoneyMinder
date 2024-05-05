@@ -13,7 +13,13 @@ class EditBudgetScreen extends StatefulWidget {
   final String budgetId;
   final String budgetAmount;
   final String budgetCategory;
-  const EditBudgetScreen({Key? key, required this.user, required this.budgetId, required this.budgetAmount, required this.budgetCategory}) : super(key: key);
+  const EditBudgetScreen(
+      {Key? key,
+      required this.user,
+      required this.budgetId,
+      required this.budgetAmount,
+      required this.budgetCategory})
+      : super(key: key);
 
   @override
   State<EditBudgetScreen> createState() => _EditBudgetScreenState();
@@ -23,7 +29,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
   final TextEditingController _amountController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var logger = Logger();
-  
+
   @override
   Widget build(BuildContext context) {
     _amountController.text = widget.budgetAmount;
@@ -54,17 +60,38 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                     value!.isEmpty ? "Please enter amount" : null,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _editBudget,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.white, // Set your desired background color
-                  foregroundColor: Colors.orange, // Set your desired text color
-                ),
-                child: const Text(
-                  "Save",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: _editBudget,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.white, // Set your desired background color
+                      foregroundColor:
+                          Colors.orange, // Set your desired text color
+                    ),
+                    child: const Text(
+                      "Save",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _deleteBudgetDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.white, // Set your desired background color
+                      foregroundColor:
+                          Colors.orange, // Set your desired text color
+                    ),
+                    child: const Text(
+                      "Delete",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -140,6 +167,101 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred.\nPlease try again later.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    });
+  }
+
+  void _deleteBudgetDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Delete budget",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteBudget();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _deleteBudget() async {
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: const Text("Delete budget in progress.."),
+        title: const Text("Deleting..."));
+    progressDialog.show();
+
+    print(widget.budgetId);
+    await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteBudget.php"),
+        body: {
+          "budget_id": widget.budgetId,
+        }).then((response) {
+      progressDialog.dismiss();
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(widget.budgetId); //debug
+        if (data['status'] == 'success') {
+          Fluttertoast.showToast(
+              msg: "Delete Budget Success.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          Navigator.pop(context);
+          return;
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: "Delete Budget Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          return;
+        }
+      } else {
+        print(response.body);
+        print(
+            "Failed to connect to the server. Status code: ${response.statusCode}");
+        Fluttertoast.showToast(
+            msg: "Failed to connect to the server.\nPlease try again later.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    }).catchError((error) {
+      progressDialog.dismiss();
+      logger.e("An error occurred: $error");
+      Fluttertoast.showToast(
+          msg: "An error occurred:\nPlease try again later.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
