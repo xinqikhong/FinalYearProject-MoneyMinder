@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:mypfm/view/addbudgetscreen.dart';
+import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 
 class TabBudgetScreen extends StatefulWidget {
@@ -274,30 +275,32 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     var budget = budgetlist[index];
     double budget_amount = double.parse(budget['budget_amount']);
 
-    return Container(
-      color: Color.fromARGB(255, 255, 245, 230),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              budget['budget_category'],
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      //onTap: () => _budgetDetails(budget),
+      onLongPress: () => _deleteRecordDialog(budget),
+      child: Container(
+        color: Color.fromARGB(255, 255, 245, 230),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                budget['budget_category'],
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              //subtitle: Text('$currency ${budget_amount.toStringAsFixed(2)}'), // Replace with actual budget
+              trailing: Text(
+                '$currency ${budget_amount.toStringAsFixed(2)}', // Replace with actual expenses
+                style: TextStyle(
+                    color: Color.fromARGB(255, 3, 171, 68),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold // For expenses
+                    ),
+              ),
+              onTap: () => _budgetDetails(budget),
             ),
-            //subtitle: Text('$currency ${budget_amount.toStringAsFixed(2)}'), // Replace with actual budget
-            trailing: Text(
-              '$currency ${budget_amount.toStringAsFixed(2)}', // Replace with actual expenses
-              style: TextStyle(
-                  color: Color.fromARGB(255, 3, 171, 68),
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold // For expenses
-                  ),
-            ),
-            onTap: () {
-              // Budget tap logic
-            },
-          ),
-          const Divider(height: 1),
-        ],
+            const Divider(height: 1),
+          ],
+        ),
       ),
     );
   }
@@ -350,4 +353,21 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       _loadBudget(_selectedMonth.year, _selectedMonth.month);
     }
   }
+
+  _budgetDetails(var budget) async {
+    print(budget['budget_id']);
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => EditBudgetScreen(
+            user: widget.user,
+            budgetId: budget['budget_id'],
+            budgetAmount: budget['budget_amount'],
+            budgetCategory: budget['budget_category']),
+      ),
+    );
+    _loadBudget(_selectedMonth.year, _selectedMonth.month);
+  }
+
+  _deleteRecordDialog(budget) {}
 }

@@ -2,37 +2,35 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
 
-class AddBudgetDetailScreen extends StatefulWidget {
+class EditBudgetScreen extends StatefulWidget {
   final User user;
-  final DateTime selectedMonth;
-  final String selectedCategory;
-  const AddBudgetDetailScreen({
-    Key? key,
-    required this.user,
-    required this.selectedMonth,
-    required this.selectedCategory,
-  }) : super(key: key);
+  final String budgetId;
+  final String budgetAmount;
+  final String budgetCategory;
+  const EditBudgetScreen({Key? key, required this.user, required this.budgetId, required this.budgetAmount, required this.budgetCategory}) : super(key: key);
 
   @override
-  State<AddBudgetDetailScreen> createState() => _AddBudgetDetailScreenState();
+  State<EditBudgetScreen> createState() => _EditBudgetScreenState();
 }
 
-class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
+class _EditBudgetScreenState extends State<EditBudgetScreen> {
   final TextEditingController _amountController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var logger = Logger();
-
+  
   @override
   Widget build(BuildContext context) {
+    _amountController.text = widget.budgetAmount;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.selectedCategory,
+        title: Text(widget.budgetCategory,
             style: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
@@ -57,7 +55,7 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _saveBudget,
+                onPressed: _editBudget,
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
                       Colors.white, // Set your desired background color
@@ -75,7 +73,7 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
     );
   }
 
-  Future<void> _saveBudget() async {
+  Future<void> _editBudget() async {
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
           msg: "Please enter valid information.",
@@ -86,33 +84,32 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
       return;
     }
 
-    String url = "${MyConfig.server}/mypfm/php/addBudget.php";
+    String url = "${MyConfig.server}/mypfm/php/editBudget.php";
     String _amount = _amountController.text;
-    print(widget.selectedMonth.toString());
 
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Add budget in progress.."),
-        title: const Text("Adding..."));
+        message: const Text("Edit budget in progress.."),
+        title: const Text("Editing..."));
     progressDialog.show();
 
     await http.post(Uri.parse(url), body: {
-      "user_id": widget.user.id,
+      "budget_id": widget.budgetId,
       "amount": _amount,
-      "category": widget.selectedCategory,
-      "year": widget.selectedMonth.year.toString(),
-      "month": widget.selectedMonth.month.toString(),
     }).then((response) {
       progressDialog.dismiss();
-      print(widget.user.id);
+      print(widget.budgetId);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        print(widget.user.id); //debug
+        print(widget.budgetId); //debug
         print(data); //debug
+        setState(() {
+          _amountController.text = _amount;
+        });
         // Check if all fields were successfully updated
         if (data['status'] == 'success') {
           Navigator.pop(context);
           Fluttertoast.showToast(
-              msg: "Add Budget Success.",
+              msg: "Edit Budget Success.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -120,7 +117,7 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
         } else {
           print(response.body);
           Fluttertoast.showToast(
-              msg: data['error'] ?? "Add Budget Failed",
+              msg: "An error occured.\nPlease try again later.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
