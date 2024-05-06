@@ -57,10 +57,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             // Pagination for months
             Center(
               child: Container(
-                color: Color.fromARGB(255, 255, 245, 230),
+                color: Color.fromARGB(255, 255, 227, 186),
                 height: 40, // Adjust height as needed
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
                       onPressed: _goToPreviousMonth,

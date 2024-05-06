@@ -7,7 +7,7 @@ import 'package:mypfm/view/loginscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
-import 'package:mypfm/view/tabstatscreen.dart';
+import 'package:mypfm/view/tabstatsscreen.dart';
 import 'package:mypfm/view/tabresourcescreen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -264,7 +264,7 @@ class _MainScreenState extends State<MainScreen> {
         maintitle = "Budget";
       }
       if (_currentIndex == 2) {
-        maintitle = "Report";
+        maintitle = "Statistics";
       }
       if (_currentIndex == 3) {
         maintitle = "Resource";

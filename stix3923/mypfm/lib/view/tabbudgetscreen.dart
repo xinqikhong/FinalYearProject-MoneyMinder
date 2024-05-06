@@ -47,10 +47,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             // Pagination for months
             Center(
               child: Container(
-                color: Color.fromARGB(255, 255, 245, 230),
+                color: Color.fromARGB(255, 255, 227, 186),
                 height: 40, // Adjust height as needed
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
                       onPressed: _goToPreviousMonth,
@@ -284,6 +284,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
         child: Column(
           children: [
             ListTile(
+              leading: Icon(
+                        Icons.attach_money,
+                        color: Color.fromARGB(255, 3, 171, 68),
+                      ),
               title: Text(
                 budget['budget_category'],
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
