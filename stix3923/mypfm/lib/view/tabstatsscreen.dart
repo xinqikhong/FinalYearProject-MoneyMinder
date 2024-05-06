@@ -9,6 +9,7 @@ import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'dart:math' as math;
 
 class TabStatsScreen extends StatefulWidget {
   final User user;
@@ -269,27 +270,64 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
 
   List<Color> _generateSegmentColors(List<Map<String, dynamic>> data) {
     List<Color> colors = [];
-    // Generate a palette of distinct colors based on the number of categories
-    PaletteGenerator paletteGenerator = PaletteGenerator.fromColors(
-      data
-          .map((category) => Colors
-              .primaries[data.indexOf(category) % Colors.primaries.length])
-          .map((materialColor) => PaletteColor(
-              materialColor.shade500, 1)) // Convert to PaletteColor
-          .toList(),
-    );
-    // Extract the generated colors
-    if (paletteGenerator != null && paletteGenerator.colors.isNotEmpty) {
-      colors = paletteGenerator.colors.toList();
+    final double baseHue = 240; // Start with a blue hue
+    final double hueStep = 30; // Smaller step for subtle variations
+
+    for (int i = 0; i < data.length; i++) {
+      final double hue = baseHue + (hueStep * i);
+      final Color color = _hslToColor(hue, 0.5 + (0.1 * i),
+          0.7); // Adjust saturation slightly for each segment
+      colors.add(color);
+    }
+
+    return colors;
+  }
+
+// Helper function to convert HSL values to Color
+  Color _hslToColor(double hue, double saturation, double lightness) {
+    final double chroma = (1 - (2 * lightness - 1).abs()) * saturation;
+    final double huePrime = hue / 60.0;
+    final double secondComponent = chroma * (1 - ((huePrime % 2) - 1).abs());
+
+    double red, green, blue;
+
+    if (0 <= huePrime && huePrime < 1) {
+      red = chroma;
+      green = secondComponent;
+      blue = 0.0;
+    } else if (1 <= huePrime && huePrime < 2) {
+      red = secondComponent;
+      green = chroma;
+      blue = 0.0;
+    } else if (2 <= huePrime && huePrime < 3) {
+      red = 0.0;
+      green = chroma;
+      blue = secondComponent;
+    } else if (3 <= huePrime && huePrime < 4) {
+      red = 0.0;
+      green = secondComponent;
+      blue = chroma;
+    } else if (4 <= huePrime && huePrime < 5) {
+      red = secondComponent;
+      green = 0.0;
+      blue = chroma;
+    } else if (5 <= huePrime && huePrime < 6) {
+      red = chroma;
+      green = 0.0;
+      blue = secondComponent;
     } else {
-      // Use default colors if palette generation fails
-      colors = _getDefaultColors(data.length);
+      red = 0.0;
+      green = 0.0;
+      blue = 0.0;
     }
-    // Ensure the number of colors matches the number of categories
-    while (colors.length < data.length) {
-      colors.addAll(colors);
-    }
-    return colors.take(data.length).toList();
+
+    final double lightnessAdjustment = lightness - chroma / 2;
+    red += lightnessAdjustment;
+    green += lightnessAdjustment;
+    blue += lightnessAdjustment;
+
+    return Color.fromRGBO(
+        (red * 255).round(), (green * 255).round(), (blue * 255).round(), 1.0);
   }
 
   List<Color> _getDefaultColors(int count) {
