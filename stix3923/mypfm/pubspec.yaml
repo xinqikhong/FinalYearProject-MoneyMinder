@@ -47,6 +47,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   fl_chart: ^0.67.0
+  palette_generator: ^0.3.3+3
 
 dev_dependencies:
   flutter_test:

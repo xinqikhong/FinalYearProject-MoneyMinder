@@ -8,6 +8,7 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class TabStatsScreen extends StatefulWidget {
   final User user;
@@ -268,12 +269,55 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
 
   List<Color> _generateSegmentColors(List<Map<String, dynamic>> data) {
     List<Color> colors = [];
-    for (int i = 0; i < data.length; i++) {
-      Color color = Color((i * 16777215 / data.length).toInt())
-          .withOpacity(1.0); // Generate random colors
-      colors.add(color);
+    // Generate a palette of distinct colors based on the number of categories
+    PaletteGenerator paletteGenerator = PaletteGenerator.fromColors(
+      data
+          .map((category) => Colors
+              .primaries[data.indexOf(category) % Colors.primaries.length])
+          .map((materialColor) => PaletteColor(
+              materialColor.shade500, 1)) // Convert to PaletteColor
+          .toList(),
+    );
+    // Extract the generated colors
+    if (paletteGenerator != null && paletteGenerator.colors.isNotEmpty) {
+      colors = paletteGenerator.colors.toList();
+    } else {
+      // Use default colors if palette generation fails
+      colors = _getDefaultColors(data.length);
     }
-    return colors;
+    // Ensure the number of colors matches the number of categories
+    while (colors.length < data.length) {
+      colors.addAll(colors);
+    }
+    return colors.take(data.length).toList();
+  }
+
+  List<Color> _getDefaultColors(int count) {
+    List<Color> defaultColors = [
+      Colors.blue,
+      Colors.green,
+      Colors.red,
+      Colors.orange,
+      Colors.yellow,
+      Colors.purple,
+      Colors.teal,
+      Colors.pink,
+      Colors.indigo,
+      Colors.amber,
+      Colors.deepPurple,
+      Colors.lime,
+      Colors.cyan,
+      Colors.lightBlue,
+      Colors.deepOrange,
+      Colors.brown,
+      Colors.grey,
+    ];
+    // Cycle through default colors to match the count
+    List<Color> result = [];
+    for (int i = 0; i < count; i++) {
+      result.add(defaultColors[i % defaultColors.length]);
+    }
+    return result;
   }
 
   Widget _buildCategoryList() {
