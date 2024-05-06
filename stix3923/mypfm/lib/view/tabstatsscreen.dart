@@ -270,16 +270,15 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
 
   List<Color> _generateSegmentColors(List<Map<String, dynamic>> data) {
     List<Color> colors = [];
-    final double baseHue = 240; // Start with a blue hue
-    final double hueStep = 30; // Smaller step for subtle variations
+    final double baseHue = 10; // Start with a blue hue
+    final double hueStep = 12; // Smaller step for subtle variations
 
     for (int i = 0; i < data.length; i++) {
       final double hue = baseHue + (hueStep * i);
-      final Color color = _hslToColor(hue, 0.5 + (0.1 * i),
-          0.7); // Adjust saturation slightly for each segment
+      final Color color = _hslToColor(hue, 0.7 + (0.1 * i),
+          0.5); // Adjust saturation slightly for each segment
       colors.add(color);
     }
-
     return colors;
   }
 
