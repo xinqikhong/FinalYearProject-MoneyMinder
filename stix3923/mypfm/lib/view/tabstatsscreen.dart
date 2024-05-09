@@ -361,6 +361,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     List<Map<String, dynamic>> data =
         _isIncomeSelected ? incomeChartData : expenseChartData;
 
+    print(data.length);
     // Build and return the list of categories with their data
     return Expanded(
       child: Column(
@@ -401,8 +402,8 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
           const Divider(height: 1),
           Expanded(
             child: ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              //shrinkWrap: true,
+              //physics: NeverScrollableScrollPhysics(),
               itemCount: data.length,
               itemBuilder: (context, index) {
                 return Container(
