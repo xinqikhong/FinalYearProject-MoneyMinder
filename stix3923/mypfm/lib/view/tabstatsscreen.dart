@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'dart:math' as math;
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TabStatsScreen extends StatefulWidget {
   final User user;
@@ -252,7 +253,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                 (index) => PieChartSectionData(
                   color: segmentColors[index],
                   value: double.parse(data[index]['percentage']),
-                  title: '${data[index]['category']}',
+                  //title: '${data[index]['category']}',
                   radius: 100,
                   titleStyle: TextStyle(
                       fontSize: 14,
@@ -360,6 +361,10 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   Widget _buildCategoryList() {
     List<Map<String, dynamic>> data =
         _isIncomeSelected ? incomeChartData : expenseChartData;
+
+    // Sort the data list in descending order based on the 'amount'
+    data.sort((a, b) =>
+        double.parse(b['amount']).compareTo(double.parse(a['amount'])));
 
     print(data.length);
     // Build and return the list of categories with their data
