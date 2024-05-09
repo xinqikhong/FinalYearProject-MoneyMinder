@@ -254,7 +254,8 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                   color: segmentColors[index],
                   value: double.parse(data[index]['percentage']),
                   //title: '${data[index]['category']}',
-                  radius: 100,
+                  showTitle: false,
+                  radius: 100,                  
                   titleStyle: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
