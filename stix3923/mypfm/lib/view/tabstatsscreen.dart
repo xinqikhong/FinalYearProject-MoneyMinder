@@ -238,6 +238,11 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     List<Map<String, dynamic>> data =
         _isIncomeSelected ? incomeChartData : expenseChartData;
 
+    // Sort the data list in descending order based on the 'amount'
+    data.sort((a, b) =>
+        double.parse(b['amount']).compareTo(double.parse(a['amount'])));
+
+    // Generate segment colors for pie chart based on sorted category list
     List<Color> segmentColors = _generateSegmentColors(data);
 
     return Container(
@@ -251,15 +256,16 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
               sections: List.generate(
                 data.length,
                 (index) => PieChartSectionData(
-                  color: segmentColors[index],
+                  color: segmentColors[index], // Use color from the list
                   value: double.parse(data[index]['percentage']),
-                  //title: '${data[index]['category']}',
+                  // title: '${data[index]['category']}',
                   showTitle: false,
-                  radius: 100,                  
+                  radius: 100,
                   titleStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               centerSpaceRadius: 0,
@@ -412,6 +418,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
               //physics: NeverScrollableScrollPhysics(),
               itemCount: data.length,
               itemBuilder: (context, index) {
+                final Color sectionColor = _generateSegmentColors(data)[index];
                 return Container(
                   color: Color.fromARGB(255, 255, 245, 230),
                   child: Column(
@@ -422,8 +429,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                           width: 60,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: Colors
-                                .blue, // You can set color based on category if needed
+                            color: sectionColor, // Use section color here
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
