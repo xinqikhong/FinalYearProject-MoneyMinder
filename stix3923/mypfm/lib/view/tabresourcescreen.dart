@@ -4,6 +4,7 @@ import 'package:mypfm/view/resourcedetailsscreen.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:mypfm/model/article.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class TabResourceScreen extends StatefulWidget {
   final User user;
@@ -23,7 +24,8 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   }
 
   Future<void> fetchRssFeed() async {
-    final response = await http.get(Uri.parse('https://medium.com/feed/tag/personal-finance'));
+    final response = await http
+        .get(Uri.parse('https://medium.com/feed/tag/personal-finance'));
 
     if (response.statusCode == 200) {
       print('medium response.statusCode == 200');
@@ -46,7 +48,8 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
           final imageUrl = match != null ? match.group(1) : null;
 
           // Clean the description to remove HTML tags
-          final cleanDescription = description.replaceAll(RegExp(r'<[^>]*>'), '');
+          final cleanDescription =
+              description.replaceAll(RegExp(r'<[^>]*>'), '');
 
           return Article(
             title: title,
@@ -55,12 +58,12 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
             pubDate: pubDate,
             image: imageUrl,
             creator: creator,
-          );
+          );          
         }).toList();
       });
     } else {
       throw Exception('Failed to load RSS feed');
-    }
+    }    
   }
 
   @override
@@ -71,22 +74,28 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
             itemCount: articles.length,
             itemBuilder: (context, index) {
               final article = articles[index];
+              print("77" + article.link);
               return Column(
                 children: [
                   ListTile(
                     title: Text(article.title),
                     subtitle: Text(article.pubDate),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ResourceDetailsScreen(article: article),
-                      ),
-                    ),
+                    onTap: () => launchURL(article.link),
                   ),
                   const Divider(height: 2),
                 ],
               );
             },
           );
+  }
+
+  void launchURL(String url) async {
+    print("93" + url);
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
