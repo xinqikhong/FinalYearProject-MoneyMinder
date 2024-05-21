@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mypfm/model/user.dart';
-import 'package:mypfm/view/resourcedetailsscreen.dart';
+//import 'package:mypfm/view/resourcedetailsscreen.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:mypfm/model/article.dart';
 import 'package:http/http.dart' as http;
@@ -201,10 +201,10 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                             width: 80.0,
                             height: 80.0,
                             child: Image.network(article.image!))
-                        : const SizedBox(
+                        : SizedBox(
                             width: 80.0,
                             height: 80.0,
-                            child: Icon(Icons.rss_feed)),
+                            child: Image.asset('assets/images/personal-finance.jpg')),
                     onTap: () async {
                       final Uri url = Uri.parse(article.link);
                       print('Clicked Url(Uri): $url');

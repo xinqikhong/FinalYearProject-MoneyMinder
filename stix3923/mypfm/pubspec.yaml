@@ -80,6 +80,7 @@ flutter:
   assets:
   - assets/images/pfm_logo1.png
   - assets/images/moneyminder3.png
+  - assets/images/personal-finance.jpg
   - assets/eula.txt
   
   #   - images/a_dot_ham.jpeg
