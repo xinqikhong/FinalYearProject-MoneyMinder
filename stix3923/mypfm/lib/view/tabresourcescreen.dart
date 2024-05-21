@@ -24,11 +24,16 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
     'https://medium.com/feed/tag/budget-tips',
     'https://medium.com/feed/tag/saving-tips',
   ];
+  final ScrollController _scrollController = ScrollController();
+  bool _showTopButton = false;
+  //int _currentPage = 1;
+  //static const int _articlesPerPage = 10;
 
   @override
   void initState() {
     super.initState();
     fetchRssFeeds();
+    _scrollController.addListener(_scrollListener);
   }
 
   /*Future<void> fetchRssFeed() async {
@@ -182,15 +187,28 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   }*/
 
   @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    setState(() {
+      _showTopButton = _scrollController.offset > 100.0;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return articles.isEmpty
-        ? Center(child: CircularProgressIndicator())
-        : ListView.builder(
+    return Scaffold(
+      body: Stack(
+        children: [
+          ListView.builder(
+            controller: _scrollController,
             itemCount: articles.length,
             itemBuilder: (context, index) {
               final article = articles[index];
-              print("77" + article.link);
-              //final url = Uri.parse(article.link);
               return Column(
                 children: [
                   ListTile(
@@ -204,7 +222,8 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                         : SizedBox(
                             width: 80.0,
                             height: 80.0,
-                            child: Image.asset('assets/images/personal-finance.jpg')),
+                            child: Image.asset(
+                                'assets/images/personal-finance.jpg')),
                     onTap: () async {
                       final Uri url = Uri.parse(article.link);
                       print('Clicked Url(Uri): $url');
@@ -225,7 +244,29 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                 ],
               );
             },
-          );
+          ),
+          if (_showTopButton)
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(30), // Adjust the value as needed
+                ),
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0.0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+                child: const Icon(Icons.arrow_upward),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   /*Future<void> launchURL(String url) async {
