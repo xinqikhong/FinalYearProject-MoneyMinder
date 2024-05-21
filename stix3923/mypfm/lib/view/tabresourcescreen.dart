@@ -17,6 +17,13 @@ class TabResourceScreen extends StatefulWidget {
 
 class _TabResourceScreenState extends State<TabResourceScreen> {
   List<Article> articles = [];
+  final List<String> mediumFeeds = [
+    'https://medium.com/feed/tag/personal-finance',
+    'https://medium.com/feed/tag/personal-saving',
+    'https://medium.com/feed/tag/personal-budget-tips',
+    'https://medium.com/feed/tag/budget-tips',
+    'https://medium.com/feed/tag/saving-tips',
+  ];
 
   @override
   void initState() {
@@ -69,18 +76,19 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
 
   Future<void> fetchRssFeeds() async {
     // Fetch Medium RSS feed
-    final mediumResponse = await http
-        .get(Uri.parse('https://medium.com/feed/tag/personal-finance'));
-    if (mediumResponse.statusCode == 200) {
-      final mediumDocument = xml.XmlDocument.parse(mediumResponse.body);
-      final mediumItems = mediumDocument.findAllElements('item');
-      articles.addAll(parseMediumArticles(mediumItems)); // Add parsed articles
-    } else {
-      print('Failed to load Medium RSS feed');
+    for (final feedUrl in mediumFeeds) {
+      final mediumResponse = await http.get(Uri.parse(feedUrl));
+      if (mediumResponse.statusCode == 200) {
+        final mediumDocument = xml.XmlDocument.parse(mediumResponse.body);
+        final mediumItems = mediumDocument.findAllElements('item');
+        articles
+            .addAll(parseMediumArticles(mediumItems)); // Add parsed articles
+      } else {
+        print('Failed to load Medium RSS feed');
+      }
     }
-
     // Fetch CNBC RSS feed
-    final cnbcResponse = await http.get(Uri.parse(
+    /*final cnbcResponse = await http.get(Uri.parse(
         'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=21324812'));
     if (cnbcResponse.statusCode == 200) {
       final cnbcDocument = xml.XmlDocument.parse(cnbcResponse.body);
@@ -88,7 +96,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
       articles.addAll(parseCnbcArticles(cnbcItems)); // Add parsed articles
     } else {
       print('Failed to load CNBC RSS feed');
-    }
+    }*/
 
     /*
     articles.sort((a, b) {
@@ -136,7 +144,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
     }).toList();
   }
 
-  List<Article> parseCnbcArticles(Iterable<xml.XmlElement> items) {
+  /*List<Article> parseCnbcArticles(Iterable<xml.XmlElement> items) {
     print('start parseCnbcArticles');
     return items.map((item) {
       final link = item.findElements('link').single.text;
@@ -171,7 +179,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
         creator: creator,
       );
     }).toList();
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +196,15 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                   ListTile(
                     title: Text(article.title),
                     subtitle: Text(article.pubDate),
+                    leading: article.image != null
+                        ? SizedBox(
+                            width: 80.0,
+                            height: 80.0,
+                            child: Image.network(article.image!))
+                        : const SizedBox(
+                            width: 80.0,
+                            height: 80.0,
+                            child: Icon(Icons.rss_feed)),
                     onTap: () async {
                       final Uri url = Uri.parse(article.link);
                       print('Clicked Url(Uri): $url');
