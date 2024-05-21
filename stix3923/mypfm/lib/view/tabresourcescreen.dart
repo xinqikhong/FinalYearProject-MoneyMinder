@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/resourcedetailsscreen.dart';
 import 'package:xml/xml.dart' as xml;
@@ -58,12 +59,12 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
             pubDate: pubDate,
             image: imageUrl,
             creator: creator,
-          );          
+          );
         }).toList();
       });
     } else {
       throw Exception('Failed to load RSS feed');
-    }    
+    }
   }
 
   @override
@@ -75,12 +76,27 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
             itemBuilder: (context, index) {
               final article = articles[index];
               print("77" + article.link);
+              //final url = Uri.parse(article.link);
               return Column(
                 children: [
                   ListTile(
                     title: Text(article.title),
                     subtitle: Text(article.pubDate),
-                    onTap: () => launchURL(article.link),
+                    onTap: () async {
+                      final Uri url = Uri.parse(article.link);
+                      print('Clicked Url(Uri): $url');
+                      try {
+                        await launchUrl(url, mode: LaunchMode.inAppWebView);
+                        print('Launched URL successfully');
+                      } on PlatformException catch (e) {
+                        print('Launch error: ${e.message}');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Failed to launch: ${e.message}'),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const Divider(height: 2),
                 ],
@@ -89,7 +105,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
           );
   }
 
-  void launchURL(String url) async {
+  Future<void> launchURL(String url) async {
     print("93" + url);
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
