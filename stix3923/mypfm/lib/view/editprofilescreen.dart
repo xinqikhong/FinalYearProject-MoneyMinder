@@ -85,7 +85,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   borderSide: BorderSide(width: 2.0),
                                 ))),
                         TextFormField(
-                            readOnly: true,
+                            enabled: false,
                             //textInputAction: TextInputAction.next,
                             /*validator: (val) => _validateEmail(val!),
                             focusNode: focus,
@@ -167,7 +167,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
-                            ElevatedButton(
+                            /*ElevatedButton(
                               //style: ElevatedButton.styleFrom(
                               //fixedSize: Size(screenWidth / 3, 50)),
                               onPressed: _cancelEditDialog,
@@ -182,7 +182,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
-                            ),
+                            ),*/
                           ],
                         ),
                       ],

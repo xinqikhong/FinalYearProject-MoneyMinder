@@ -113,8 +113,9 @@ class _MainScreenState extends State<MainScreen> {
                       size: 24,
                     ),
                   ),
-                  Flexible(
-                    flex: 4,
+                  SizedBox(
+                    width: 150,
+                    //flex: 10,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -123,8 +124,10 @@ class _MainScreenState extends State<MainScreen> {
                           widget.user.name.toString(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                            fontSize: 18,                              
                           ),
+                          overflow: TextOverflow.ellipsis,
+                          //textAlign: TextAlign.center,
                         ),
                         Text(
                           widget.user.email.toString(),
@@ -133,6 +136,7 @@ class _MainScreenState extends State<MainScreen> {
                             color: Colors.grey,
                           ),
                           overflow: TextOverflow.ellipsis,
+                          //textAlign: TextAlign.center,
                         ),
                       ],
                     ),
