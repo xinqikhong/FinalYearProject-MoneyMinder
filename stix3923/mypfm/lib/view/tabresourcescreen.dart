@@ -228,7 +228,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: 'Search articles by keyword',
-                          hintStyle: TextStyle(color: Colors.grey),
+                          hintStyle: const TextStyle(color: Colors.grey),
                           prefixIcon: const Icon(
                             Icons.search,
                             color: Colors.grey,
@@ -280,7 +280,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                     ListTile(
                                       title: Text(
                                         article.title,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize:
                                               17.0, // Adjust font size to 16
                                           fontWeight: FontWeight
