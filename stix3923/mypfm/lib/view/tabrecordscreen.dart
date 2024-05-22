@@ -240,26 +240,30 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      '$currency ${dailyIncome.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.blue),
-                    ),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    Text(
-                      '$currency ${dailyExpense.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.red),
-                    ),
-                  ],
+                SizedBox(
+                  width: 180,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$currency ${dailyIncome.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.blue),
+                      ),
+                      /*const SizedBox(
+                        width: 30,
+                      ),*/
+                      Text(
+                        '$currency ${dailyExpense.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.red),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -294,13 +298,13 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         record.containsKey('expense_note')
                             ? record['expense_note']
                             : record['income_note'],
-                        style: const TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         record.containsKey('expense_category')
                             ? record['expense_category']
                             : record['income_category'],
-                        style: const TextStyle(fontSize: 13),
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey),
                       ),
                       trailing: Text(
                         '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
