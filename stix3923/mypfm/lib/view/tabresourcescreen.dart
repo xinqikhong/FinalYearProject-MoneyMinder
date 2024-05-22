@@ -202,70 +202,77 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          ListView.builder(
-            controller: _scrollController,
-            itemCount: articles.length,
-            itemBuilder: (context, index) {
-              final article = articles[index];
-              return Column(
-                children: [
-                  ListTile(
-                    title: Text(article.title),
-                    subtitle: Text(article.pubDate),
-                    leading: article.image != null
-                        ? SizedBox(
-                            width: 80.0,
-                            height: 80.0,
-                            child: Image.network(article.image!))
-                        : SizedBox(
-                            width: 80.0,
-                            height: 80.0,
-                            child: Image.asset(
-                                'assets/images/personal-finance.jpg')),
-                    onTap: () async {
-                      final Uri url = Uri.parse(article.link);
-                      print('Clicked Url(Uri): $url');
-                      try {
-                        await launchUrl(url, mode: LaunchMode.inAppWebView);
-                        print('Launched URL successfully');
-                      } on PlatformException catch (e) {
-                        print('Launch error: ${e.message}');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Failed to launch: ${e.message}'),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const Divider(height: 2),
-                ],
-              );
-            },
-          ),
-          if (_showTopButton)
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(30), // Adjust the value as needed
+      body: articles.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: Colors.orangeAccent,
+            ))
+          : Stack(
+              children: [
+                ListView.builder(
+                  controller: _scrollController,
+                  itemCount: articles.length,
+                  itemBuilder: (context, index) {
+                    final article = articles[index];
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(article.title),
+                          subtitle: Text(article.pubDate),
+                          leading: article.image != null
+                              ? SizedBox(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  child: Image.network(article.image!))
+                              : SizedBox(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  child: Image.asset(
+                                      'assets/images/personal-finance.jpg')),
+                          onTap: () async {
+                            final Uri url = Uri.parse(article.link);
+                            print('Clicked Url(Uri): $url');
+                            try {
+                              await launchUrl(url,
+                                  mode: LaunchMode.inAppWebView);
+                              print('Launched URL successfully');
+                            } on PlatformException catch (e) {
+                              print('Launch error: ${e.message}');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('Failed to launch: ${e.message}'),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const Divider(height: 2),
+                      ],
+                    );
+                  },
                 ),
-                onPressed: () {
-                  _scrollController.animateTo(
-                    0.0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.ease,
-                  );
-                },
-                child: const Icon(Icons.arrow_upward),
-              ),
+                if (_showTopButton)
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: FloatingActionButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            30), // Adjust the value as needed
+                      ),
+                      onPressed: () {
+                        _scrollController.animateTo(
+                          0.0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.ease,
+                        );
+                      },
+                      child: const Icon(Icons.arrow_upward),
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
     );
   }
 
