@@ -408,27 +408,63 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   ),
                   const SizedBox(
                       width: 10), // Add spacing between budget and progress bar
-                  Flexible(
-                    child: LinearProgressIndicator(
-                      value: percentage /
-                          100, // Convert percentage to a value between 0.0 and 1.0
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        percentage >= 100 // Adjust color based on percentage
-                            ? Colors.red // Exceeded budget
-                            : (percentage >= 80
-                                ? Colors.orange
-                                : Colors.green), // Within budget range
-                      ),
+                  Container(
+                    // Wrap Stack with a container
+                    constraints: const BoxConstraints(
+                        maxWidth: 150.0), // Set a maximum width
+                    child: Stack(
+                      // Set constraints explicitly
+                      alignment: Alignment.center, // Optional: Center elements
+                      clipBehavior:
+                          Clip.none, // Optional: Allow overflowing content
+                      children: [
+                        Flexible(
+                          child: Container(
+                            width: 110.0, // Set desired width
+                            height: 20.0,
+                            child: LinearProgressIndicator(
+                              value: percentage / 100,
+                              borderRadius: BorderRadius.circular(5.0),                              
+                              //minHeight: 15,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                percentage >= 100
+                                    ? Colors.red
+                                    : (percentage >= 80
+                                        ? Colors.orange
+                                        : Colors.green),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 10,
+                          top: 0,
+                          child: Text(
+                            '${percentage.toStringAsFixed(1)}%',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-              trailing: Text(
-                '$currency ${budget_amount.toStringAsFixed(2)}', // Expense amount
-                style: TextStyle(
-                  color: Color.fromARGB(255, 3, 171, 68),
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+              trailing: Container(
+                //margin: const EdgeInsets.all(1.0),
+                width: 100.0, // Set desired width
+                height: 20.0,
+                child: Text(
+                  '$currency ${budget_amount.toStringAsFixed(2)}', // Expense amount
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 3, 171, 68),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               onTap: () => _budgetDetails(budget),
