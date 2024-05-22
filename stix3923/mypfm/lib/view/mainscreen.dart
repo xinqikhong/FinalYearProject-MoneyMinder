@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:mypfm/view/changepasswordscreen.dart';
 import 'package:mypfm/view/editprofilescreen.dart';
 import 'package:mypfm/view/loginscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
@@ -154,14 +155,20 @@ class _MainScreenState extends State<MainScreen> {
                     child: Text('Delete Account'),
                   ),
                 ],
-                onSelected: (String value) {
+                onSelected: (String value) async {
                   // Handle submenu item selection
                   switch (value) {
-                    case 'profile':
+                    /*case 'profile':
                       // Handle Profile submenu tap
-                      break;
+                      break;*/
                     case 'change_password':
-                      // Handle Change Password submenu tap
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ChangePasswordScreen(user: widget.user),
+                        ),
+                      );
                       break;
                     case 'delete_account':
                       // Handle Delete Account submenu tap
@@ -170,13 +177,13 @@ class _MainScreenState extends State<MainScreen> {
                 },
               ),
             ),
-            ListTile(
+            /*ListTile(
               title: const Text('Language Setting'),
               onTap: () {
                 // Update the state of the app.
                 // ...
               },
-            ),
+            ),*/
             ListTile(
               title: const Text('Currency Setting'),
               onTap: () {
