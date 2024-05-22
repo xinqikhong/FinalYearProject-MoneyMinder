@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
+import 'package:mypfm/model/expense.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/model/config.dart';
 import 'dart:convert';
@@ -11,6 +12,7 @@ import 'package:mypfm/view/addbudgetscreen.dart';
 import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:collection/collection.dart';
 
 class TabBudgetScreen extends StatefulWidget {
   final User user;
@@ -24,7 +26,8 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   String titlecenter = "Loading data...";
   late DateTime _selectedMonth;
   List budgetlist = [];
-  List expenselist = [];
+  List<Expense> expenseList = [];
+  List<Map<String, dynamic>> expenseProgressData = [];
   String currency = "RM";
   var logger = Logger();
 
@@ -32,7 +35,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   void initState() {
     super.initState();
     _selectedMonth = DateTime.now();
-    _loadBudget(_selectedMonth.year, _selectedMonth.month);
+    budgetlist = [];
+    expenseList = [];
+    expenseProgressData = [];
+    _loadData(_selectedMonth.year, _selectedMonth.month);
   }
 
   @override
@@ -152,6 +158,20 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     }
   }*/
 
+  void _loadData(int year, int month) async {
+    if (widget.user.id == "unregistered") {
+      setState(() {
+        titlecenter = "No Records Found";
+      });
+      return;
+    }
+
+    await _loadBudget(year, month);
+    await _loadExpense(year, month);
+    _populateProgressData();
+    setState(() {}); // Refresh UI after loading data
+  }
+
   Future<void> _loadBudget(int year, int month) async {
     print("$month, $year");
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadBudget.php"),
@@ -190,46 +210,99 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     });
   }
 
-  void _loadExpense(int year, int month, String selectedCategory) async {
-    print("$month, $year, $selectedCategory");
-    await http.post(
-        Uri.parse("${MyConfig.server}/mypfm/php/loadExpenseForCat.php"),
+  Future<void> _loadExpense(int year, int month) async {
+    print(month);
+    await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadExpense.php"),
         body: {
           'user_id': widget.user.id,
-          'category': selectedCategory,
           'year': year.toString(),
           'month': month.toString()
         }).then((response) {
       var jsondata = jsonDecode(response.body);
       var extractdata = jsondata['data'];
-      print(extractdata);
+      print(response.body);
+      print(jsondata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         setState(() {
-          expenselist = extractdata;
+          expenseList = extractdata
+              .map<Expense>((json) => Expense.fromJson(json))
+              .toList();
         });
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
         setState(() {
-          //titlecenter = "No Records Found";
-          expenselist = []; // Clear existing data
+          titlecenter = "No Expense Records Found";
+          expenseList = []; // Clear existing data
         });
       } else {
         // Handle other error cases
-        Fluttertoast.showToast(
-            msg: "An error occurred.\nPlease try again later.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
+        setState(() {
+          titlecenter = "Error loading expense records";
+        });
       }
     }).catchError((error) {
-      logger.e("An error occurred when load budget: $error");
+      logger.e("An error occurred when load expense: $error");
       Fluttertoast.showToast(
           msg: "An error occurred.\nPlease try again later.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
+    });
+  }
+
+  void _populateProgressData() {
+    print('Start _populateProgressData()');
+    expenseProgressData.clear();
+
+    // Group expenses by category
+    var groupedExpenses =
+        groupBy(expenseList, (Expense expense) => expense.expenseCategory);
+
+    // Calculate total expenses and add data to chart data
+    groupedExpenses.forEach((category, expenseList) {
+      double totalExpenseForCategory = expenseList.fold(
+          0.0, (sum, expense) => sum + double.parse(expense.expenseAmount!));
+
+      expenseProgressData.add({
+        'category': category,
+        'amount': totalExpenseForCategory
+            .toStringAsFixed(2), // Format as string with 2 decimal places
+        'percentage': 0.0, // Placeholder for percentage (calculated later)
+      });
+      print('$category  $totalExpenseForCategory');
+    });
+
+    _calculatePercentage();
+  }
+
+  void _calculatePercentage() {
+    // Create a map to store calculated percentages for each category
+    var categoryPercentages = {};
+
+    // Find budget amounts for each category and store them in the map
+    for (var budgetEntry in budgetlist) {
+      String category = budgetEntry['budget_category'];
+      double budgetAmount = double.parse(budgetEntry['budget_amount']);
+      categoryPercentages[category] = budgetAmount;
+    }
+
+    // Calculate percentage for each category in expenseProgressData
+    expenseProgressData.forEach((data) {
+      String category = data['category'];
+      double expenseAmount = double.parse(data['amount']);
+
+      // Check if budget exists for the category
+      if (categoryPercentages.containsKey(category)) {
+        double budgetAmount = categoryPercentages[category];
+        double percentage = (expenseAmount / budgetAmount) * 100;
+        data['percentage'] = percentage.toStringAsFixed(2);
+      } else {
+        // Handle case where no budget is found for the category
+        data['percentage'] =
+            '0.00'; // Set percentage to zero (or display a placeholder)
+      }
+      print(data['category'] + ' ' + data['percentage']);
     });
   }
 
@@ -242,7 +315,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   void _goToPreviousMonth() {
     setState(() {
       _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
-      _loadBudget(_selectedMonth.year,
+      expenseProgressData = [];
+      budgetlist = [];
+      expenseList = [];
+      _loadData(_selectedMonth.year,
           _selectedMonth.month); // Reload records for the new selected month
     });
   }
@@ -257,8 +333,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
       setState(() {
         _selectedMonth = pickedMonth;
-        // Reload records for the selected month
-        _loadBudget(_selectedMonth.year, _selectedMonth.month);
+        expenseProgressData = [];
+        budgetlist = [];
+        expenseList = [];
+        _loadData(_selectedMonth.year, _selectedMonth.month);
       });
     }
     return null;
@@ -267,7 +345,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   void _goToNextMonth() {
     setState(() {
       _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-      _loadBudget(_selectedMonth.year,
+      expenseProgressData = [];
+      budgetlist = [];
+      expenseList = [];
+      _loadData(_selectedMonth.year,
           _selectedMonth.month); // Reload records for the new selected month
     });
   }
@@ -275,31 +356,80 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   Widget _buildBudgetList(int index) {
     var budget = budgetlist[index];
     double budget_amount = double.parse(budget['budget_amount']);
+    String category = budget['budget_category'];
+    double expenseAmount = 0.0;
+    double percentage = 0.0;
+    for (var data in expenseProgressData) {
+      if (data['category'] == category) {
+        expenseAmount = double.parse(data['amount']);
+        percentage = double.parse(data['percentage']);
+        break; // Exit loop once data for the category is found
+      }
+    }
 
     return GestureDetector(
       //onTap: () => _budgetDetails(budget),
       onLongPress: () => _deleteBudgetDialog(budget),
       child: Container(
+        constraints: const BoxConstraints(maxWidth: double.infinity),
         color: Color.fromARGB(255, 255, 245, 230),
         child: Column(
           children: [
             ListTile(
               leading: Icon(
-                        Icons.attach_money,
-                        color: Color.fromARGB(255, 3, 171, 68),
-                      ),
+                Icons.attach_money,
+                color: Color.fromARGB(255, 3, 171, 68),
+              ),
               title: Text(
                 budget['budget_category'],
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               //subtitle: Text('$currency ${budget_amount.toStringAsFixed(2)}'), // Replace with actual budget
-              trailing: Text(
+              /*trailing: Text(
                 '$currency ${budget_amount.toStringAsFixed(2)}', // Replace with actual expenses
                 style: TextStyle(
                     color: Color.fromARGB(255, 3, 171, 68),
                     fontSize: 14,
                     fontWeight: FontWeight.bold // For expenses
                     ),
+              ),*/
+              subtitle: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '-$currency ${expenseAmount.toStringAsFixed(2)}', // Budget amount
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                      width: 10), // Add spacing between budget and progress bar
+                  Flexible(
+                    child: LinearProgressIndicator(
+                      value: percentage /
+                          100, // Convert percentage to a value between 0.0 and 1.0
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        percentage >= 100 // Adjust color based on percentage
+                            ? Colors.red // Exceeded budget
+                            : (percentage >= 80
+                                ? Colors.orange
+                                : Colors.green), // Within budget range
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              trailing: Text(
+                '$currency ${budget_amount.toStringAsFixed(2)}', // Expense amount
+                style: TextStyle(
+                  color: Color.fromARGB(255, 3, 171, 68),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               onTap: () => _budgetDetails(budget),
             ),
