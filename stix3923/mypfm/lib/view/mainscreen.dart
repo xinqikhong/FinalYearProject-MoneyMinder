@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/changepasswordscreen.dart';
 import 'package:mypfm/view/editprofilescreen.dart';
@@ -10,6 +13,9 @@ import 'package:mypfm/view/tabbudgetscreen.dart';
 import 'package:mypfm/view/tabrecordscreen.dart';
 import 'package:mypfm/view/tabstatsscreen.dart';
 import 'package:mypfm/view/tabresourcescreen.dart';
+import 'package:ndialog/ndialog.dart';
+import 'package:logger/logger.dart';
+import 'package:http/http.dart' as http;
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -23,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   late List<Widget> tabScreens;
   int _currentIndex = 0;
   String maintitle = "Record";
+  var logger = Logger();
 
   @override
   void initState() {
@@ -171,7 +178,7 @@ class _MainScreenState extends State<MainScreen> {
                       );
                       break;
                     case 'delete_account':
-                      // Handle Delete Account submenu tap
+                      _deleteAccountDialog;
                       break;
                   }
                 },
@@ -330,5 +337,104 @@ class _MainScreenState extends State<MainScreen> {
         ),
       );
     }
+  }
+
+  void _deleteAccountDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text(
+            "Delete account",
+            style: TextStyle(),
+          ),
+          content: const Text(
+              "Are you sure?\nThis action is irreversible and will permanently remove all your data.",
+              style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteAccount();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _deleteAccount() async {
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: const Text("Delete account in progress.."),
+        title: const Text("Deleting..."));
+    progressDialog.show();
+    await http.post(
+        Uri.parse("${MyConfig.server}/mypfm/php/deleteUserAccount.php"),
+        body: {
+          "user_id": ['user_id'],
+        }).then((response) {
+      progressDialog.dismiss();
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          Fluttertoast.showToast(
+              msg: "Account has been deleted.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RegisterScreen(),
+            ),
+          );
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: data['message'] ?? "Delete Account Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          return;
+        }
+      } else {
+        print(response.body);
+        print(
+            "Failed to connect to the server. Status code: ${response.statusCode}");
+        Fluttertoast.showToast(
+            msg: "Failed to connect to the server",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    }).catchError((error) {
+      progressDialog.dismiss();
+      logger.e("An error occurred: $error");
+      Fluttertoast.showToast(
+          msg: "An error occurred: $error",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    });
   }
 }
