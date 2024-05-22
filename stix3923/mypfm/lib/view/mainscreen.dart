@@ -403,7 +403,7 @@ class _MainScreenState extends State<MainScreen> {
     await http.post(
         Uri.parse("${MyConfig.server}/mypfm/php/deleteUserAccount.php"),
         body: {
-          "user_id": ['user_id'],
+          "user_id": widget.user.id,
         }).then((response) {
       progressDialog.dismiss();
       if (response.statusCode == 200) {
