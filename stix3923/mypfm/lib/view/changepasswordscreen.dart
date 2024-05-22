@@ -49,195 +49,199 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       appBar: AppBar(
         title: const Text('Change Password'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextFormField(
-                textInputAction: TextInputAction.next,
-                validator: (val) {
-                  if (val!.isEmpty) {
-                    return 'Please enter your current password';
-                  }
-                  return null;
-                },
-                controller: _curPassEditingController,
-                decoration: InputDecoration(
-                    labelStyle: const TextStyle(),
-                    labelText: 'Current Password',
-                    icon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _passwordVisible = !_passwordVisible;
-                        });
-                      },
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 2.0),
-                    )),
-                obscureText: _passwordVisible,
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _isCurrentPasswordValid ? null : _checkPass,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      Colors.white, // Fixed foreground color to white
-                  backgroundColor: _isCurrentPasswordValid
-                      ? Colors.grey
-                      : Theme.of(context).primaryColor,
-                ), // Set onPressed to null when valid
-                child: const Text('Continue'),
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                enabled: _isCurrentPasswordValid,
-                textInputAction: TextInputAction.next,
-                validator: (val) => validatePassword(val.toString()),
-                onFieldSubmitted: (v) {
-                  FocusScope.of(context).requestFocus(focus);
-                },
-                controller: _newPassEditingController,
-                decoration: InputDecoration(
-                    labelStyle: const TextStyle(),
-                    labelText: 'New Password',
-                    icon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _passwordVisible = !_passwordVisible;
-                        });
-                      },
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 2.0),
-                    )),
-                obscureText: _passwordVisible,
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                enabled: _isCurrentPasswordValid,
-                style: const TextStyle(),
-                textInputAction: TextInputAction.done,
-                validator: (val) {
-                  validatePassword(val.toString());
-                  if (val != _newPassEditingController.text) {
-                    return "Password do not match";
-                  } else {
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TextFormField(
+                  enabled: !_isCurrentPasswordValid,
+                  textInputAction: TextInputAction.next,
+                  validator: (val) {
+                    if (val!.isEmpty) {
+                      return 'Please enter your current password';
+                    }
                     return null;
-                  }
-                },
-                focusNode: focus,
-                controller: _newPass2EditingController,
-                decoration: InputDecoration(
-                    labelText: 'Re-enter Password',
-                    labelStyle: const TextStyle(),
-                    icon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                  },
+                  controller: _curPassEditingController,
+                  decoration: InputDecoration(
+                      labelStyle: const TextStyle(),
+                      labelText: 'Current Password',
+                      icon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _passwordVisible = !_passwordVisible;
-                        });
-                      },
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 2.0),
-                    )),
-                obscureText: _passwordVisible,
-              ),
-              ElevatedButton(
-                onPressed: _isCurrentPasswordValid ? _changePassDialog : null,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      Colors.white, // Fixed foreground color to white
-                  backgroundColor: _isCurrentPasswordValid
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey,
-                ), // Set onPressed to null when valid
-                child: const Text('Save'),
-              ),
-              //Suggested by Bard
-              /*TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Current Password',
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0),
+                      )),
+                  obscureText: _passwordVisible,
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your current password';
-                  }
-                  return null;
-                },
-                onSaved: (newValue) => _currentPassword = newValue!,
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                enabled:
-                    _isCurrentPasswordValid, // Enable only if current password is valid
-                decoration: const InputDecoration(
-                  labelText: 'New Password',
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: _isCurrentPasswordValid ? null : _checkPass,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor:
+                        Colors.white, // Fixed foreground color to white
+                    backgroundColor: _isCurrentPasswordValid
+                        ? Colors.grey
+                        : Theme.of(context).primaryColor,
+                  ), // Set onPressed to null when valid
+                  child: const Text('Continue'),
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a new password';
-                  }
-                  return null;
-                },
-                onSaved: (newValue) => _newPassword = newValue!,
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                enabled:
-                    _isCurrentPasswordValid, // Enable only if current password is valid
-                decoration: const InputDecoration(
-                  labelText: 'Re-Enter Password',
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  enabled: _isCurrentPasswordValid,
+                  textInputAction: TextInputAction.next,
+                  validator: (val) => validatePassword(val.toString()),
+                  onFieldSubmitted: (v) {
+                    FocusScope.of(context).requestFocus(focus);
+                  },
+                  controller: _newPassEditingController,
+                  decoration: InputDecoration(
+                      labelStyle: const TextStyle(),
+                      labelText: 'New Password',
+                      icon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0),
+                      )),
+                  obscureText: _passwordVisible,
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please re-enter the new password';
-                  }
-                  if (value != _newPassword) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-                onSaved: (newValue) => _reEnterPassword = newValue!,
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _isCurrentPasswordValid
-                    ? _handleSave
-                    : null, // Disable if not valid
-                child: const Text('Save'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      _isCurrentPasswordValid ? Colors.white : Colors.grey,
-                  backgroundColor: _isCurrentPasswordValid
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey,
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  enabled: _isCurrentPasswordValid,
+                  style: const TextStyle(),
+                  textInputAction: TextInputAction.done,
+                  validator: (val) {
+                    validatePassword(val.toString());
+                    if (val != _newPassEditingController.text) {
+                      return "Password do not match";
+                    } else {
+                      return null;
+                    }
+                  },
+                  focusNode: focus,
+                  controller: _newPass2EditingController,
+                  decoration: InputDecoration(
+                      labelText: 'Re-enter Password',
+                      labelStyle: const TextStyle(),
+                      icon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0),
+                      )),
+                  obscureText: _passwordVisible,
                 ),
-              ),*/
-            ],
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: _isCurrentPasswordValid ? _changePassDialog : null,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor:
+                        Colors.white, // Fixed foreground color to white
+                    backgroundColor: _isCurrentPasswordValid
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
+                  ), // Set onPressed to null when valid
+                  child: const Text('Save'),
+                ),
+                //Suggested by Bard
+                /*TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Current Password',
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your current password';
+                    }
+                    return null;
+                  },
+                  onSaved: (newValue) => _currentPassword = newValue!,
+                ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  enabled:
+                      _isCurrentPasswordValid, // Enable only if current password is valid
+                  decoration: const InputDecoration(
+                    labelText: 'New Password',
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a new password';
+                    }
+                    return null;
+                  },
+                  onSaved: (newValue) => _newPassword = newValue!,
+                ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  enabled:
+                      _isCurrentPasswordValid, // Enable only if current password is valid
+                  decoration: const InputDecoration(
+                    labelText: 'Re-Enter Password',
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please re-enter the new password';
+                    }
+                    if (value != _newPassword) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                  onSaved: (newValue) => _reEnterPassword = newValue!,
+                ),
+                const SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: _isCurrentPasswordValid
+                      ? _handleSave
+                      : null, // Disable if not valid
+                  child: const Text('Save'),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor:
+                        _isCurrentPasswordValid ? Colors.white : Colors.grey,
+                    backgroundColor: _isCurrentPasswordValid
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
+                  ),
+                ),*/
+              ],
+            ),
           ),
         ),
       ),
@@ -267,7 +271,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: const Text("Checking..."));
     progressDialog.show();
 
-    http.post(Uri.parse("${MyConfig.server}/mypfm/php/check_password.php"),
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/checkPassword.php"),
         body: {
           "user_id": widget.user.id,
           "password": _curPass
@@ -288,7 +292,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           });
         } else {
           Fluttertoast.showToast(
-              msg: "Incorrect password.",
+              msg: data['message'] ?? "Incorrect password.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -373,7 +377,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: const Text("Updating..."));
     progressDialog.show();
 
-    http.post(Uri.parse("${MyConfig.server}/mypfm/php/change_password.php"),
+    http.post(Uri.parse("${MyConfig.server}/mypfm/php/changePassword.php"),
         body: {"user_id": widget.user.id, "password": _pass}).then((response) {
       progressDialog.dismiss();
       if (response.statusCode == 200) {
