@@ -156,6 +156,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         }).then((response) {
       var jsondata = jsonDecode(response.body);
       var extractdata = jsondata['data'];
+      print(widget.user.id);
       print(extractdata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         setState(() {
@@ -163,17 +164,19 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         });
         _loadExCat();
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
+        //If budget list is empty (User not create budget yet)
+        _loadExCat();
         // Handle case when no records are found
-        Fluttertoast.showToast(
-          msg: "An error occurred.\nPlease try again later.",
+        /*Fluttertoast.showToast(
+          msg: "Line 168. An error occurred.\nPlease try again later.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
-          fontSize: 14.0);
+          fontSize: 14.0);*/
       } else {
         // Handle other error cases
         Fluttertoast.showToast(
-          msg: "An error occurred.\nPlease try again later.",
+          msg: "Line 176. An error occurred.\nPlease try again later.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -182,7 +185,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
     }).catchError((error) {
       logger.e("An error occurred when load budget: $error");
       Fluttertoast.showToast(
-          msg: "An error occurred.\nPlease try again later.",
+          msg: "Line 185. An error occurred.\nPlease try again later.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,

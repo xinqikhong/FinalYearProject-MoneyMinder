@@ -26,6 +26,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   String titlecenter = "Loading data...";
   late DateTime _selectedMonth;
   List budgetlist = [];
+  //List expenselist = [];
   List<Expense> expenseList = [];
   List<Map<String, dynamic>> expenseProgressData = [];
   String currency = "RM";
@@ -250,6 +251,49 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           fontSize: 14.0);
     });
   }
+
+  /*void _loadExpenseCat(int year, int month, String selectedCategory) async {
+    print("$month, $year, $selectedCategory");
+    await http.post(
+        Uri.parse("${MyConfig.server}/mypfm/php/loadExpenseForCat.php"),
+        body: {
+          'user_id': widget.user.id,
+          'category': selectedCategory,
+          'year': year.toString(),
+          'month': month.toString()
+        }).then((response) {
+      var jsondata = jsonDecode(response.body);
+      var extractdata = jsondata['data'];
+      print(extractdata);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        setState(() {
+          expenselist = extractdata;
+        });
+      } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
+        // Handle case when no records are found
+        setState(() {
+          //titlecenter = "No Records Found";
+          expenselist = []; // Clear existing data
+        });
+      } else {
+        // Handle other error cases
+        Fluttertoast.showToast(
+            msg: "An error occurred.\nPlease try again later.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
+      }
+    }).catchError((error) {
+      logger.e("An error occurred when load budget: $error");
+      Fluttertoast.showToast(
+          msg: "An error occurred.\nPlease try again later.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+    });
+  }*/
 
   void _populateProgressData() {
     print('Start _populateProgressData()');
@@ -497,6 +541,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
         },
       );
     } else {
+      print('handle add budget button');
       await Navigator.push(
         context,
         MaterialPageRoute(
@@ -506,7 +551,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               selectedMonth: _selectedMonth),
         ),
       );
-      _loadBudget(_selectedMonth.year, _selectedMonth.month);
+      _loadData(_selectedMonth.year, _selectedMonth.month);
     }
   }
 
