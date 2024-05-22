@@ -139,14 +139,13 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      _handleEditProfileBtn();
-                    },
+                    onPressed: widget.user.id != "unregistered" ? _handleEditProfileBtn : null,
                   ),
                 ],
               ),
             ),
             ListTile(
+              enabled: widget.user.id != "unregistered",
               title: const Text('Manage Account'),
               onTap: () {
                 // Handle "Manage Account" tap if needed
@@ -192,6 +191,7 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),*/
             ListTile(
+              enabled: widget.user.id != "unregistered",
               title: const Text('Currency Setting'),
               onTap: () {
                 // Update the state of the app.
@@ -199,67 +199,81 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             ListTile(
-              title: const Text('Log Out'),
+              title: widget.user.id == "unregistered"
+                  ? const Text('Register Here')
+                  : const Text('Log Out'),
               onTap: () {
-                // Show confirmation dialog
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    // Return AlertDialog with the confirmation message
-                    return Theme(
-                      data: ThemeData(
-                        // Set button color to match your app's primary color
-                        primaryColor: Theme.of(context).primaryColor,
-                      ),
-                      child: AlertDialog(
-                        title: const Text('Log Out'),
-                        content: const Text(
-                          'Are you sure?',
-                          style: TextStyle(
-                            fontSize: 18, // Adjust the font size as needed
-                          ),
+                if (widget.user.id == "unregistered") {
+                  // Navigate to the RegisterScreen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
+                  );
+                } else {
+                  // Show confirmation dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      // Return AlertDialog with the confirmation message
+                      return Theme(
+                        data: ThemeData(
+                          // Set button color to match your app's primary color
+                          primaryColor: Theme.of(context).primaryColor,
                         ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              // Navigate to the register screen
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
+                        child: AlertDialog(
+                          title: const Text('Log Out'),
+                          content: const Text(
+                            'Are you sure?',
+                            style: TextStyle(
+                              fontSize: 18, // Adjust the font size as needed
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                // Navigate to the register screen
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: Theme.of(context).primaryColor,
+                              ),
+                              child: const Text(
+                                'Yes',
+                                style: TextStyle(
+                                  fontSize:
+                                      18, // Adjust the font size as needed
                                 ),
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: Theme.of(context).primaryColor,
-                            ),
-                            child: const Text(
-                              'Yes',
-                              style: TextStyle(
-                                fontSize: 18, // Adjust the font size as needed
                               ),
                             ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // Dismiss the dialog
-                              Navigator.pop(context);
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: Theme.of(context).primaryColor,
-                            ),
-                            child: const Text(
-                              'No',
-                              style: TextStyle(
-                                fontSize: 18, // Adjust the font size as needed
+                            TextButton(
+                              onPressed: () {
+                                // Dismiss the dialog
+                                Navigator.pop(context);
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: Theme.of(context).primaryColor,
+                              ),
+                              child: const Text(
+                                'No',
+                                style: TextStyle(
+                                  fontSize:
+                                      18, // Adjust the font size as needed
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
               },
             ),
           ],
