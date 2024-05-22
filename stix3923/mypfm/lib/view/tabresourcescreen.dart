@@ -17,6 +17,7 @@ class TabResourceScreen extends StatefulWidget {
 
 class _TabResourceScreenState extends State<TabResourceScreen> {
   List<Article> articles = [];
+  List<Article> oriArticles = [];
   final List<String> mediumFeeds = [
     'https://medium.com/feed/tag/personal-finance',
     'https://medium.com/feed/tag/personal-saving',
@@ -26,12 +27,15 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   ];
   final ScrollController _scrollController = ScrollController();
   bool _showTopButton = false;
+  bool _isLoading = true;
+  bool _isFirstLoad = true;
   //int _currentPage = 1;
   //static const int _articlesPerPage = 10;
 
   @override
   void initState() {
     super.initState();
+    _isFirstLoad = true;
     fetchRssFeeds();
     _scrollController.addListener(_scrollListener);
   }
@@ -86,7 +90,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
       if (mediumResponse.statusCode == 200) {
         final mediumDocument = xml.XmlDocument.parse(mediumResponse.body);
         final mediumItems = mediumDocument.findAllElements('item');
-        articles
+        oriArticles
             .addAll(parseMediumArticles(mediumItems)); // Add parsed articles
       } else {
         print('Failed to load Medium RSS feed');
@@ -117,7 +121,8 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
         return 0; // Or any other value if you need to maintain order
       }
     });*/
-
+    _isFirstLoad = false;
+    articles = oriArticles;
     setState(() {}); // Update UI after fetching both feeds
   }
 
@@ -202,78 +207,134 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: articles.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(
-              color: Colors.orangeAccent,
-            ))
-          : Stack(
-              children: [
-                ListView.builder(
-                  controller: _scrollController,
-                  itemCount: articles.length,
-                  itemBuilder: (context, index) {
-                    final article = articles[index];
-                    return Column(
-                      children: [
-                        ListTile(
-                          title: Text(article.title),
-                          subtitle: Text(article.pubDate),
-                          leading: article.image != null
-                              ? SizedBox(
-                                  width: 80.0,
-                                  height: 80.0,
-                                  child: Image.network(article.image!))
-                              : SizedBox(
-                                  width: 80.0,
-                                  height: 80.0,
-                                  child: Image.asset(
-                                      'assets/images/personal-finance.jpg')),
-                          onTap: () async {
-                            final Uri url = Uri.parse(article.link);
-                            print('Clicked Url(Uri): $url');
-                            try {
-                              await launchUrl(url,
-                                  mode: LaunchMode.inAppWebView);
-                              print('Launched URL successfully');
-                            } on PlatformException catch (e) {
-                              print('Launch error: ${e.message}');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content:
-                                      Text('Failed to launch: ${e.message}'),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        const Divider(height: 2),
-                      ],
-                    );
-                  },
+        body: _isFirstLoad
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.orangeAccent,
                 ),
-                if (_showTopButton)
-                  Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: FloatingActionButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            30), // Adjust the value as needed
+              )
+            : RefreshIndicator(
+                onRefresh: _refresh,
+                color: Colors.orangeAccent,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8.0, // Adjust left padding
+                        top: 8.0, // Adjust top padding
+                        right: 8.0, // Adjust right padding
+                        bottom: 4.0, // Set bottom padding to 5.0
                       ),
-                      onPressed: () {
-                        _scrollController.animateTo(
-                          0.0,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.ease,
-                        );
-                      },
-                      child: const Icon(Icons.arrow_upward),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search articles by keyword',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12.0, vertical: 8.0),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            articles = oriArticles;
+
+                            final filteredArticles = articles
+                                .where((article) => article.title
+                                        .toLowerCase()
+                                        .contains(value
+                                            .toLowerCase()) /*||
+                                  article.pubDate
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase())*/
+                                    )
+                                .toList();
+
+                            articles = filteredArticles;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-              ],
-            ),
-    );
+                    Expanded(
+                      child: articles.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'No articles found.',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              itemCount: articles.length,
+                              itemBuilder: (context, index) {
+                                final article = articles[index];
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text(article.title),
+                                      subtitle: Text(article.pubDate),
+                                      leading: article.image != null
+                                          ? SizedBox(
+                                              width: 80.0,
+                                              height: 80.0,
+                                              child:
+                                                  Image.network(article.image!))
+                                          : SizedBox(
+                                              width: 80.0,
+                                              height: 80.0,
+                                              child: Image.asset(
+                                                  'assets/images/personal-finance.jpg')),
+                                      onTap: () async {
+                                        final Uri url = Uri.parse(article.link);
+                                        print('Clicked Url(Uri): $url');
+                                        try {
+                                          await launchUrl(url,
+                                              mode: LaunchMode.inAppWebView);
+                                          print('Launched URL successfully');
+                                        } on PlatformException catch (e) {
+                                          print('Launch error: ${e.message}');
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  'Failed to launch: ${e.message}'),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                    const Divider(height: 2),
+                                  ],
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+        floatingActionButton: _showTopButton
+            ? FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(30), // Adjust the value as needed
+                ),
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0.0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+                child: const Icon(Icons.arrow_upward),
+              )
+            : null);
   }
 
   /*Future<void> launchURL(String url) async {
@@ -285,4 +346,9 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
       throw 'Could not launch $url';
     }
   }*/
+
+  Future<void> _refresh() async {
+    fetchRssFeeds();
+    _scrollController.addListener(_scrollListener);
+  }
 }
