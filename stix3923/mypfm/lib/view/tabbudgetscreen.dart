@@ -273,7 +273,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       print('$category  $totalExpenseForCategory');
     });
 
-    _calculatePercentage();
+    _calculatePercentage(); 
   }
 
   void _calculatePercentage() {
@@ -381,18 +381,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 color: Color.fromARGB(255, 3, 171, 68),
               ),
               title: Text(
-                budget['budget_category'],
+                category,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              //subtitle: Text('$currency ${budget_amount.toStringAsFixed(2)}'), // Replace with actual budget
-              /*trailing: Text(
-                '$currency ${budget_amount.toStringAsFixed(2)}', // Replace with actual expenses
-                style: TextStyle(
-                    color: Color.fromARGB(255, 3, 171, 68),
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold // For expenses
-                    ),
-              ),*/
               subtitle: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -409,30 +400,26 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   const SizedBox(
                       width: 10), // Add spacing between budget and progress bar
                   Container(
-                    // Wrap Stack with a container
-                    constraints: const BoxConstraints(
-                        maxWidth: 150.0), // Set a maximum width
+                    constraints: const BoxConstraints(maxWidth: 150.0),
                     child: Stack(
                       // Set constraints explicitly
                       alignment: Alignment.center, // Optional: Center elements
                       clipBehavior:
                           Clip.none, // Optional: Allow overflowing content
                       children: [
-                        Flexible(
-                          child: Container(
-                            width: 110.0, // Set desired width
-                            height: 20.0,
-                            child: LinearProgressIndicator(
-                              value: percentage / 100,
-                              borderRadius: BorderRadius.circular(5.0),                              
-                              //minHeight: 15,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                percentage >= 100
-                                    ? Colors.red
-                                    : (percentage >= 80
-                                        ? Colors.orange
-                                        : Colors.green),
-                              ),
+                        Container(
+                          width: 110.0, // Set desired width
+                          height: 20.0,
+                          child: LinearProgressIndicator(
+                            value: percentage / 100,
+                            borderRadius: BorderRadius.circular(5.0),
+                            //minHeight: 15,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              percentage >= 100
+                                  ? Colors.red
+                                  : (percentage >= 80
+                                      ? Colors.orange
+                                      : Colors.green),
                             ),
                           ),
                         ),
@@ -442,10 +429,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                           child: Text(
                             '${percentage.toStringAsFixed(1)}%',
                             style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold
-                            ),
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
