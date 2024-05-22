@@ -178,7 +178,7 @@ class _MainScreenState extends State<MainScreen> {
                       );
                       break;
                     case 'delete_account':
-                      _deleteAccountDialog;
+                      _deleteAccountDialog();
                       break;
                   }
                 },
@@ -379,7 +379,8 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  _deleteAccount() async {
+  void _deleteAccount() async {
+    print('start _deleteAccount()');
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Delete account in progress.."),
         title: const Text("Deleting..."));

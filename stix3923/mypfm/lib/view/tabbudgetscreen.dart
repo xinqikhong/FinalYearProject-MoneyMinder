@@ -231,7 +231,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
         setState(() {
-          titlecenter = "No Expense Records Found";
+          titlecenter = "No Records Found";
           expenseList = []; // Clear existing data
         });
       } else {
