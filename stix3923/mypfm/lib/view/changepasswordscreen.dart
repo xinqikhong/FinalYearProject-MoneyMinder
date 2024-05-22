@@ -385,7 +385,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         print(data);
         if (data['status'] == 'success') {
           Fluttertoast.showToast(
-              msg: "Change Password Success.",
+              msg: "Password update success.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -393,7 +393,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           Navigator.pop(context);
         } else {
           Fluttertoast.showToast(
-              msg: data['error'] ?? "Change Password Failed",
+              msg: data['message'] ?? "Password update failed.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
