@@ -27,7 +27,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   ];
   final ScrollController _scrollController = ScrollController();
   bool _showTopButton = false;
-  bool _isLoading = true;
+  //bool _isLoading = true;
   bool _isFirstLoad = true;
   //int _currentPage = 1;
   //static const int _articlesPerPage = 10;
@@ -278,8 +278,24 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                 return Column(
                                   children: [
                                     ListTile(
-                                      title: Text(article.title),
-                                      subtitle: Text(article.pubDate),
+                                      title: Text(
+                                        article.title,
+                                        style: TextStyle(
+                                          fontSize:
+                                              17.0, // Adjust font size to 16
+                                          fontWeight: FontWeight
+                                              .bold, // Adjust font weight to bold
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        article.pubDate,
+                                        style: TextStyle(
+                                          color: Colors.grey[
+                                              600], // Adjust font color to a light grey
+                                          fontSize:
+                                              13.0, // Adjust font size to 12
+                                        ),
+                                      ),
                                       leading: article.image != null
                                           ? SizedBox(
                                               width: 80.0,
