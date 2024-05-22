@@ -273,7 +273,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       print('$category  $totalExpenseForCategory');
     });
 
-    _calculatePercentage(); 
+    _calculatePercentage();
   }
 
   void _calculatePercentage() {
@@ -469,7 +469,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text(
-              'Register to Add Budget',
+              'Please Register',
               style: TextStyle(
                 fontSize: 20, // Adjust the font size as needed
               ),
@@ -477,8 +477,13 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             content: const Text('You need to register first to add budget.'),
             actions: <Widget>[
               TextButton(
+                onPressed: () => Navigator.pop(context), // Dismiss dialog
+                child: const Text('Cancel'),
+              ),
+              TextButton(
                 onPressed: () {
-                  Navigator.push(
+                  // Navigate to the RegisterScreen
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const RegisterScreen(),
@@ -486,12 +491,6 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   );
                 },
                 child: const Text('Register'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Close'),
               ),
             ],
           );

@@ -151,6 +151,7 @@ class _MainScreenState extends State<MainScreen> {
                 // Handle "Manage Account" tap if needed
               },
               trailing: PopupMenuButton<String>(
+                enabled: widget.user.id != "unregistered",
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
                     value: 'change_password',

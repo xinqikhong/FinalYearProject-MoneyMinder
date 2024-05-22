@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:mypfm/view/registerscreen.dart';
 //import 'package:mypfm/view/resourcedetailsscreen.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:mypfm/model/article.dart';
@@ -278,6 +279,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                 return Column(
                                   children: [
                                     ListTile(
+                                      //enabled: widget.user.id != "unregistered",
                                       title: Text(
                                         article.title,
                                         style: const TextStyle(
@@ -308,21 +310,58 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                               child: Image.asset(
                                                   'assets/images/personal-finance.jpg')),
                                       onTap: () async {
-                                        final Uri url = Uri.parse(article.link);
-                                        print('Clicked Url(Uri): $url');
-                                        try {
-                                          await launchUrl(url,
-                                              mode: LaunchMode.inAppWebView);
-                                          print('Launched URL successfully');
-                                        } on PlatformException catch (e) {
-                                          print('Launch error: ${e.message}');
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  'Failed to launch: ${e.message}'),
-                                            ),
+                                        if (widget.user.id == "unregistered") {
+                                          // Show alert dialog prompting registration
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Please Register'),
+                                                content: const Text(
+                                                    'You need to register first to view articles.'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () => Navigator.pop(
+                                                        context), // Dismiss dialog
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      // Navigate to the RegisterScreen
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const RegisterScreen(),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child:
+                                                        const Text('Register'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
                                           );
+                                        } else {
+                                          final Uri url =
+                                              Uri.parse(article.link);
+                                          print('Clicked Url(Uri): $url');
+                                          try {
+                                            await launchUrl(url,
+                                                mode: LaunchMode.inAppWebView);
+                                            print('Launched URL successfully');
+                                          } on PlatformException catch (e) {
+                                            print('Launch error: ${e.message}');
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Failed to launch: ${e.message}'),
+                                              ),
+                                            );
+                                          }
                                         }
                                       },
                                     ),

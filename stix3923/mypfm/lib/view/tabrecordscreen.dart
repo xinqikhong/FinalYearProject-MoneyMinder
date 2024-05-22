@@ -298,13 +298,17 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         record.containsKey('expense_note')
                             ? record['expense_note']
                             : record['income_note'],
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         record.containsKey('expense_category')
                             ? record['expense_category']
                             : record['income_category'],
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey),
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
                       ),
                       trailing: Text(
                         '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
@@ -410,7 +414,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text(
-              'Register to Add Records',
+              'Please Register',
               style: TextStyle(
                 fontSize: 20, // Adjust the font size as needed
               ),
@@ -418,8 +422,13 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             content: const Text('You need to register first to add records.'),
             actions: <Widget>[
               TextButton(
+                onPressed: () => Navigator.pop(context), // Dismiss dialog
+                child: const Text('Cancel'),
+              ),
+              TextButton(
                 onPressed: () {
-                  Navigator.push(
+                  // Navigate to the RegisterScreen
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const RegisterScreen(),
@@ -427,12 +436,6 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                   );
                 },
                 child: const Text('Register'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Close'),
               ),
             ],
           );
@@ -556,10 +559,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => RecordDetailsScreen(
-            record: expense,
-            user: widget.user
-          ),
+          builder: (BuildContext context) =>
+              RecordDetailsScreen(record: expense, user: widget.user),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -582,10 +583,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => RecordDetailsScreen(
-            record: income,
-            user: widget.user
-          ),
+          builder: (BuildContext context) =>
+              RecordDetailsScreen(record: income, user: widget.user),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -638,7 +637,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     progressDialog.show();
     if (record.containsKey('expense_id')) {
       print(record['expense_id']);
-      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
+      await http.post(
+          Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
           body: {
             "expense_id": record['expense_id'],
           }).then((response) {
@@ -687,7 +687,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       });
     } else if (record.containsKey('income_id')) {
       print(record['income_id']);
-      await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
+      await http.post(
+          Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
           body: {
             "income_id": record['income_id'],
           }).then((response) {
