@@ -34,6 +34,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   late List expenseList;
   late double totalIncome;
   late double totalExpense;
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -46,6 +47,12 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     totalIncome = 0;
     totalExpense = 0;
     _loadData(_selectedMonth.year, _selectedMonth.month);
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 
   @override
@@ -195,16 +202,19 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   }
 
   void _goToPreviousMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
-      incomeChartData = [];
-      expenseChartData = [];
-      incomeList = [];
-      expenseList = [];
-      totalIncome = 0;
-      totalExpense = 0;
-      _loadData(_selectedMonth.year, _selectedMonth.month);
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _selectedMonth =
+            DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+        incomeChartData = [];
+        expenseChartData = [];
+        incomeList = [];
+        expenseList = [];
+        totalIncome = 0;
+        totalExpense = 0;
+        _loadData(_selectedMonth.year, _selectedMonth.month);
+      });
+    }
   }
 
   Future<DateTime?> _showMonthPicker(BuildContext context) async {
@@ -215,9 +225,29 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
       lastDate: DateTime(2050),
     );
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
+      if (!_isDisposed) {
+        setState(() {
+          _selectedMonth = pickedMonth;
+          // Reload records for the selected month
+          incomeChartData = [];
+          expenseChartData = [];
+          incomeList = [];
+          expenseList = [];
+          totalIncome = 0;
+          totalExpense = 0;
+          _loadData(_selectedMonth.year, _selectedMonth.month);
+        });
+      }
+    }
+    return null;
+  }
+
+  void _goToNextMonth() {
+    if (!_isDisposed) {
       setState(() {
-        _selectedMonth = pickedMonth;
-        // Reload records for the selected month
+        _selectedMonth =
+            DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+        // Reload records for the new selected month
         incomeChartData = [];
         expenseChartData = [];
         incomeList = [];
@@ -227,21 +257,6 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
         _loadData(_selectedMonth.year, _selectedMonth.month);
       });
     }
-    return null;
-  }
-
-  void _goToNextMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-      // Reload records for the new selected month
-      incomeChartData = [];
-      expenseChartData = [];
-      incomeList = [];
-      expenseList = [];
-      totalIncome = 0;
-      totalExpense = 0;
-      _loadData(_selectedMonth.year, _selectedMonth.month);
-    });
   }
 
   Widget _buildChart() {
@@ -475,9 +490,12 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
 
   void _loadData(int year, int month) async {
     if (widget.user.id == "unregistered") {
-      setState(() {
-        titlecenter = "No Records Found";
-      });
+      if (!_isDisposed) {
+        setState(() {
+          titlecenter = "No Records Found";
+        });
+      }
+
       return;
     }
 
@@ -486,7 +504,10 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     _calculateTotalIncome();
     _calculateTotalExpense();
     _populateChartData();
-    setState(() {}); // Refresh UI after loading data
+    if (!_isDisposed) {
+      setState(() {});
+    }
+    // Refresh UI after loading data
   }
 
   Future<void> _loadIncome(int year, int month) async {
@@ -501,20 +522,26 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
       print(response.body);
       print(jsondata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        setState(() {
-          incomeList = extractdata;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            incomeList = extractdata;
+          });
+        }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
-        setState(() {
-          titlecenter = "No Records Found";
-          incomeList = []; // Clear existing data
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "No Records Found";
+            incomeList = []; // Clear existing data
+          });
+        }
       } else {
         // Handle other error cases
-        setState(() {
-          titlecenter = "Error loading expense records";
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "Error loading expense records";
+          });
+        }
       }
     });
   }
@@ -532,20 +559,26 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
       print(response.body);
       print(jsondata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        setState(() {
-          expenseList = extractdata;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            expenseList = extractdata;
+          });
+        }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
-        setState(() {
-          titlecenter = "No Records Found";
-          expenseList = []; // Clear existing data
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "No Records Found";
+            expenseList = []; // Clear existing data
+          });
+        }
       } else {
         // Handle other error cases
-        setState(() {
-          titlecenter = "Error loading expense records";
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "Error loading expense records";
+          });
+        }
       }
     });
   }

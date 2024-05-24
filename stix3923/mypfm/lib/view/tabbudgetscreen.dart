@@ -31,6 +31,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   List<Map<String, dynamic>> expenseProgressData = [];
   String currency = "RM";
   var logger = Logger();
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -40,6 +41,12 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     expenseList = [];
     expenseProgressData = [];
     _loadData(_selectedMonth.year, _selectedMonth.month);
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 
   @override
@@ -160,20 +167,33 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }*/
 
   void _loadData(int year, int month) async {
+    if (_isDisposed) {
+      return; // Check if the widget is disposed
+    }
     if (widget.user.id == "unregistered") {
-      setState(() {
-        titlecenter = "No Records Found";
-      });
+      if (!_isDisposed) {
+        setState(() {
+          titlecenter = "No Records Found";
+        });
+      }
       return;
     }
 
     await _loadBudget(year, month);
     await _loadExpense(year, month);
     _populateProgressData();
-    setState(() {}); // Refresh UI after loading data
+
+    if (!_isDisposed) {
+      setState(() {
+        // Refresh UI after loading data
+      });
+    } // Refresh UI after loading data
   }
 
   Future<void> _loadBudget(int year, int month) async {
+    if (_isDisposed) {
+      return; // Check if the widget is disposed
+    }
     print("$month, $year");
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadBudget.php"),
         body: {
@@ -185,20 +205,26 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       var extractdata = jsondata['data'];
       print(extractdata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        setState(() {
-          budgetlist = extractdata;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            budgetlist = extractdata;
+          });
+        }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
-        setState(() {
-          titlecenter = "No Records Found";
-          budgetlist = []; // Clear existing data
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "No Records Found";
+            budgetlist = []; // Clear existing data
+          });
+        }
       } else {
         // Handle other error cases
-        setState(() {
-          titlecenter = "Error loading budget records";
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "Error loading budget records";
+          });
+        }
       }
     }).catchError((error) {
       logger.e("An error occurred when load budget: $error");
@@ -212,6 +238,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }
 
   Future<void> _loadExpense(int year, int month) async {
+    if (_isDisposed) {
+      return; // Check if the widget is disposed
+    }
     print(month);
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadExpense.php"),
         body: {
@@ -224,22 +253,28 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       print(response.body);
       print(jsondata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        setState(() {
-          expenseList = extractdata
-              .map<Expense>((json) => Expense.fromJson(json))
-              .toList();
-        });
+        if (!_isDisposed) {
+          setState(() {
+            expenseList = extractdata
+                .map<Expense>((json) => Expense.fromJson(json))
+                .toList();
+          });
+        }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
-        setState(() {
-          titlecenter = "No Records Found";
-          expenseList = []; // Clear existing data
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "No Records Found";
+            expenseList = []; // Clear existing data
+          });
+        }
       } else {
         // Handle other error cases
-        setState(() {
-          titlecenter = "Error loading expense records";
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "Error loading expense records";
+          });
+        }
       }
     }).catchError((error) {
       logger.e("An error occurred when load expense: $error");
@@ -357,14 +392,17 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }*/
 
   void _goToPreviousMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
-      expenseProgressData = [];
-      budgetlist = [];
-      expenseList = [];
-      _loadData(_selectedMonth.year,
-          _selectedMonth.month); // Reload records for the new selected month
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _selectedMonth =
+            DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+        expenseProgressData = [];
+        budgetlist = [];
+        expenseList = [];
+        _loadData(_selectedMonth.year,
+            _selectedMonth.month); // Reload records for the new selected month
+      });
+    }
   }
 
   Future<DateTime?> _showMonthPicker(BuildContext context) async {
@@ -375,26 +413,31 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       lastDate: DateTime(2050),
     );
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
-      setState(() {
-        _selectedMonth = pickedMonth;
-        expenseProgressData = [];
-        budgetlist = [];
-        expenseList = [];
-        _loadData(_selectedMonth.year, _selectedMonth.month);
-      });
+      if (!_isDisposed) {
+        setState(() {
+          _selectedMonth = pickedMonth;
+          expenseProgressData = [];
+          budgetlist = [];
+          expenseList = [];
+          _loadData(_selectedMonth.year, _selectedMonth.month);
+        });
+      }
     }
     return null;
   }
 
   void _goToNextMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-      expenseProgressData = [];
-      budgetlist = [];
-      expenseList = [];
-      _loadData(_selectedMonth.year,
-          _selectedMonth.month); // Reload records for the new selected month
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _selectedMonth =
+            DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+        expenseProgressData = [];
+        budgetlist = [];
+        expenseList = [];
+        _loadData(_selectedMonth.year,
+            _selectedMonth.month); // Reload records for the new selected month
+      });
+    }
   }
 
   Widget _buildBudgetList(int index) {
