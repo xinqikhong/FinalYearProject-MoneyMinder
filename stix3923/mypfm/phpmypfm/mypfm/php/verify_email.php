@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once("dbconnect.php");
+include_once ("dbconnect.php");
 
 $email = $_GET['email'];
 $otp = $_GET['otp'];
@@ -22,6 +22,7 @@ if ($result->num_rows > 0) {
         }
 
         if ($userId != '') {
+
             // Insert default income categories for the user
             $sqlinsertincat = "INSERT INTO tbl_incat (incat_name, user_id) VALUES 
             ('Salary', $userId),
@@ -51,15 +52,16 @@ if ($result->num_rows > 0) {
             ('Other', $userId)";
             $conn->query($sqlinsertaccount);
 
-            echo "success";
+            //echo "success";
+            echo "<script>alert('Verification successful. You can now login through the MoneyMinder app.')</script>";
         } else {
-            echo "failed";
+            echo "<script>alert('Verification failed')</script>";
         }
     } else {
-        echo "failed";
+        echo "<script>alert('Invalid')</script>";
     }
 } else {
-    echo "failed";
+    echo "<script>alert('Invalid')</script>";
 }
 $conn->close();
 ?>

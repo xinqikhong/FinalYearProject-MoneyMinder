@@ -1,6 +1,5 @@
 <?php
 // Make sure there is no whitespace or HTML output before this PHP opening tag
-
 require_once __DIR__ . '/../vendor/phpmailer/PHPMailer-6.9.1/src/Exception.php';
 require_once __DIR__ . '/../vendor/phpmailer/PHPMailer-6.9.1/src/PHPMailer.php';
 require_once __DIR__ . '/../vendor/phpmailer/PHPMailer-6.9.1/src/SMTP.php';
@@ -96,37 +95,28 @@ function sendMail($email, $otp, $pass)
         $mail->Password = 'Khongq11@'; // Your Gmail password
 
         // Sender and recipient settings
-        $mail->setFrom('moneyminder_admin@xqksoft.com', 'MoneyMinder'); // Your name and email address
+        $mail->setFrom('moneyminder_admin@xqksoft.com', 'MoneyMinder Team'); // Your name and email address
         $mail->addAddress($email);
 
         // Email content
         $mail->isHTML(true);
-        $mail->Subject = 'Account Verification';
+        $mail->Subject = 'Money Minder - Account Verification';
         $mail->Body = "
-            <html>
-            <head>
-            <title>Account Verification</title>
-            </head>
-            <body>
-            <h3>Thank you for your registration - DO NOT REPLY TO THIS EMAIL</h3>
-            <p>
-                <a href='https://xqksoft.com/mypfm/php/verify_email.php?email=$email&otp=$otp'>Click here to verify your account</a><br><br>
-            </p>
-            <table>
-            <tr>
-            <th>Your Email</th>
-            <th>Password</th>
-            </tr>
-            <tr>
-            <td>$email</td>
-            <td>$pass</td>
-            </tr>
-            </table>
-            <br>
-            <p>TERMS AND CONDITIONS</p>
-            </body>
-            </html>
-        ";
+    <html>
+    <body style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px;'>
+        <h2 style='text-align: left;'>Welcome to MoneyMinder</h2>
+        <p style='text-align: left;'>Thank you for registering with MoneyMinder. Please verify your email address to activate your account.</p>
+        <br>
+        <p style='text-align: left;'>
+            <a style='display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;' href='https://xqksoft.com/mypfm/php/verify_email.php?email=$email&otp=$otp'>Verify Email</a>
+        </p>
+        <br>
+        <p style='text-align: left;'>If you did not register for an account, please ignore this email.</p>
+        <br>
+        <p style='text-align: left;'>Thank you,<br>MoneyMinder Team</p>
+    </body>
+    </html>
+";
 
         // Attempt to send the email
         if ($mail->send()) {
