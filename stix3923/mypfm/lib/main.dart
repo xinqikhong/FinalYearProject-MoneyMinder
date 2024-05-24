@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mypfm/view/currency_provider.dart';
 import 'package:mypfm/view/splashscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:month_year_picker/month_year_picker.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(ChangeNotifierProvider<CurrencyProvider>(
+    create: (context) => CurrencyProvider(), // Create a new CurrencyProvider instance
+    child: MyApp(), // Replace with your actual main app widget
+  ));
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

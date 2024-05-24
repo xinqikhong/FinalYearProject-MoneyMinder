@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/changepasswordscreen.dart';
+import 'package:mypfm/view/currencysettingscreen.dart';
 import 'package:mypfm/view/editprofilescreen.dart';
 import 'package:mypfm/view/loginscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
@@ -198,10 +199,10 @@ class _MainScreenState extends State<MainScreen> {
             ListTile(
               enabled: widget.user.id != "unregistered",
               title: const Text('Currency Setting'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CurrencySettingScreen()),
+              ),
             ),
             ListTile(
               title: widget.user.id == "unregistered"
