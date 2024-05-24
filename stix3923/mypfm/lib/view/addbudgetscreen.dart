@@ -50,43 +50,46 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       body: Column(
         children: [
           const Divider(height: 1),
-          excatlist.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: displayCat.length,
-                  itemBuilder: (context, index) {
-                    String categoryName = displayCat[index];
-                    return Container(
-                      color: const Color.fromARGB(255, 255, 245, 230),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text(categoryName),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    // Handle edit button press for the category
-                                    String selectedCategory = categoryName;
-                                    _addBudget(selectedCategory);
-                                  },
-                                  icon: const Icon(
-                                    Icons.add_circle,
-                                    color: Colors.green,
+          Expanded(
+            child: excatlist.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    shrinkWrap: true,
+                    //physics: const NeverScrollableScrollPhysics(),
+                    itemCount: displayCat.length,
+                    itemBuilder: (context, index) {
+                      String categoryName = displayCat[index];
+                      return Container(
+                        color: const Color.fromARGB(255, 255, 245, 230),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              title: Text(categoryName),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      // Handle edit button press for the category
+                                      String selectedCategory = categoryName;
+                                      _addBudget(selectedCategory);
+                                    },
+                                    icon: const Icon(
+                                      Icons.add_circle,
+                                      color: Colors.green,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const Divider(height: 1),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                            const Divider(height: 1),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
         ],
       ),
     );
