@@ -52,6 +52,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _refresh,
+        color: Colors.orangeAccent,
         child: Column(
           children: [
             // Pagination for months
