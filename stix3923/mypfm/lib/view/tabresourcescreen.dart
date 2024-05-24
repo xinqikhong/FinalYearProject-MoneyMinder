@@ -30,6 +30,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   bool _showTopButton = false;
   //bool _isLoading = true;
   bool _isFirstLoad = true;
+  bool _isDisposed = false;
   //int _currentPage = 1;
   //static const int _articlesPerPage = 10;
 
@@ -122,9 +123,12 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
         return 0; // Or any other value if you need to maintain order
       }
     });*/
-    _isFirstLoad = false;
-    articles = oriArticles;
-    setState(() {}); // Update UI after fetching both feeds
+    if (!_isDisposed) {
+      setState(() {
+        _isFirstLoad = false;
+        articles = oriArticles;
+      });
+    } // Update UI after fetching both feeds
   }
 
   List<Article> parseMediumArticles(Iterable<xml.XmlElement> items) {
@@ -196,13 +200,16 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
+    _isDisposed = true;
     super.dispose();
   }
 
   void _scrollListener() {
-    setState(() {
-      _showTopButton = _scrollController.offset > 100.0;
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _showTopButton = _scrollController.offset > 100.0;
+      });
+    }
   }
 
   @override
