@@ -34,6 +34,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   int numIncome = 0;
   String currency = "RM";
   var logger = Logger();
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -42,6 +43,12 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     /*_loadExpense();
     _loadIncome();*/
     _loadRecords(_selectedMonth.year, _selectedMonth.month);
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 
   @override
@@ -362,29 +369,37 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       lastDate: DateTime(2050),
     );
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
-      setState(() {
-        _selectedMonth = pickedMonth;
-        // Reload records for the selected month
-        _loadRecords(_selectedMonth.year, _selectedMonth.month);
-      });
+      if (!_isDisposed) {
+        setState(() {
+          _selectedMonth = pickedMonth;
+          // Reload records for the selected month
+          _loadRecords(_selectedMonth.year, _selectedMonth.month);
+        });
+      }
     }
     return null;
   }
 
   void _goToPreviousMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
-      _loadRecords(_selectedMonth.year,
-          _selectedMonth.month); // Reload records for the new selected month
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _selectedMonth =
+            DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+        _loadRecords(_selectedMonth.year,
+            _selectedMonth.month); // Reload records for the new selected month
+      });
+    }
   }
 
   void _goToNextMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-      _loadRecords(_selectedMonth.year,
-          _selectedMonth.month); // Reload records for the new selected month
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _selectedMonth =
+            DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+        _loadRecords(_selectedMonth.year,
+            _selectedMonth.month); // Reload records for the new selected month
+      });
+    }
   }
 
   // Method to get number of days in a month
@@ -454,6 +469,9 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   void _loadRecords(int year, int month) {
+    if (_isDisposed) {
+      return; // Check if the widget is disposed
+    }
     if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "No Records Found";
@@ -466,6 +484,9 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   void _loadExpense(int year, int month) {
+    if (_isDisposed) {
+      return; // Check if the widget is disposed
+    }
     /*if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
@@ -483,27 +504,36 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       print(response.body);
       print(jsondata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        setState(() {
-          expenselist = extractdata;
-          numExpense = expenselist.length;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            expenselist = extractdata;
+            numExpense = expenselist.length;
+          });
+        }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
-        setState(() {
-          titlecenter = "No Records Found";
-          expenselist = []; // Clear existing data
-          numExpense = 0;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "No Records Found";
+            expenselist = []; // Clear existing data
+            numExpense = 0;
+          });
+        }
       } else {
         // Handle other error cases
-        setState(() {
-          titlecenter = "Error loading expense records";
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "Error loading expense records";
+          });
+        }
       }
     });
   }
 
   void _loadIncome(int year, int month) {
+    if (_isDisposed) {
+      return; // Check if the widget is disposed
+    }
     /*if (widget.user.id == "unregistered") {
       setState(() {
         titlecenter = "Unregistered User";
@@ -520,22 +550,28 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       print(response.body);
       print(jsondata);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        setState(() {
-          incomelist = extractdata;
-          numIncome = incomelist.length;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            incomelist = extractdata;
+            numIncome = incomelist.length;
+          });
+        }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
-        setState(() {
-          titlecenter = "No Records Found";
-          incomelist = []; // Clear existing data
-          numIncome = 0;
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "No Records Found";
+            incomelist = []; // Clear existing data
+            numIncome = 0;
+          });
+        }
       } else {
         // Handle other error cases
-        setState(() {
-          titlecenter = "Error loading expense records";
-        });
+        if (!_isDisposed) {
+          setState(() {
+            titlecenter = "Error loading expense records";
+          });
+        }
       }
     });
   }
