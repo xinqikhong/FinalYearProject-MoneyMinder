@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Currency {
   final String code;
@@ -24,19 +27,46 @@ class Currency {
 
 class CurrencyProvider with ChangeNotifier {
   Currency? _selectedCurrency;
-  double _baseRate = 1.0;
+  late double _baseRate;
 
   Currency? get selectedCurrency => _selectedCurrency;
   double get baseRate => _baseRate;
 
   CurrencyProvider() {
+    _loadBaseRate();
+    _fetchCurrencyRates();
     _loadSelectedCurrency();
   }
 
-  void setBaseRate(double rate) {
+  Future<void> _fetchCurrencyRates() async {
+    final apiKey =
+        '4b46bd46ff33430fb739ce4e243dea69'; // Replace with your actual API key
+    final url = Uri.parse(
+        'https://openexchangerates.org/api/latest.json?app_id=$apiKey');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final rates = data['rates'] as Map<String, dynamic>;
+        final myrRate = rates['MYR'] ?? 1.0;
+        _baseRate = myrRate;
+        await _saveBaseRate();
+        notifyListeners(); // Notify listeners about the change
+      } else {
+        // Handle error fetching rates
+        print(
+            'Error fetching currency rates (Status code: ${response.statusCode})');
+      }
+    } catch (error) {
+      // Handle errors
+      print('Error fetching currency rates: $error');
+    }
+  }
+
+  /*void setBaseRate(double rate) {
     _baseRate = rate;
     notifyListeners();
-  }
+  }*/
 
   Future<void> setSelectedCurrency(String code, double rate) async {
     _selectedCurrency = Currency(code: code, rate: rate);
@@ -64,12 +94,26 @@ class CurrencyProvider with ChangeNotifier {
     }
   }
 
+  Future<void> _saveBaseRate() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('baseRate', _baseRate);
+  }
+
   Future<void> _loadSelectedCurrency() async {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString('selectedCurrency');
     final rate = prefs.getDouble('selectedCurrencyRate');
     if (code != null && rate != null) {
       _selectedCurrency = Currency(code: code, rate: rate);
+      notifyListeners();
+    }
+  }
+
+  Future<void> _loadBaseRate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final baseRate = prefs.getDouble('baseRate');
+    if (baseRate != null) {
+      _baseRate = baseRate;
       notifyListeners();
     }
   }
