@@ -13,6 +13,8 @@ import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:collection/collection.dart';
+import 'package:provider/provider.dart';
+import 'currency_provider.dart';
 
 class TabBudgetScreen extends StatefulWidget {
   final User user;
@@ -29,7 +31,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   //List expenselist = [];
   List<Expense> expenseList = [];
   List<Map<String, dynamic>> expenseProgressData = [];
-  String currency = "RM";
+  //String currency = "RM";
   var logger = Logger();
   bool _isDisposed = false;
 
@@ -441,14 +443,26 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }
 
   Widget _buildBudgetList(int index) {
+    // Get the selected currency from the provider
+    Currency? selectedCurrencyObject =
+        Provider.of<CurrencyProvider>(context).selectedCurrency;
+
+// Get the currency code
+    String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
+
     var budget = budgetlist[index];
     double budget_amount = double.parse(budget['budget_amount']);
+    double convertedBudgetAmount =
+        _convertAmount(budget_amount, selectedCurrency);
     String category = budget['budget_category'];
     double expenseAmount = 0.0;
+    double convertedExpenseAmount = 0.0;
     double percentage = 0.0;
     for (var data in expenseProgressData) {
       if (data['category'] == category) {
         expenseAmount = double.parse(data['amount']);
+        convertedExpenseAmount =
+            _convertAmount(expenseAmount, selectedCurrency);
         percentage = double.parse(data['percentage']);
         break; // Exit loop once data for the category is found
       }
@@ -476,7 +490,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      '-$currency ${expenseAmount.toStringAsFixed(2)}', // Budget amount
+                      '-$selectedCurrency ${convertedExpenseAmount.toStringAsFixed(2)}', // Budget amount
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 14,
@@ -531,7 +545,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 width: 100.0, // Set desired width
                 height: 20.0,
                 child: Text(
-                  '$currency ${budget_amount.toStringAsFixed(2)}', // Expense amount
+                  '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}', // Expense amount
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     color: Color.fromARGB(255, 3, 171, 68),
@@ -706,5 +720,26 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           fontSize: 14.0);
     });
     _loadBudget(_selectedMonth.year, _selectedMonth.month);
+  }
+
+  // Method to convert amount to selected currency
+  double _convertAmount(double amount, String selectedCurrency) {
+    // Get the CurrencyProvider instance
+    CurrencyProvider currencyProvider =
+        Provider.of<CurrencyProvider>(context, listen: false);
+
+    // Get the selected currency and base rate
+    Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;
+    //double baseRate = currencyProvider.baseRate;
+
+    // Check if selected currency is null or if the provided currency code doesn't match
+    if (selectedCurrencyObject == null ||
+        selectedCurrencyObject.code != selectedCurrency) {
+      // Return the original amount if selected currency is null or doesn't match
+      return amount;
+    }
+
+    // Convert the amount using the selected currency rate
+    return currencyProvider.convertAmount(amount);
   }
 }
