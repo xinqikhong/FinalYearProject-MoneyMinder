@@ -35,7 +35,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
   @override
   Widget build(BuildContext context) {
     double _amount = double.parse(widget.budgetAmount);
-    double _convertedAmountDisplay = _convertAmount(_amount);
+    double _convertedAmountDisplay = _convertAmountDisplay(_amount);
     _amountController.text = _convertedAmountDisplay.toStringAsFixed(2);
 
     return Scaffold(
@@ -276,9 +276,9 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmount(double amount) {
+  double _convertAmountDisplay(double amount) {
     // Convert the amount using the selected currency rate
-    return widget.currencyProvider.convertAmount(amount);
+    return widget.currencyProvider.convertAmountDisplay(amount);
   }
 
   // Method to convert amount to selected currency

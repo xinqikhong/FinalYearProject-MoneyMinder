@@ -64,9 +64,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
     double totalIncome = calculateTotalIncome(incomelist);
     double totalExpense = calculateTotalExpense(expenselist);
-    double convertedTotalIncome = _convertAmount(totalIncome, selectedCurrency);
+    double convertedTotalIncome =
+        _convertAmountDisplay(totalIncome, selectedCurrency);
     double convertedTotalExpense =
-        _convertAmount(totalExpense, selectedCurrency);
+        _convertAmountDisplay(totalExpense, selectedCurrency);
 
     return Scaffold(
       body: RefreshIndicator(
@@ -123,7 +124,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     children: [
                       Text(
                         'Income',
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         '$selectedCurrency ${convertedTotalIncome.toStringAsFixed(2)}',
@@ -138,7 +142,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     children: [
                       Text(
                         'Expense',
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         '$selectedCurrency ${convertedTotalExpense.toStringAsFixed(2)}',
@@ -249,10 +256,12 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     for (var record in recordsForDay) {
       if (record.containsKey('income_amount')) {
         dailyIncome += double.parse(record['income_amount']);
-        convertedDailyIncome = _convertAmount(dailyIncome, selectedCurrency);
+        convertedDailyIncome =
+            _convertAmountDisplay(dailyIncome, selectedCurrency);
       } else if (record.containsKey('expense_amount')) {
         dailyExpense += double.parse(record['expense_amount']);
-        convertedDailyExpense = _convertAmount(dailyExpense, selectedCurrency);
+        convertedDailyExpense =
+            _convertAmountDisplay(dailyExpense, selectedCurrency);
       }
     }
 
@@ -312,7 +321,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             double amount = double.parse(record.containsKey('expense_amount')
                 ? record['expense_amount']
                 : record['income_amount']);
-            double convertedAmount = _convertAmount(amount, selectedCurrency);
+            double convertedAmount =
+                _convertAmountDisplay(amount, selectedCurrency);
 
             return GestureDetector(
               onTap: () => _recordDetails(recordsForDay[i]),
@@ -491,7 +501,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AddRecordScreen(user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
+          builder: (context) => AddRecordScreen(
+              user: widget.user,
+              currencyProvider:
+                  Provider.of<CurrencyProvider>(context, listen: false)),
         ),
       );
       _loadRecords(_selectedMonth.year, _selectedMonth.month);
@@ -626,8 +639,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) =>
-              RecordDetailsScreen(record: expense, user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
+          builder: (BuildContext context) => RecordDetailsScreen(
+              record: expense,
+              user: widget.user,
+              currencyProvider:
+                  Provider.of<CurrencyProvider>(context, listen: false)),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -650,8 +666,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) =>
-              RecordDetailsScreen(record: income, user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
+          builder: (BuildContext context) => RecordDetailsScreen(
+              record: income,
+              user: widget.user,
+              currencyProvider:
+                  Provider.of<CurrencyProvider>(context, listen: false)),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -807,7 +826,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmount(double amount, String selectedCurrency) {
+  double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
     CurrencyProvider currencyProvider =
         Provider.of<CurrencyProvider>(context, listen: false);
@@ -824,6 +843,6 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     }
 
     // Convert the amount using the selected currency rate
-    return currencyProvider.convertAmount(amount);
+    return currencyProvider.convertAmountDisplay(amount);
   }
 }

@@ -453,7 +453,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     var budget = budgetlist[index];
     double budget_amount = double.parse(budget['budget_amount']);
     double convertedBudgetAmount =
-        _convertAmount(budget_amount, selectedCurrency);
+        _convertAmountDisplay(budget_amount, selectedCurrency);
     String category = budget['budget_category'];
     double expenseAmount = 0.0;
     double convertedExpenseAmount = 0.0;
@@ -462,7 +462,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       if (data['category'] == category) {
         expenseAmount = double.parse(data['amount']);
         convertedExpenseAmount =
-            _convertAmount(expenseAmount, selectedCurrency);
+            _convertAmountDisplay(expenseAmount, selectedCurrency);
         percentage = double.parse(data['percentage']);
         break; // Exit loop once data for the category is found
       }
@@ -738,7 +738,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmount(double amount, String selectedCurrency) {
+  double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
     CurrencyProvider currencyProvider =
         Provider.of<CurrencyProvider>(context, listen: false);
@@ -755,6 +755,6 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     }
 
     // Convert the amount using the selected currency rate
-    return currencyProvider.convertAmount(amount);
+    return currencyProvider.convertAmountDisplay(amount);
   }
 }

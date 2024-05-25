@@ -654,7 +654,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         _dateController.text = _formatDate(date);
         double _amount =
             double.parse((widget.record as Expense).expenseAmount!);
-        double _convertedAmountDisplay = _convertAmount(_amount);
+        double _convertedAmountDisplay = _convertAmountDisplay(_amount);
         _amountController.text = _convertedAmountDisplay.toStringAsFixed(2);
         _categoryController.text = (widget.record as Expense).expenseCategory!;
         _accountController.text = (widget.record as Expense).expenseAccount!;
@@ -667,7 +667,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         String date = (widget.record as Income).incomeDate!;
         _dateController.text = _formatDate(date);
         double _amount = double.parse((widget.record as Income).incomeAmount!);
-        double _convertedAmountDisplay = _convertAmount(_amount);
+        double _convertedAmountDisplay = _convertAmountDisplay(_amount);
         _amountController.text = _convertedAmountDisplay.toStringAsFixed(2);
         _categoryController.text = (widget.record as Income).incomeCategory!;
         _accountController.text = (widget.record as Income).incomeAccount!;
@@ -929,9 +929,9 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmount(double amount) {
+  double _convertAmountDisplay(double amount) {
     // Convert the amount using the selected currency rate
-    return widget.currencyProvider.convertAmount(amount);
+    return widget.currencyProvider.convertAmountDisplay(amount);
   }
 
   // Method to convert amount to selected currency

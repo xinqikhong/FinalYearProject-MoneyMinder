@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'currency_provider.dart';
@@ -200,6 +201,12 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
                                 onTap: () {
                                   currencyProvider.setSelectedCurrency(
                                       currencyCode, rate);
+                                  Fluttertoast.showToast(
+                                      msg: "Currency Updated",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      fontSize: 14.0);
                                   Navigator.pop(context,
                                       currencyProvider.selectedCurrency);
                                   //Navigator.pop(context);

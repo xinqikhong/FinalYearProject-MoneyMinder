@@ -402,10 +402,11 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
 
-    double convertedTotalIncome = _convertAmount(totalIncome, selectedCurrency);
+    double convertedTotalIncome =
+        _convertAmountDisplay(totalIncome, selectedCurrency);
 
     double convertedTotalExpense =
-        _convertAmount(totalExpense, selectedCurrency);
+        _convertAmountDisplay(totalExpense, selectedCurrency);
 
     List<Map<String, dynamic>> data =
         _isIncomeSelected ? incomeChartData : expenseChartData;
@@ -487,7 +488,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.bold)),
                         trailing: Text(
-                            '$selectedCurrency ${_convertAmount(double.parse(data[index]['amount']), selectedCurrency).toStringAsFixed(2)}',
+                            '$selectedCurrency ${_convertAmountDisplay(double.parse(data[index]['amount']), selectedCurrency).toStringAsFixed(2)}',
                             style: TextStyle(
                                 fontSize: 15,
                                 color: _isIncomeSelected
@@ -689,7 +690,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmount(double amount, String selectedCurrency) {
+  double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
     CurrencyProvider currencyProvider =
         Provider.of<CurrencyProvider>(context, listen: false);
@@ -706,6 +707,6 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     }
 
     // Convert the amount using the selected currency rate
-    return currencyProvider.convertAmount(amount);
+    return currencyProvider.convertAmountDisplay(amount);
   }
 }

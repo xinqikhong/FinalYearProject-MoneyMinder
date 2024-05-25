@@ -74,7 +74,7 @@ class CurrencyProvider with ChangeNotifier {
     await _saveSelectedCurrency();
   }
 
-  double convertAmount(double amount) {
+  double convertAmountDisplay(double amount) {
     if (_selectedCurrency == null) {
       return amount;
     }
