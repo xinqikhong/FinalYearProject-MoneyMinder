@@ -280,7 +280,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         '$selectedCurrency ${convertedDailyIncome.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                            fontSize: 16,
                             color: Colors.blue),
                       ),
                       /*const SizedBox(
@@ -290,7 +290,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         '$selectedCurrency ${convertedDailyExpense.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                            fontSize: 16,
                             color: Colors.red),
                       ),
                     ],
@@ -354,6 +354,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                           color: record.containsKey('expense_amount')
                               ? Colors.red
                               : Colors.blue,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

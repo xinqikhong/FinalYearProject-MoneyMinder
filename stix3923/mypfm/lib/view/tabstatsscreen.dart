@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+//import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -8,9 +8,11 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
-import 'package:palette_generator/palette_generator.dart';
-import 'dart:math' as math;
-import 'package:syncfusion_flutter_charts/charts.dart';
+//import 'package:palette_generator/palette_generator.dart';
+//import 'dart:math' as math;
+//import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:provider/provider.dart';
+import 'currency_provider.dart';
 
 class TabStatsScreen extends StatefulWidget {
   final User user;
@@ -23,7 +25,7 @@ class TabStatsScreen extends StatefulWidget {
 class _TabStatsScreenState extends State<TabStatsScreen> {
   String titlecenter = "Loading data...";
   late DateTime _selectedMonth;
-  String currency = "RM";
+  //String currency = "RM";
   var logger = Logger();
   bool _isIncomeSelected = true;
   //late List incomeChartData;
@@ -286,7 +288,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                   // title: '${data[index]['category']}',
                   showTitle: false,
                   radius: 100,
-                  titleStyle: TextStyle(
+                  titleStyle: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -391,6 +393,18 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   }
 
   Widget _buildCategoryList() {
+    // Get the selected currency from the provider
+    Currency? selectedCurrencyObject =
+        Provider.of<CurrencyProvider>(context).selectedCurrency;
+
+// Get the currency code
+    String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
+
+    double convertedTotalIncome = _convertAmount(totalIncome, selectedCurrency);
+
+    double convertedTotalExpense =
+        _convertAmount(totalExpense, selectedCurrency);
+
     List<Map<String, dynamic>> data =
         _isIncomeSelected ? incomeChartData : expenseChartData;
 
@@ -409,7 +423,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
           Container(
             color: Color.fromARGB(255, 255, 227, 186),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -417,7 +431,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                     _isIncomeSelected ? 'Total Income: ' : 'Total Expense: ',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                        fontSize: 16,
                         color: Colors.black),
                   ),
                   const SizedBox(
@@ -425,12 +439,12 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                   ),
                   Text(
                     _isIncomeSelected
-                        ? '$currency ${totalIncome.toStringAsFixed(2)}'
-                        : '$currency ${totalExpense.toStringAsFixed(2)}',
-                    style: const TextStyle(
+                        ? '$selectedCurrency ${convertedTotalIncome.toStringAsFixed(2)}'
+                        : '$selectedCurrency ${convertedTotalExpense.toStringAsFixed(2)}',
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black),
+                        fontSize: 16,
+                        color: _isIncomeSelected ? Colors.blue : Colors.red),
                   ),
                 ],
               ),
@@ -449,7 +463,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                   child: Column(
                     children: [
                       ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 13),
                         leading: Container(
                           width: 60,
                           height: 30,
@@ -467,13 +481,13 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                             ),
                           ),
                         ),
-                        title: Text(data[index]['category']),
-                        trailing: Text('$currency ${data[index]['amount']}',
+                        title: Text(data[index]['category'], style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold)),
+                        trailing: Text('$selectedCurrency ${_convertAmount(double.parse(data[index]['amount']), selectedCurrency).toStringAsFixed(2)}',
                             style: TextStyle(
                                 fontSize: 15,
-                                color: _isIncomeSelected
-                                    ? Colors.black
-                                    : Colors.black)),
+                                color: _isIncomeSelected ? Colors.blue : Colors.red, fontWeight: FontWeight.bold)),
                       ),
                       const Divider(height: 1),
                     ],
@@ -666,5 +680,26 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
       data['amount'] =
           amount.toStringAsFixed(2); // Convert amount back to string
     });
+  }
+
+  // Method to convert amount to selected currency
+  double _convertAmount(double amount, String selectedCurrency) {
+    // Get the CurrencyProvider instance
+    CurrencyProvider currencyProvider =
+        Provider.of<CurrencyProvider>(context, listen: false);
+
+    // Get the selected currency and base rate
+    Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;
+    //double baseRate = currencyProvider.baseRate;
+
+    // Check if selected currency is null or if the provided currency code doesn't match
+    if (selectedCurrencyObject == null ||
+        selectedCurrencyObject.code != selectedCurrency) {
+      // Return the original amount if selected currency is null or doesn't match
+      return amount;
+    }
+
+    // Convert the amount using the selected currency rate
+    return currencyProvider.convertAmount(amount);
   }
 }

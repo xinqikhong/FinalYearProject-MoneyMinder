@@ -127,7 +127,7 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'Search',
+                      labelText: 'Search country name or code',
                       prefixIcon: const Icon(
                         Icons.search,
                         color: Colors.grey,

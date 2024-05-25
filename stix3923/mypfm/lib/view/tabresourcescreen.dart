@@ -235,8 +235,9 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                       ),
                       child: TextField(
                         decoration: InputDecoration(
-                          hintText: 'Search articles by keyword',
-                          hintStyle: const TextStyle(color: Colors.grey),
+                          labelText: 'Search articles by keyword',
+                          //hintText: 'Search articles by keyword',
+                          //hintStyle: const TextStyle(color: Colors.grey),
                           prefixIcon: const Icon(
                             Icons.search,
                             color: Colors.grey,
