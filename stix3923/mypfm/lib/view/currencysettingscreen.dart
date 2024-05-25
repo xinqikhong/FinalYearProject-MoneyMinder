@@ -72,6 +72,13 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         final rates = data['rates'] as Map<String, dynamic>;
+        // Extract MYR rate
+        final myrRate = rates['MYR'] ?? 1.0;
+        print('myrRate: $myrRate');
+        // Set MYR rate in CurrencyProvider
+        final currencyProvider =
+            Provider.of<CurrencyProvider>(context, listen: false);
+        currencyProvider.setBaseRate(myrRate);
         return rates.map((key, value) => MapEntry(key, value.toDouble()));
       } else {
         throw Exception(

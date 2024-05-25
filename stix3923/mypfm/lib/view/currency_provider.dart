@@ -44,12 +44,15 @@ class CurrencyProvider with ChangeNotifier {
     await _saveSelectedCurrency();
   }
 
-  double convertAmount(double amount, double originalCurrencyRate) {
+  double convertAmount(double amount) {
     if (_selectedCurrency == null) {
       return amount;
     }
 
-    double amountInBaseCurrency = amount / originalCurrencyRate;
+    // Use MYR rate as the base rate for conversion
+    double amountInBaseCurrency = amount / _baseRate;
+    print('amount:  $amount, _baseRate: $_baseRate');
+    print(_selectedCurrency!.rate);
     return amountInBaseCurrency * _selectedCurrency!.rate;
   }
 

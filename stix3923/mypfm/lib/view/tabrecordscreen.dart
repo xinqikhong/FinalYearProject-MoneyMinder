@@ -65,7 +65,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     double totalIncome = calculateTotalIncome(incomelist);
     double totalExpense = calculateTotalExpense(expenselist);
     double convertedTotalIncome = _convertAmount(totalIncome, selectedCurrency);
-    double convertedTotalExpense = _convertAmount(totalExpense, selectedCurrency);
+    double convertedTotalExpense =
+        _convertAmount(totalExpense, selectedCurrency);
 
     return Scaffold(
       body: RefreshIndicator(
@@ -805,24 +806,23 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   // Method to convert amount to selected currency
-double _convertAmount(double amount, String selectedCurrency) {
-  // Get the CurrencyProvider instance
-  CurrencyProvider currencyProvider = Provider.of<CurrencyProvider>(context, listen: false);
+  double _convertAmount(double amount, String selectedCurrency) {
+    // Get the CurrencyProvider instance
+    CurrencyProvider currencyProvider =
+        Provider.of<CurrencyProvider>(context, listen: false);
 
-  // Get the selected currency and base rate
-  Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;
-  double baseRate = currencyProvider.baseRate;
+    // Get the selected currency and base rate
+    Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;
+    //double baseRate = currencyProvider.baseRate;
 
-  // Get the original currency rate (in this example, MYR rate)
-  double originalCurrencyRate = currencyProvider.selectedCurrency?.rate ?? 1.0; // Default to MYR if selectedCurrency is null
+    // Check if selected currency is null or if the provided currency code doesn't match
+    if (selectedCurrencyObject == null ||
+        selectedCurrencyObject.code != selectedCurrency) {
+      // Return the original amount if selected currency is null or doesn't match
+      return amount;
+    }
 
-  // Check if selected currency is null or if the provided currency code doesn't match
-  if (selectedCurrencyObject == null || selectedCurrencyObject.code != selectedCurrency) {
-    // Return the original amount if selected currency is null or doesn't match
-    return amount;
+    // Convert the amount using the selected currency rate
+    return currencyProvider.convertAmount(amount);
   }
-
-  // Convert the amount using the selected currency rate
-  return currencyProvider.convertAmount(amount, originalCurrencyRate);
-}
 }
