@@ -15,6 +15,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:provider/provider.dart';
+import 'currency_provider.dart';
 
 class TabRecordScreen extends StatefulWidget {
   final User user;
@@ -32,7 +34,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   late DateTime _selectedMonth;
   int numExpense = 0;
   int numIncome = 0;
-  String currency = "RM";
+  //String currency = "RM";
   var logger = Logger();
   bool _isDisposed = false;
 
@@ -53,8 +55,17 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the selected currency from the provider
+    Currency? selectedCurrencyObject =
+        Provider.of<CurrencyProvider>(context).selectedCurrency;
+
+// Get the currency code
+    String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
+
     double totalIncome = calculateTotalIncome(incomelist);
     double totalExpense = calculateTotalExpense(expenselist);
+    double convertedTotalIncome = _convertAmount(totalIncome, selectedCurrency);
+    double convertedTotalExpense = _convertAmount(totalExpense, selectedCurrency);
 
     return Scaffold(
       body: RefreshIndicator(
@@ -114,7 +125,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         style: const TextStyle(fontSize: 15),
                       ),
                       Text(
-                        '$currency ${totalIncome.toStringAsFixed(2)}',
+                        '$selectedCurrency ${convertedTotalIncome.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontSize: 15,
                             color: Colors.blue,
@@ -129,7 +140,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         style: const TextStyle(fontSize: 15),
                       ),
                       Text(
-                        '$currency ${totalExpense.toStringAsFixed(2)}',
+                        '$selectedCurrency ${convertedTotalExpense.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontSize: 15,
                             color: Colors.red,
@@ -178,6 +189,13 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
   // Method to build daily record
   Widget _buildDailyRecord(int index) {
+    // Get the selected currency from the provider
+    Currency? selectedCurrencyObject =
+        Provider.of<CurrencyProvider>(context).selectedCurrency;
+
+// Get the currency code
+    String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
+
     // Combine income and expense records into a single list
     allRecords = [...expenselist, ...incomelist];
 
@@ -225,11 +243,15 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     // Calculate total income and total expense
     double dailyIncome = 0;
     double dailyExpense = 0;
+    double convertedDailyIncome = 0;
+    double convertedDailyExpense = 0;
     for (var record in recordsForDay) {
       if (record.containsKey('income_amount')) {
         dailyIncome += double.parse(record['income_amount']);
+        convertedDailyIncome = _convertAmount(dailyIncome, selectedCurrency);
       } else if (record.containsKey('expense_amount')) {
         dailyExpense += double.parse(record['expense_amount']);
+        convertedDailyExpense = _convertAmount(dailyExpense, selectedCurrency);
       }
     }
 
@@ -254,7 +276,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '$currency ${dailyIncome.toStringAsFixed(2)}',
+                        '$selectedCurrency ${convertedDailyIncome.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -264,7 +286,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         width: 30,
                       ),*/
                       Text(
-                        '$currency ${dailyExpense.toStringAsFixed(2)}',
+                        '$selectedCurrency ${convertedDailyExpense.toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -285,6 +307,12 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           itemCount: recordsForDay.length,
           itemBuilder: (context, i) {
             var record = recordsForDay[i];
+            // Convert the amount to the selected currency
+            double amount = double.parse(record.containsKey('expense_amount')
+                ? record['expense_amount']
+                : record['income_amount']);
+            double convertedAmount = _convertAmount(amount, selectedCurrency);
+
             return GestureDetector(
               onTap: () => _recordDetails(recordsForDay[i]),
               onLongPress: () => _deleteRecordDialog(recordsForDay[i]),
@@ -319,7 +347,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             color: Colors.grey),
                       ),
                       trailing: Text(
-                        '$currency ${double.parse(record.containsKey('expense_amount') ? record['expense_amount'] : record['income_amount']).toStringAsFixed(2)}',
+                        '$selectedCurrency ${convertedAmount.toStringAsFixed(2)}',
                         style: TextStyle(
                           fontSize: 14,
                           color: record.containsKey('expense_amount')
@@ -774,5 +802,25 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       });
     }
     _refresh();
+  }
+
+  // Method to convert amount to selected currency
+  double _convertAmount(double amount, String selectedCurrency) {
+    // Get the CurrencyProvider instance
+    CurrencyProvider currencyProvider =
+        Provider.of<CurrencyProvider>(context, listen: false);
+
+    // Get the selected currency
+    Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;
+
+    // Check if selected currency is null or if the provided currency code doesn't match
+    if (selectedCurrencyObject == null ||
+        selectedCurrencyObject.code != selectedCurrency) {
+      // Return the original amount if selected currency is null or doesn't match
+      return amount;
+    }
+
+    // Convert the amount using the selected currency rate
+    return amount * selectedCurrencyObject.rate;
   }
 }
