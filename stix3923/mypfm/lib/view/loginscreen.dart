@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
+import 'package:mypfm/view/currency_provider.dart';
 import 'package:mypfm/view/registerscreen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
-
 import 'mainscreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -135,8 +136,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ))),
                             TextFormField(
                               textInputAction: TextInputAction.done,
-                              validator: (val) =>
-                                  val!.isEmpty ? "Please enter a password" : null,
+                              validator: (val) => val!.isEmpty
+                                  ? "Please enter a password"
+                                  : null,
                               focusNode: focus1,
                               onFieldSubmitted: (v) {
                                 FocusScope.of(context).requestFocus(focus2);
@@ -169,7 +171,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 15,
                             ),
                             Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -282,10 +285,13 @@ class _LoginScreenState extends State<LoginScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
         progressDialog.dismiss();
+        final currencyProvider =
+            Provider.of<CurrencyProvider>(context, listen: false);
+        currencyProvider.setUserId(user.id);
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => MainScreen(user: user),
+            builder: (context) => MainScreen(user: user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
           ),
           (route) => false, // This condition removes all routes from the stack
         );
@@ -322,7 +328,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setString('email', email);
       await prefs.setString('pass', password);
       Fluttertoast.showToast(
-          msg: "Preference Stored",
+          msg: "Login Credentials Stored",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -331,13 +337,13 @@ class _LoginScreenState extends State<LoginScreen> {
       //delete preference
       await prefs.setString('email', '');
       await prefs.setString('pass', '');
-      setState(() {
+      /*setState(() {
         _emailditingController.text = '';
         _passEditingController.text = '';
         _isChecked = false;
-      });
+      });*/
       Fluttertoast.showToast(
-          msg: "Preference Removed",
+          msg: "Login Credentials Removed",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,

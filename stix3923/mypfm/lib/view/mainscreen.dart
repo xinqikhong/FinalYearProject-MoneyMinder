@@ -17,10 +17,12 @@ import 'package:mypfm/view/tabresourcescreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
+import 'currency_provider.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
-  const MainScreen({Key? key, required this.user}) : super(key: key);
+  final CurrencyProvider currencyProvider;
+  const MainScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -38,9 +40,9 @@ class _MainScreenState extends State<MainScreen> {
     // Print output to the console
     print(widget.user.name);
     tabScreens = [
-      TabRecordScreen(user: widget.user),
-      TabBudgetScreen(user: widget.user),
-      TabStatsScreen(user: widget.user),
+      TabRecordScreen(user: widget.user, currencyProvider: widget.currencyProvider),
+      TabBudgetScreen(user: widget.user, currencyProvider: widget.currencyProvider),
+      TabStatsScreen(user: widget.user, currencyProvider: widget.currencyProvider),
       TabResourceScreen(user: widget.user),
     ];
   }

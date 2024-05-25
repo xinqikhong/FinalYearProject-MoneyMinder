@@ -13,12 +13,12 @@ import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:collection/collection.dart';
-import 'package:provider/provider.dart';
 import 'currency_provider.dart';
 
 class TabBudgetScreen extends StatefulWidget {
   final User user;
-  const TabBudgetScreen({Key? key, required this.user}) : super(key: key);
+  final CurrencyProvider currencyProvider;
+  const TabBudgetScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
 
   @override
   State<TabBudgetScreen> createState() => _TabBudgetScreenState();
@@ -445,7 +445,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   Widget _buildBudgetList(int index) {
     // Get the selected currency from the provider
     Currency? selectedCurrencyObject =
-        Provider.of<CurrencyProvider>(context).selectedCurrency;
+        widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
@@ -618,7 +618,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               user: widget.user,
               //budgetlist: budgetlist,
               selectedMonth: _selectedMonth,
-              currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)
+              currencyProvider: widget.currencyProvider
               ),
         ),
       );
@@ -636,7 +636,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             budgetId: budget['budget_id'],
             budgetAmount: budget['budget_amount'],
             budgetCategory: budget['budget_category'],
-            currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
+            currencyProvider: widget.currencyProvider),
       ),
     );
     _loadBudget(_selectedMonth.year, _selectedMonth.month);
@@ -741,7 +741,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
     CurrencyProvider currencyProvider =
-        Provider.of<CurrencyProvider>(context, listen: false);
+        widget.currencyProvider;
 
     // Get the selected currency and base rate
     Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;

@@ -11,12 +11,14 @@ import 'package:fl_chart/fl_chart.dart';
 //import 'package:palette_generator/palette_generator.dart';
 //import 'dart:math' as math;
 //import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:provider/provider.dart';
 import 'currency_provider.dart';
 
 class TabStatsScreen extends StatefulWidget {
   final User user;
-  const TabStatsScreen({Key? key, required this.user}) : super(key: key);
+  final CurrencyProvider currencyProvider;
+  const TabStatsScreen(
+      {Key? key, required this.user, required this.currencyProvider})
+      : super(key: key);
 
   @override
   State<TabStatsScreen> createState() => _TabStatsScreenState();
@@ -61,11 +63,9 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.user.id == "unregistered"
-          ? Center(
-              child: Text(
-                'Please register to access statistic reports.',
-                style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
-              ),
+          ? const Center(
+              child: Text('No Records Found',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             )
           : Column(
               children: [
@@ -396,8 +396,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
 
   Widget _buildCategoryList() {
     // Get the selected currency from the provider
-    Currency? selectedCurrencyObject =
-        Provider.of<CurrencyProvider>(context).selectedCurrency;
+    Currency? selectedCurrencyObject = widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
@@ -692,8 +691,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   // Method to convert amount to selected currency
   double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
-    CurrencyProvider currencyProvider =
-        Provider.of<CurrencyProvider>(context, listen: false);
+    CurrencyProvider currencyProvider = widget.currencyProvider;
 
     // Get the selected currency and base rate
     Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;

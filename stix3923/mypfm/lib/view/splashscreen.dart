@@ -6,6 +6,8 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/mainscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:mypfm/view/currency_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -67,12 +69,15 @@ class _SplashScreenState extends State<SplashScreen> {
         var jsondata = jsonDecode(response.body);
         if (response.statusCode == 200 && jsondata['status'] == 'success') {
           User user = User.fromJson(jsondata['data']);
+          final currencyProvider =
+              Provider.of<CurrencyProvider>(context, listen: false);
+          currencyProvider.setUserId(user.id);
           Timer(
               const Duration(seconds: 5),
               () => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (content) => MainScreen(user: user))));
+                      builder: (content) => MainScreen(user: user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)))));
         } else {
           user = User(
             id: "unregistered",
@@ -89,7 +94,7 @@ class _SplashScreenState extends State<SplashScreen> {
               () => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (content) => MainScreen(user: user))));
+                      builder: (content) => MainScreen(user: user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)))));
         }
       }).timeout(const Duration(seconds: 5));
     } else {
@@ -105,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Timer(
           const Duration(seconds: 3),
           () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (content) => MainScreen(user: user))));
+              MaterialPageRoute(builder: (content) => MainScreen(user: user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)))));
     }
   }
 }

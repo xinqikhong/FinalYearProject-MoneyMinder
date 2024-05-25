@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +27,7 @@ class Currency {
 class CurrencyProvider with ChangeNotifier {
   Currency? _selectedCurrency;
   late double _baseRate;
+  String? _userId;
 
   Currency? get selectedCurrency => _selectedCurrency;
   double get baseRate => _baseRate;
@@ -35,6 +35,11 @@ class CurrencyProvider with ChangeNotifier {
   CurrencyProvider() {
     _loadBaseRate();
     _fetchCurrencyRates();
+    //_loadSelectedCurrency();
+  }
+
+  void setUserId(String? userId) {
+    _userId = userId;
     _loadSelectedCurrency();
   }
 
@@ -82,6 +87,7 @@ class CurrencyProvider with ChangeNotifier {
     // Use MYR rate as the base rate for conversion
     double amountInBaseCurrency = amount / _baseRate;
     print('amount:  $amount, _baseRate: $_baseRate');
+    print(_selectedCurrency!.code);
     print(_selectedCurrency!.rate);
     return amountInBaseCurrency * _selectedCurrency!.rate;
   }
@@ -94,15 +100,19 @@ class CurrencyProvider with ChangeNotifier {
     // Use MYR rate as the base rate for conversion
     double amountInSelectedCurrency = amount / _selectedCurrency!.rate;
     print('amount:  $amount, _baseRate: $_baseRate');
+    print(_selectedCurrency!.code);
     print(_selectedCurrency!.rate);
     return amountInSelectedCurrency * _baseRate;
   }
 
   Future<void> _saveSelectedCurrency() async {
+    if (_userId == null) return;
     final prefs = await SharedPreferences.getInstance();
     if (_selectedCurrency != null) {
-      await prefs.setString('selectedCurrency', _selectedCurrency!.code);
-      await prefs.setDouble('selectedCurrencyRate', _selectedCurrency!.rate);
+      await prefs.setString(
+          'selectedCurrency_${_userId!}', _selectedCurrency!.code);
+      await prefs.setDouble(
+          'selectedCurrencyRate_${_userId!}', _selectedCurrency!.rate);
     }
   }
 
@@ -112,13 +122,23 @@ class CurrencyProvider with ChangeNotifier {
   }
 
   Future<void> _loadSelectedCurrency() async {
+    if (_userId == null) {
+      // User ID is null, initialize with MYR
+      _selectedCurrency = Currency(code: 'MYR', rate: _baseRate);
+      notifyListeners();
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
-    final code = prefs.getString('selectedCurrency');
-    final rate = prefs.getDouble('selectedCurrencyRate');
+    final code = prefs.getString('selectedCurrency_${_userId!}');
+    final rate = prefs.getDouble('selectedCurrencyRate_${_userId!}');
     if (code != null && rate != null) {
       _selectedCurrency = Currency(code: code, rate: rate);
-      notifyListeners();
+    } else {
+      // No currency saved for the user, initialize with MYR
+      _selectedCurrency = Currency(code: 'MYR', rate: _baseRate);
     }
+    notifyListeners();
   }
 
   Future<void> _loadBaseRate() async {

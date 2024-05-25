@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mypfm/view/currency_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'currency_provider.dart';
 
 class CurrencySettingScreen extends StatefulWidget {
   final String apiKey = '4b46bd46ff33430fb739ce4e243dea69';
@@ -181,7 +180,8 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
                           final currencyCode = entry.key;
                           final countryName = entry.value;
                           final rate = currencyRates[currencyCode] ?? 1.0;
-
+                          print(
+                              'currencyCode: $currencyCode, countryName: $countryName, rate: $rate');
                           return Column(
                             children: [
                               ListTile(

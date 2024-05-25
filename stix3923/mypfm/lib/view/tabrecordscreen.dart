@@ -15,12 +15,12 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:provider/provider.dart';
 import 'currency_provider.dart';
 
 class TabRecordScreen extends StatefulWidget {
   final User user;
-  const TabRecordScreen({Key? key, required this.user}) : super(key: key);
+  final CurrencyProvider currencyProvider;
+  const TabRecordScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
 
   @override
   State<TabRecordScreen> createState() => _TabRecordScreenState();
@@ -57,7 +57,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   Widget build(BuildContext context) {
     // Get the selected currency from the provider
     Currency? selectedCurrencyObject =
-        Provider.of<CurrencyProvider>(context).selectedCurrency;
+        widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
@@ -199,7 +199,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   Widget _buildDailyRecord(int index) {
     // Get the selected currency from the provider
     Currency? selectedCurrencyObject =
-        Provider.of<CurrencyProvider>(context).selectedCurrency;
+        widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
@@ -291,6 +291,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.blue),
+                            overflow: TextOverflow.ellipsis,
                       ),
                       /*const SizedBox(
                         width: 30,
@@ -301,6 +302,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.red),
+                            overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -504,7 +506,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           builder: (context) => AddRecordScreen(
               user: widget.user,
               currencyProvider:
-                  Provider.of<CurrencyProvider>(context, listen: false)),
+                  widget.currencyProvider),
         ),
       );
       _loadRecords(_selectedMonth.year, _selectedMonth.month);
@@ -643,7 +645,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               record: expense,
               user: widget.user,
               currencyProvider:
-                  Provider.of<CurrencyProvider>(context, listen: false)),
+                  widget.currencyProvider),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -670,7 +672,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               record: income,
               user: widget.user,
               currencyProvider:
-                  Provider.of<CurrencyProvider>(context, listen: false)),
+                  widget.currencyProvider),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -829,7 +831,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
     CurrencyProvider currencyProvider =
-        Provider.of<CurrencyProvider>(context, listen: false);
+        widget.currencyProvider;
 
     // Get the selected currency and base rate
     Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;
