@@ -123,7 +123,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     children: [
                       Text(
                         'Income',
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
                       ),
                       Text(
                         '$selectedCurrency ${convertedTotalIncome.toStringAsFixed(2)}',
@@ -138,7 +138,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     children: [
                       Text(
                         'Expense',
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
                       ),
                       Text(
                         '$selectedCurrency ${convertedTotalExpense.toStringAsFixed(2)}',

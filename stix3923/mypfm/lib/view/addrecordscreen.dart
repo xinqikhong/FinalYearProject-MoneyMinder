@@ -338,15 +338,15 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       ElevatedButton(
                         onPressed: _addRecordDialog,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.white, // Set your desired background color
                           foregroundColor:
-                              Colors.orange, // Set your desired text color
+                              Colors.white, // Fixed foreground color to white
+                          backgroundColor: Theme.of(context)
+                              .primaryColor, // Set your desired text color
                         ),
                         child: const Text(
                           "Save",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       ElevatedButton(
@@ -376,15 +376,15 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.white, // Set your desired background color
                           foregroundColor:
-                              Colors.orange, // Set your desired text color
+                              Colors.white, // Fixed foreground color to white
+                          backgroundColor: Theme.of(context)
+                              .primaryColor, // Set your desired text color
                         ),
                         child: const Text(
                           "Clear",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],

@@ -141,6 +141,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                                   color: _isIncomeSelected
                                       ? Colors.black
                                       : Colors.grey,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -180,6 +181,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                                   color: _isIncomeSelected
                                       ? Colors.grey
                                       : Colors.black,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -481,13 +483,17 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                             ),
                           ),
                         ),
-                        title: Text(data[index]['category'], style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold)),
-                        trailing: Text('$selectedCurrency ${_convertAmount(double.parse(data[index]['amount']), selectedCurrency).toStringAsFixed(2)}',
+                        title: Text(data[index]['category'],
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold)),
+                        trailing: Text(
+                            '$selectedCurrency ${_convertAmount(double.parse(data[index]['amount']), selectedCurrency).toStringAsFixed(2)}',
                             style: TextStyle(
                                 fontSize: 15,
-                                color: _isIncomeSelected ? Colors.blue : Colors.red, fontWeight: FontWeight.bold)),
+                                color: _isIncomeSelected
+                                    ? Colors.blue
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold)),
                       ),
                       const Divider(height: 1),
                     ],

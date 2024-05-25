@@ -101,57 +101,68 @@ class _MainScreenState extends State<MainScreen> {
               decoration: BoxDecoration(
                 color: Colors.orange.shade100,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    radius: 20,
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 24,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const CircleAvatar(
+                      backgroundColor: Colors.orange,
+                      radius: 20,
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 150,
-                    //flex: 10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.user.name.toString(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,                              
+                    SizedBox(
+                      width: 150,
+                      //flex: 10,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.user.name.toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            //textAlign: TextAlign.center,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          //textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          widget.user.email.toString(),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
+                          Text(
+                            widget.user.email.toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            //textAlign: TextAlign.center,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          //textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: widget.user.id != "unregistered" ? _handleEditProfileBtn : null,
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: widget.user.id != "unregistered"
+                          ? _handleEditProfileBtn
+                          : null,
+                    ),
+                  ],
+                ),
               ),
             ),
             ListTile(
               enabled: widget.user.id != "unregistered",
-              title: const Text('Manage Account'),
+              title: const Text(
+                'Manage Account',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onTap: () {
                 // Handle "Manage Account" tap if needed
               },
@@ -198,16 +209,30 @@ class _MainScreenState extends State<MainScreen> {
             ),*/
             ListTile(
               enabled: widget.user.id != "unregistered",
-              title: const Text('Currency Setting'),
+              title: const Text(
+                'Currency Setting',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CurrencySettingScreen()),
+                MaterialPageRoute(
+                    builder: (context) => CurrencySettingScreen()),
               ),
             ),
             ListTile(
               title: widget.user.id == "unregistered"
-                  ? const Text('Register Here')
-                  : const Text('Log Out'),
+                  ? const Text(
+                      'Register Here',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : const Text('Log Out',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
               onTap: () {
                 if (widget.user.id == "unregistered") {
                   // Navigate to the RegisterScreen

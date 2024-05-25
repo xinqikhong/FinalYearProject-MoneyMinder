@@ -47,7 +47,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Change Password'),
+        centerTitle: true,
+        title: const Text('Change Password',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            )),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -67,7 +72,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   },
                   controller: _curPassEditingController,
                   decoration: InputDecoration(
-                      labelStyle: const TextStyle(),
+                      //labelStyle: const TextStyle(color: Colors.orange),
                       labelText: 'Current Password',
                       icon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -97,7 +102,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ? Colors.grey
                         : Theme.of(context).primaryColor,
                   ), // Set onPressed to null when valid
-                  child: const Text('Continue'),
+                  child: const Text('Continue',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(
@@ -109,7 +117,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   },
                   controller: _newPassEditingController,
                   decoration: InputDecoration(
-                      labelStyle: const TextStyle(),
+                      //labelStyle: const TextStyle(color: Colors.orange),
                       labelText: 'New Password',
                       icon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -146,7 +154,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   controller: _newPass2EditingController,
                   decoration: InputDecoration(
                       labelText: 'Re-enter Password',
-                      labelStyle: const TextStyle(),
+                      //labelStyle: const TextStyle(color: Colors.orange),
                       icon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -175,7 +183,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ? Theme.of(context).primaryColor
                         : Colors.grey,
                   ), // Set onPressed to null when valid
-                  child: const Text('Save'),
+                  child: const Text('Save',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
                 ),
                 //Suggested by Bard
                 /*TextFormField(

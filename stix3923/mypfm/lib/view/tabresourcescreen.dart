@@ -302,8 +302,9 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                         style: TextStyle(
                                           color: Colors.grey[
                                               600], // Adjust font color to a light grey
-                                          fontSize:
-                                              13.0, // Adjust font size to 12
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight
+                                              .bold, // Adjust font size to 12
                                         ),
                                       ),
                                       leading: article.image != null
