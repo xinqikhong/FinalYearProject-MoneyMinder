@@ -272,7 +272,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  width: 180,
+                  width: 200,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -112,8 +112,10 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
             }
 
             if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(),
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.orangeAccent,
+                ),
               );
             }
 
@@ -179,19 +181,32 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
                           final countryName = entry.value;
                           final rate = currencyRates[currencyCode] ?? 1.0;
 
-                          return ListTile(
-                            title: Text('$currencyCode - $countryName'),
-                            trailing: currencyProvider.selectedCurrency?.code ==
-                                    currencyCode
-                                ? Icon(Icons.check, color: Colors.green)
-                                : null,
-                            onTap: () {
-                              currencyProvider.setSelectedCurrency(
-                                  currencyCode, rate);
-                              Navigator.pop(
-                                  context, currencyProvider.selectedCurrency);
-                              //Navigator.pop(context);
-                            },
+                          return Column(
+                            children: [
+                              ListTile(
+                                title: Text(
+                                  '$currencyCode - $countryName',
+                                  style: const TextStyle(
+                                    fontSize: 17.0, // Adjust font size to 16
+                                    fontWeight: FontWeight
+                                        .bold, // Adjust font weight to bold
+                                  ),
+                                ),
+                                trailing:
+                                    currencyProvider.selectedCurrency?.code ==
+                                            currencyCode
+                                        ? Icon(Icons.check, color: Colors.green)
+                                        : null,
+                                onTap: () {
+                                  currencyProvider.setSelectedCurrency(
+                                      currencyCode, rate);
+                                  Navigator.pop(context,
+                                      currencyProvider.selectedCurrency);
+                                  //Navigator.pop(context);
+                                },
+                              ),
+                              const Divider(height: 2),
+                            ],
                           );
                         },
                       );
