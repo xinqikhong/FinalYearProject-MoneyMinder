@@ -86,6 +86,18 @@ class CurrencyProvider with ChangeNotifier {
     return amountInBaseCurrency * _selectedCurrency!.rate;
   }
 
+  double convertAmountSend(double amount) {
+    if (_selectedCurrency == null) {
+      return amount;
+    }
+
+    // Use MYR rate as the base rate for conversion
+    double amountInSelectedCurrency = amount / _selectedCurrency!.rate;
+    print('amount:  $amount, _baseRate: $_baseRate');
+    print(_selectedCurrency!.rate);
+    return amountInSelectedCurrency * _baseRate;
+  }
+
   Future<void> _saveSelectedCurrency() async {
     final prefs = await SharedPreferences.getInstance();
     if (_selectedCurrency != null) {

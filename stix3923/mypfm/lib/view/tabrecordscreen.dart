@@ -491,7 +491,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AddRecordScreen(user: widget.user),
+          builder: (context) => AddRecordScreen(user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false),),
         ),
       );
       _loadRecords(_selectedMonth.year, _selectedMonth.month);
