@@ -538,9 +538,21 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                       ],
                     ),
                   ),
+                  SizedBox(
+                    width: 110,
+                    child: Text(
+                    '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}', // Expense amount
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 3, 171, 68),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                                    ),
+                  ),
                 ],
               ),
-              trailing: Container(
+              /*trailing: Container(
                 //margin: const EdgeInsets.all(1.0),
                 width: 100.0, // Set desired width
                 height: 20.0,
@@ -553,7 +565,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+              ),*/
               onTap: () => _budgetDetails(budget),
             ),
             const Divider(height: 1),
@@ -605,7 +617,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           builder: (context) => AddBudgetScreen(
               user: widget.user,
               //budgetlist: budgetlist,
-              selectedMonth: _selectedMonth),
+              selectedMonth: _selectedMonth,
+              currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)
+              ),
         ),
       );
       _loadData(_selectedMonth.year, _selectedMonth.month);
@@ -621,7 +635,8 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             user: widget.user,
             budgetId: budget['budget_id'],
             budgetAmount: budget['budget_amount'],
-            budgetCategory: budget['budget_category']),
+            budgetCategory: budget['budget_category'],
+            currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
       ),
     );
     _loadBudget(_selectedMonth.year, _selectedMonth.month);

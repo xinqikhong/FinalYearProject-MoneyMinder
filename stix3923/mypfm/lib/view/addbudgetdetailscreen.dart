@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -7,16 +6,19 @@ import 'package:logger/logger.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:ndialog/ndialog.dart';
+import 'currency_provider.dart';
 
 class AddBudgetDetailScreen extends StatefulWidget {
   final User user;
   final DateTime selectedMonth;
   final String selectedCategory;
+  final CurrencyProvider currencyProvider;
   const AddBudgetDetailScreen({
     Key? key,
     required this.user,
     required this.selectedMonth,
     required this.selectedCategory,
+    required this.currencyProvider
   }) : super(key: key);
 
   @override
@@ -87,7 +89,9 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
     }
 
     String url = "${MyConfig.server}/mypfm/php/addBudget.php";
-    String _amount = _amountController.text;
+    double convertedAmount = _convertAmountSend(
+        double.parse(_amountController.text));
+    String _amount = convertedAmount.toString();
     print(widget.selectedMonth.toString());
 
     ProgressDialog progressDialog = ProgressDialog(context,
@@ -148,5 +152,11 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
     });
+  }
+
+  // Method to convert amount to selected currency
+  double _convertAmountSend(double amount) {  
+    // Convert the amount using the selected currency rate
+    return widget.currencyProvider.convertAmountSend(amount);
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
@@ -7,18 +6,21 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
+import 'currency_provider.dart';
 
 class EditBudgetScreen extends StatefulWidget {
   final User user;
   final String budgetId;
   final String budgetAmount;
   final String budgetCategory;
+  final CurrencyProvider currencyProvider;
   const EditBudgetScreen(
       {Key? key,
       required this.user,
       required this.budgetId,
       required this.budgetAmount,
-      required this.budgetCategory})
+      required this.budgetCategory,
+      required this.currencyProvider})
       : super(key: key);
 
   @override
@@ -32,7 +34,9 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _amountController.text = widget.budgetAmount;
+    double _amount = double.parse(widget.budgetAmount);
+    double _convertedAmountDisplay = _convertAmount(_amount);
+    _amountController.text = _convertedAmountDisplay.toStringAsFixed(2);
 
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +116,9 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
     }
 
     String url = "${MyConfig.server}/mypfm/php/editBudget.php";
-    String _amount = _amountController.text;
+    double convertedAmount =
+        _convertAmountSend(double.parse(_amountController.text));
+    String _amount = convertedAmount.toString();
 
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Edit budget in progress.."),
@@ -267,5 +273,17 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
     });
+  }
+
+  // Method to convert amount to selected currency
+  double _convertAmount(double amount) {
+    // Convert the amount using the selected currency rate
+    return widget.currencyProvider.convertAmount(amount);
+  }
+
+  // Method to convert amount to selected currency
+  double _convertAmountSend(double amount) {
+    // Convert the amount using the selected currency rate
+    return widget.currencyProvider.convertAmountSend(amount);
   }
 }

@@ -7,16 +7,20 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:mypfm/view/addbudgetdetailscreen.dart';
+import 'currency_provider.dart';
 
 class AddBudgetScreen extends StatefulWidget {
   final User user;
   //final List budgetlist;
   final DateTime selectedMonth;
+  final CurrencyProvider currencyProvider;
+
   const AddBudgetScreen(
       {Key? key,
       required this.user,
       //required this.budgetlist,
-      required this.selectedMonth})
+      required this.selectedMonth,
+      required this.currencyProvider})
       : super(key: key);
 
   @override
@@ -33,7 +37,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
   @override
   void initState() {
     super.initState();
-    _loadBudget(widget.selectedMonth.year,widget.selectedMonth.month);     
+    _loadBudget(widget.selectedMonth.year, widget.selectedMonth.month);
   }
 
   @override
@@ -64,8 +68,12 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                         child: Column(
                           children: [
                             ListTile(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              title: Text(categoryName),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              title: Text(categoryName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  )),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -124,10 +132,11 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         builder: (context) => AddBudgetDetailScreen(
             user: widget.user,
             selectedMonth: widget.selectedMonth,
-            selectedCategory: selectedCategory),
+            selectedCategory: selectedCategory,
+            currencyProvider: widget.currencyProvider),
       ),
     );
-    _loadBudget(widget.selectedMonth.year,widget.selectedMonth.month);
+    _loadBudget(widget.selectedMonth.year, widget.selectedMonth.month);
   }
 
   void _loadDisplayCat() {
@@ -135,8 +144,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
     // Iterate through excatlist and add items to newDisplayCat if they are not in widget.budgetlist
     for (String categoryName in excatlist) {
-      bool categoryExists = budgetlist
-          .any((budget) => budget['budget_category'] == categoryName);
+      bool categoryExists =
+          budgetlist.any((budget) => budget['budget_category'] == categoryName);
       if (!categoryExists) {
         newDisplayCat.add(categoryName);
       }
@@ -148,7 +157,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
     print(displayCat);
   }
-  
+
   Future<void> _loadBudget(int year, int month) async {
     print("$month, $year");
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadBudget.php"),
@@ -179,11 +188,11 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       } else {
         // Handle other error cases
         Fluttertoast.showToast(
-          msg: "Line 176. An error occurred.\nPlease try again later.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
+            msg: "Line 176. An error occurred.\nPlease try again later.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0);
       }
     }).catchError((error) {
       logger.e("An error occurred when load budget: $error");

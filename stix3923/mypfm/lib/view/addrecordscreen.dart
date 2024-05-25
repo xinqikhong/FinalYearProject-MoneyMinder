@@ -9,7 +9,7 @@ import 'package:mypfm/view/categorylistscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 import 'currency_provider.dart';
 
 class AddRecordScreen extends StatefulWidget {

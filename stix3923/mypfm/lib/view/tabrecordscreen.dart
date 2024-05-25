@@ -491,7 +491,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AddRecordScreen(user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false),),
+          builder: (context) => AddRecordScreen(user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
         ),
       );
       _loadRecords(_selectedMonth.year, _selectedMonth.month);
@@ -627,7 +627,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) =>
-              RecordDetailsScreen(record: expense, user: widget.user),
+              RecordDetailsScreen(record: expense, user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -651,7 +651,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) =>
-              RecordDetailsScreen(record: income, user: widget.user),
+              RecordDetailsScreen(record: income, user: widget.user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
         ),
       );
       // Refresh the data after returning from the details screen
