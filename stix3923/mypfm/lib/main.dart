@@ -6,10 +6,12 @@ import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider<CurrencyProvider>(
-    create: (context) => CurrencyProvider(), // Create a new CurrencyProvider instance
-    child: MyApp(), // Replace with your actual main app widget
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CurrencyProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -74,10 +76,10 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
         ),
         iconTheme: const IconThemeData(
-          // Set icon theme for AppBar
-          //color: Color.fromARGB(255, 240, 101, 1), // Set icon color to orange
-        ),
-        
+            // Set icon theme for AppBar
+            //color: Color.fromARGB(255, 240, 101, 1), // Set icon color to orange
+            ),
+
         fontFamily: 'Montserrat',
         // Set your primary color here
       ),

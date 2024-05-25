@@ -1,27 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Currency {
   final String code;
   final double rate;
 
   Currency({required this.code, required this.rate});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'code': code,
+      'rate': rate,
+    };
+  }
+
+  static Currency fromMap(Map<String, dynamic> map) {
+    return Currency(
+      code: map['code'],
+      rate: map['rate'],
+    );
+  }
 }
 
 class CurrencyProvider with ChangeNotifier {
   Currency? _selectedCurrency;
+  double _baseRate = 1.0;
 
   Currency? get selectedCurrency => _selectedCurrency;
+  double get baseRate => _baseRate;
 
-  void setSelectedCurrency(String code, double rate) {
-    _selectedCurrency = Currency(code: code, rate: rate);
+  CurrencyProvider() {
+    _loadSelectedCurrency();
+  }
+
+  void setBaseRate(double rate) {
+    _baseRate = rate;
     notifyListeners();
   }
 
-  double convertAmount(double amount, double baseRate) {
+  Future<void> setSelectedCurrency(String code, double rate) async {
+    _selectedCurrency = Currency(code: code, rate: rate);
+    notifyListeners();
+    await _saveSelectedCurrency();
+  }
+
+  double convertAmount(double amount, double originalCurrencyRate) {
     if (_selectedCurrency == null) {
       return amount;
     }
 
-    return amount * (_selectedCurrency!.rate / baseRate);
+    double amountInBaseCurrency = amount / originalCurrencyRate;
+    return amountInBaseCurrency * _selectedCurrency!.rate;
+  }
+
+  Future<void> _saveSelectedCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_selectedCurrency != null) {
+      await prefs.setString('selectedCurrency', _selectedCurrency!.code);
+      await prefs.setDouble('selectedCurrencyRate', _selectedCurrency!.rate);
+    }
+  }
+
+  Future<void> _loadSelectedCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString('selectedCurrency');
+    final rate = prefs.getDouble('selectedCurrencyRate');
+    if (code != null && rate != null) {
+      _selectedCurrency = Currency(code: code, rate: rate);
+      notifyListeners();
+    }
   }
 }
