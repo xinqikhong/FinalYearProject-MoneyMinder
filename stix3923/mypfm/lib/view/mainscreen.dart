@@ -217,7 +217,7 @@ class _MainScreenState extends State<MainScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onTap: () => Navigator.push(
+              onTap: () async => await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => CurrencySettingScreen()),

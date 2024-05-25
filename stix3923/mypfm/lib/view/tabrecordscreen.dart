@@ -15,12 +15,15 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:provider/provider.dart';
 import 'currency_provider.dart';
 
 class TabRecordScreen extends StatefulWidget {
   final User user;
   final CurrencyProvider currencyProvider;
-  const TabRecordScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
+  const TabRecordScreen(
+      {Key? key, required this.user, required this.currencyProvider})
+      : super(key: key);
 
   @override
   State<TabRecordScreen> createState() => _TabRecordScreenState();
@@ -55,132 +58,134 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the selected currency from the provider
-    Currency? selectedCurrencyObject =
-        widget.currencyProvider.selectedCurrency;
+    return Scaffold(
+      body: Consumer<CurrencyProvider>(
+          builder: (context, currencyProvider, child) {
+        // Get the selected currency from the provider
+        Currency? selectedCurrencyObject =
+            widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
-    String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
+        String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
 
-    double totalIncome = calculateTotalIncome(incomelist);
-    double totalExpense = calculateTotalExpense(expenselist);
-    double convertedTotalIncome =
-        _convertAmountDisplay(totalIncome, selectedCurrency);
-    double convertedTotalExpense =
-        _convertAmountDisplay(totalExpense, selectedCurrency);
-
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        color: Colors.orangeAccent,
-        child: Column(
-          children: [
-            // Pagination for months
-            Center(
-              child: Container(
-                color: Color.fromARGB(255, 255, 227, 186),
-                height: 40, // Adjust height as needed
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      onPressed: _goToPreviousMonth,
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        await _showMonthPicker(context); // Call your function
-                      },
-                      child: Text(
-                        DateFormat('MMM yyyy').format(_selectedMonth),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+        double totalIncome = calculateTotalIncome(incomelist);
+        double totalExpense = calculateTotalExpense(expenselist);
+        double convertedTotalIncome =
+            _convertAmountDisplay(totalIncome, selectedCurrency);
+        double convertedTotalExpense =
+            _convertAmountDisplay(totalExpense, selectedCurrency);
+        return RefreshIndicator(
+          onRefresh: _refresh,
+          color: Colors.orangeAccent,
+          child: Column(
+            children: [
+              // Pagination for months
+              Center(
+                child: Container(
+                  color: Color.fromARGB(255, 255, 227, 186),
+                  height: 40, // Adjust height as needed
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        onPressed: _goToPreviousMonth,
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
                           color: Colors.black,
                         ),
                       ),
-                    ), // Display selected month
-                    IconButton(
-                      onPressed: _goToNextMonth,
-                      icon: const Icon(Icons.arrow_forward_ios_rounded),
-                      color: Colors.black,
+                      TextButton(
+                        onPressed: () async {
+                          await _showMonthPicker(context); // Call your function
+                        },
+                        child: Text(
+                          DateFormat('MMM yyyy').format(_selectedMonth),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ), // Display selected month
+                      IconButton(
+                        onPressed: _goToNextMonth,
+                        icon: const Icon(Icons.arrow_forward_ios_rounded),
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(height: 2),
+              // Total income and expenses
+              Container(
+                color: Color.fromARGB(255, 255, 245, 230),
+                padding: const EdgeInsets.all(2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          'Income',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '$selectedCurrency ${convertedTotalIncome.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          'Expense',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '$selectedCurrency ${convertedTotalExpense.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-            const Divider(height: 2),
-            // Total income and expenses
-            Container(
-              color: Color.fromARGB(255, 255, 245, 230),
-              padding: const EdgeInsets.all(2),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        'Income',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
+              const Divider(height: 1),
+              // Record list
+              Expanded(
+                child: expenselist.isEmpty && incomelist.isEmpty
+                    ? Center(
+                        child: Text(titlecenter,
+                            style: const TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold)))
+                    : ListView.builder(
+                        itemCount: _getNumberOfDaysInMonth(
+                            _selectedMonth.year,
+                            _selectedMonth
+                                .month), // Replace with actual number of days in a month
+                        itemBuilder: (context, index) {
+                          return _buildDailyRecord(index);
+                        },
+                        padding: const EdgeInsets.only(bottom: 80),
                       ),
-                      Text(
-                        '$selectedCurrency ${convertedTotalIncome.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        'Expense',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '$selectedCurrency ${convertedTotalExpense.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ],
               ),
-            ),
-            const Divider(height: 1),
-            // Record list
-            Expanded(
-              child: expenselist.isEmpty && incomelist.isEmpty
-                  ? Center(
-                      child: Text(titlecenter,
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold)))
-                  : ListView.builder(
-                      itemCount: _getNumberOfDaysInMonth(
-                          _selectedMonth.year,
-                          _selectedMonth
-                              .month), // Replace with actual number of days in a month
-                      itemBuilder: (context, index) {
-                        return _buildDailyRecord(index);
-                      },
-                      padding: const EdgeInsets.only(bottom: 80),
-                    ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _handleAddRecordBtn();
@@ -198,8 +203,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   // Method to build daily record
   Widget _buildDailyRecord(int index) {
     // Get the selected currency from the provider
-    Currency? selectedCurrencyObject =
-        widget.currencyProvider.selectedCurrency;
+    Currency? selectedCurrencyObject = widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
@@ -291,7 +295,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.blue),
-                            overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       /*const SizedBox(
                         width: 30,
@@ -302,7 +306,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.red),
-                            overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -504,9 +508,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => AddRecordScreen(
-              user: widget.user,
-              currencyProvider:
-                  widget.currencyProvider),
+              user: widget.user, currencyProvider: widget.currencyProvider),
         ),
       );
       _loadRecords(_selectedMonth.year, _selectedMonth.month);
@@ -644,8 +646,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           builder: (BuildContext context) => RecordDetailsScreen(
               record: expense,
               user: widget.user,
-              currencyProvider:
-                  widget.currencyProvider),
+              currencyProvider: widget.currencyProvider),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -671,8 +672,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           builder: (BuildContext context) => RecordDetailsScreen(
               record: income,
               user: widget.user,
-              currencyProvider:
-                  widget.currencyProvider),
+              currencyProvider: widget.currencyProvider),
         ),
       );
       // Refresh the data after returning from the details screen
@@ -830,8 +830,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   // Method to convert amount to selected currency
   double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
-    CurrencyProvider currencyProvider =
-        widget.currencyProvider;
+    CurrencyProvider currencyProvider = widget.currencyProvider;
 
     // Get the selected currency and base rate
     Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;

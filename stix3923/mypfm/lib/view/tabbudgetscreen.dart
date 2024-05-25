@@ -13,12 +13,15 @@ import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:collection/collection.dart';
+import 'package:provider/provider.dart';
 import 'currency_provider.dart';
 
 class TabBudgetScreen extends StatefulWidget {
   final User user;
   final CurrencyProvider currencyProvider;
-  const TabBudgetScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
+  const TabBudgetScreen(
+      {Key? key, required this.user, required this.currencyProvider})
+      : super(key: key);
 
   @override
   State<TabBudgetScreen> createState() => _TabBudgetScreenState();
@@ -54,78 +57,81 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await _loadBudget(_selectedMonth.year, _selectedMonth.month);
-        },
-        child: Column(
-          children: [
-            // Pagination for months
-            Center(
-              child: Container(
-                color: Color.fromARGB(255, 255, 227, 186),
-                height: 40, // Adjust height as needed
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      onPressed: _goToPreviousMonth,
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        await _showMonthPicker(context); // Call your function
-                      },
-                      child: Text(
-                        DateFormat('MMM yyyy').format(_selectedMonth),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+      body: Consumer<CurrencyProvider>(
+          builder: (context, currencyProvider, child) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            await _loadBudget(_selectedMonth.year, _selectedMonth.month);
+          },
+          child: Column(
+            children: [
+              // Pagination for months
+              Center(
+                child: Container(
+                  color: Color.fromARGB(255, 255, 227, 186),
+                  height: 40, // Adjust height as needed
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        onPressed: _goToPreviousMonth,
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
                           color: Colors.black,
                         ),
                       ),
-                    ), // Display selected month
-                    IconButton(
-                      onPressed: _goToNextMonth,
-                      icon: const Icon(Icons.arrow_forward_ios_rounded),
-                      color: Colors.black,
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () async {
+                          await _showMonthPicker(context); // Call your function
+                        },
+                        child: Text(
+                          DateFormat('MMM yyyy').format(_selectedMonth),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ), // Display selected month
+                      IconButton(
+                        onPressed: _goToNextMonth,
+                        icon: const Icon(Icons.arrow_forward_ios_rounded),
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const Divider(height: 2),
-            // Budget list
-            Expanded(
-              child: budgetlist.isEmpty
-                  ? Center(
-                      child: Text(titlecenter,
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold)))
-                  /*child: Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child*/
-                  : ListView.builder(
-                      itemCount: budgetlist
-                          .length, // Replace with actual category count
-                      itemBuilder: (context, index) {
-                        // Replace with budget widget
-                        return _buildBudgetList(index);
-                      },
-                      padding: const EdgeInsets.only(bottom: 80),
+              const Divider(height: 2),
+              // Budget list
+              Expanded(
+                child: budgetlist.isEmpty
+                    ? Center(
+                        child: Text(titlecenter,
+                            style: const TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold)))
+                    /*child: Container(
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-            ),
-          ],
-        ),
-      ),
+                    child*/
+                    : ListView.builder(
+                        itemCount: budgetlist
+                            .length, // Replace with actual category count
+                        itemBuilder: (context, index) {
+                          // Replace with budget widget
+                          return _buildBudgetList(index);
+                        },
+                        padding: const EdgeInsets.only(bottom: 80),
+                      ),
+              ),
+            ],
+          ),
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _handleAddBudgetBtn();
@@ -444,8 +450,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
 
   Widget _buildBudgetList(int index) {
     // Get the selected currency from the provider
-    Currency? selectedCurrencyObject =
-        widget.currencyProvider.selectedCurrency;
+    Currency? selectedCurrencyObject = widget.currencyProvider.selectedCurrency;
 
 // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
@@ -541,14 +546,14 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   SizedBox(
                     width: 110,
                     child: Text(
-                    '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}', // Expense amount
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 3, 171, 68),
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}', // Expense amount
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 3, 171, 68),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                                    ),
                   ),
                 ],
               ),
@@ -618,8 +623,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               user: widget.user,
               //budgetlist: budgetlist,
               selectedMonth: _selectedMonth,
-              currencyProvider: widget.currencyProvider
-              ),
+              currencyProvider: widget.currencyProvider),
         ),
       );
       _loadData(_selectedMonth.year, _selectedMonth.month);
@@ -740,8 +744,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   // Method to convert amount to selected currency
   double _convertAmountDisplay(double amount, String selectedCurrency) {
     // Get the CurrencyProvider instance
-    CurrencyProvider currencyProvider =
-        widget.currencyProvider;
+    CurrencyProvider currencyProvider = widget.currencyProvider;
 
     // Get the selected currency and base rate
     Currency? selectedCurrencyObject = currencyProvider.selectedCurrency;

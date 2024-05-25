@@ -8,6 +8,7 @@ import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
 //import 'package:palette_generator/palette_generator.dart';
 //import 'dart:math' as math;
 //import 'package:syncfusion_flutter_charts/charts.dart';
@@ -62,146 +63,150 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.user.id == "unregistered"
-          ? const Center(
-              child: Text('No Records Found',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            )
-          : Column(
-              children: [
-                Center(
-                  child: Container(
-                    color: Color.fromARGB(255, 255, 227, 186),
-                    height: 40, // Adjust height as needed
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                          onPressed: _goToPreviousMonth,
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.black,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            await _showMonthPicker(
-                                context); // Call your function
-                          },
-                          child: Text(
-                            DateFormat('MMM yyyy').format(_selectedMonth),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+      body: Consumer<CurrencyProvider>(
+        builder: (context, currencyProvider, child) {
+          return widget.user.id == "unregistered"
+              ? const Center(
+                  child: Text('No Records Found',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                )
+              : Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        color: Color.fromARGB(255, 255, 227, 186),
+                        height: 40, // Adjust height as needed
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                              onPressed: _goToPreviousMonth,
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                await _showMonthPicker(
+                                    context); // Call your function
+                              },
+                              child: Text(
+                                DateFormat('MMM yyyy').format(_selectedMonth),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ), // Display selected month
+                            IconButton(
+                              onPressed: _goToNextMonth,
+                              icon: const Icon(Icons.arrow_forward_ios_rounded),
                               color: Colors.black,
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isIncomeSelected = true;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: _isIncomeSelected
+                                    ? Color.fromARGB(255, 255, 245, 230)
+                                    : Color.fromARGB(255, 255, 245, 230),
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: _isIncomeSelected
+                                        ? Colors.orange
+                                        : Colors.transparent,
+                                    width:
+                                        2, // Adjust the width of the bottom border as needed
+                                  ),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Center(
+                                  child: Text(
+                                    'Income',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: _isIncomeSelected
+                                          ? Colors.black
+                                          : Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ), // Display selected month
-                        IconButton(
-                          onPressed: _goToNextMonth,
-                          icon: const Icon(Icons.arrow_forward_ios_rounded),
-                          color: Colors.black,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isIncomeSelected = false;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: _isIncomeSelected
+                                    ? Color.fromARGB(255, 255, 245, 230)
+                                    : Color.fromARGB(255, 255, 245, 230),
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: _isIncomeSelected
+                                        ? Colors.transparent
+                                        : Colors.orange,
+                                    width:
+                                        2, // Adjust the width of the bottom border as needed
+                                  ),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Center(
+                                  child: Text(
+                                    'Expense',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: _isIncomeSelected
+                                          ? Colors.grey
+                                          : Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                const Divider(height: 1),
-                Row(
-                  children: [
                     Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isIncomeSelected = true;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: _isIncomeSelected
-                                ? Color.fromARGB(255, 255, 245, 230)
-                                : Color.fromARGB(255, 255, 245, 230),
-                            border: Border(
-                              bottom: BorderSide(
-                                color: _isIncomeSelected
-                                    ? Colors.orange
-                                    : Colors.transparent,
-                                width:
-                                    2, // Adjust the width of the bottom border as needed
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Center(
-                              child: Text(
-                                'Income',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: _isIncomeSelected
-                                      ? Colors.black
-                                      : Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isIncomeSelected = false;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: _isIncomeSelected
-                                ? Color.fromARGB(255, 255, 245, 230)
-                                : Color.fromARGB(255, 255, 245, 230),
-                            border: Border(
-                              bottom: BorderSide(
-                                color: _isIncomeSelected
-                                    ? Colors.transparent
-                                    : Colors.orange,
-                                width:
-                                    2, // Adjust the width of the bottom border as needed
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Center(
-                              child: Text(
-                                'Expense',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: _isIncomeSelected
-                                      ? Colors.grey
-                                      : Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                      child: Column(
+                        children: [
+                          _buildChart(), // method to build pie chart
+                          //SizedBox(height: 20),
+                          _buildCategoryList(), // method to build list of categories
+                        ],
                       ),
                     ),
                   ],
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      _buildChart(), // method to build pie chart
-                      //SizedBox(height: 20),
-                      _buildCategoryList(), // method to build list of categories
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                );
+        }
+      ),
     );
   }
 

@@ -198,11 +198,11 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
                                             currencyCode
                                         ? Icon(Icons.check, color: Colors.green)
                                         : null,
-                                onTap: () {
-                                  currencyProvider.setSelectedCurrency(
+                                onTap: () async {
+                                  await currencyProvider.setSelectedCurrency(
                                       currencyCode, rate);
                                   Fluttertoast.showToast(
-                                      msg: "Currency Updated",
+                                      msg: "Currency set to $currencyCode",
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.BOTTOM,
                                       timeInSecForIosWeb: 1,

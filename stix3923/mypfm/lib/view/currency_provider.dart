@@ -75,8 +75,8 @@ class CurrencyProvider with ChangeNotifier {
 
   Future<void> setSelectedCurrency(String code, double rate) async {
     _selectedCurrency = Currency(code: code, rate: rate);
-    notifyListeners();
     await _saveSelectedCurrency();
+    notifyListeners();
   }
 
   double convertAmountDisplay(double amount) {
