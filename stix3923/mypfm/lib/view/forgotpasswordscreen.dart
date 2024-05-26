@@ -52,13 +52,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             )),
       ),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                TextFormField(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                    enabled: !_isEmailValid,
                     validator: (val) =>
                         val!.isEmpty || !val.contains("@") || !val.contains(".")
                             ? "Please enter a valid email"
@@ -74,49 +75,52 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 2.0),
                         ))),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _checkEmail,
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor:
-                        Colors.white, // Fixed foreground color to white
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ), // Set onPressed to null when valid
-                  child: const Text('Submit Request',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                    enabled: _isEmailValid && !_isTokenValid,
-                    controller: _tokenController,
-                    keyboardType: TextInputType.emailAddress,
-                    style: const TextStyle(color: Colors.grey),
-                    decoration: const InputDecoration(
-                        labelText: 'Enter OTP here',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        icon: Icon(Icons.key_rounded),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 2.0),
-                        ))),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _isEmailValid ? _checkToken : null,
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor:
-                        Colors.white, // Fixed foreground color to white
-                    backgroundColor: _isTokenValid
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey,
-                  ), // Set onPressed to null when valid
-                  child: const Text('Continue',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: !_isEmailValid ? _checkEmail : null,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor:
+                      Colors.white, // Fixed foreground color to white
+                  backgroundColor: Theme.of(context).primaryColor,
+                ), // Set onPressed to null when valid
+                child: const Text('Submit Request',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                  enabled: _isEmailValid && !_isTokenValid,
+                  controller: _tokenController,
+                  keyboardType: TextInputType.emailAddress,
+                  //style: const TextStyle(color: Colors.grey),
+                  decoration: const InputDecoration(
+                      labelText: 'Enter OTP here',
+                      //labelStyle: TextStyle(color: Colors.grey),
+                      icon: Icon(Icons.key_rounded),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0),
+                      ))),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _isEmailValid && !_isTokenValid ? _checkToken : null,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor:
+                      Colors.white, // Fixed foreground color to white
+                  backgroundColor: _isEmailValid && !_isTokenValid
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
+                ), // Set onPressed to null when valid
+                child: const Text('Continue',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
+              const SizedBox(height: 16.0),
+              Form(
+                key: _formKeyPass,
+                child: TextFormField(
                   enabled: _isTokenValid,
                   textInputAction: TextInputAction.next,
                   validator: (val) => validatePassword(val.toString()),
@@ -145,59 +149,59 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       )),
                   obscureText: _passwordVisible,
                 ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  enabled: _isTokenValid,
-                  style: const TextStyle(),
-                  textInputAction: TextInputAction.done,
-                  validator: (val) {
-                    validatePassword(val.toString());
-                    if (val != _newPassEditingController.text) {
-                      return "Password do not match";
-                    } else {
-                      return null;
-                    }
-                  },
-                  focusNode: focus,
-                  controller: _newPass2EditingController,
-                  decoration: InputDecoration(
-                      labelText: 'Re-enter Password',
-                      //labelStyle: const TextStyle(color: Colors.orange),
-                      icon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                enabled: _isTokenValid,
+                style: const TextStyle(),
+                textInputAction: TextInputAction.done,
+                validator: (val) {
+                  validatePassword(val.toString());
+                  if (val != _newPassEditingController.text) {
+                    return "Password do not match";
+                  } else {
+                    return null;
+                  }
+                },
+                focusNode: focus,
+                controller: _newPass2EditingController,
+                decoration: InputDecoration(
+                    labelText: 'Re-enter Password',
+                    //labelStyle: const TextStyle(color: Colors.orange),
+                    icon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(width: 2.0),
-                      )),
-                  obscureText: _passwordVisible,
-                ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _isTokenValid ? _resetPassDialog : null,
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor:
-                        Colors.white, // Fixed foreground color to white
-                    backgroundColor: _isTokenValid
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey,
-                  ), // Set onPressed to null when valid
-                  child: const Text('Reset Password',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-              ],
-            ),
+                      onPressed: () {
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0),
+                    )),
+                obscureText: _passwordVisible,
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _isTokenValid ? _resetPassDialog : null,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor:
+                      Colors.white, // Fixed foreground color to white
+                  backgroundColor: _isTokenValid
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
+                ), // Set onPressed to null when valid
+                child: const Text('Reset Password',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
+            ],
           ),
         ),
       ),
@@ -229,12 +233,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         if (data['status'] == 'success') {
           Fluttertoast.showToast(
               msg:
-                  "Verification Success.\nKindly check your email for password reset.",
+                  "Verification Success.\nKindly check your email for OTP.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
-          _isEmailValid = true;
+          setState(() {
+            _isEmailValid = true;
+          });
+          print(_isEmailValid);
         } else if (data['message'] == 'Inactive account') {
           showDialog(
             context: context,
@@ -338,7 +345,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   void _resetPassDialog() {
-    if (!_formKey.currentState!.validate()) {
+    if (!_formKeyPass.currentState!.validate()) {
       Fluttertoast.showToast(
           msg: "Please complete the form first",
           toastLength: Toast.LENGTH_SHORT,
@@ -402,8 +409,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     String _email = _emailController.text;
     String _pass = _newPassEditingController.text;
     String _token = _tokenController.text;
-
-    FocusScope.of(context).unfocus();
+    print('_email: $_email, _pass: $_pass, _token:$_token');
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Reset password in progress.."),
         title: const Text("Updating..."));
@@ -421,7 +427,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         print(data);
         if (data['status'] == 'success') {
           Fluttertoast.showToast(
-              msg: "Password reset success.",
+              msg: "Password reset successfully.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
@@ -460,6 +466,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void _checkToken() {
     String _token = _tokenController.text;
     String _email = _emailController.text;
+    print('_token: $_token, _email: $_email');
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Check OTP in progress.."),
         title: const Text("Checking..."));
@@ -481,6 +488,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           setState(() {
             _isTokenValid = true;
           });
+          print(_isTokenValid);
         } else {
           Fluttertoast.showToast(
               msg: data['message'] ?? "Incorrect OTP.",
