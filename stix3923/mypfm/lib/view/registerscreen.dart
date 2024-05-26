@@ -236,6 +236,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               _isChecked = value!;
                             });
                           },
+                          activeColor: Colors
+                              .orange, // Change the color when the checkbox is selected
+                          checkColor: Colors.white,
                         ),
                         Flexible(
                           child: GestureDetector(
@@ -247,7 +250,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 )),
                           ),
                         ),
-                        
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             fixedSize: Size(screenWidth / 3.3, 50),
