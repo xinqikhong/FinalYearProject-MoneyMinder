@@ -22,7 +22,9 @@ import 'currency_provider.dart';
 class MainScreen extends StatefulWidget {
   final User user;
   final CurrencyProvider currencyProvider;
-  const MainScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
+  const MainScreen(
+      {Key? key, required this.user, required this.currencyProvider})
+      : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -40,9 +42,12 @@ class _MainScreenState extends State<MainScreen> {
     // Print output to the console
     print(widget.user.name);
     tabScreens = [
-      TabRecordScreen(user: widget.user, currencyProvider: widget.currencyProvider),
-      TabBudgetScreen(user: widget.user, currencyProvider: widget.currencyProvider),
-      TabStatsScreen(user: widget.user, currencyProvider: widget.currencyProvider),
+      TabRecordScreen(
+          user: widget.user, currencyProvider: widget.currencyProvider),
+      TabBudgetScreen(
+          user: widget.user, currencyProvider: widget.currencyProvider),
+      TabStatsScreen(
+          user: widget.user, currencyProvider: widget.currencyProvider),
       TabResourceScreen(user: widget.user),
     ];
   }
@@ -275,8 +280,9 @@ class _MainScreenState extends State<MainScreen> {
                                 );
                               },
                               style: TextButton.styleFrom(
-                                foregroundColor: Theme.of(context).primaryColor,
-                              ),
+                                  foregroundColor: Colors.white,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor),
                               child: const Text(
                                 'Yes',
                                 style: TextStyle(
@@ -291,8 +297,9 @@ class _MainScreenState extends State<MainScreen> {
                                 Navigator.pop(context);
                               },
                               style: TextButton.styleFrom(
-                                foregroundColor: Theme.of(context).primaryColor,
-                              ),
+                                  foregroundColor: Colors.white,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor),
                               child: const Text(
                                 'No',
                                 style: TextStyle(

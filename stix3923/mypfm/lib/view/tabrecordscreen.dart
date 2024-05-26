@@ -484,7 +484,13 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             content: const Text('You need to register first to add records.'),
             actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.pop(context), // Dismiss dialog
+                onPressed: () => Navigator.pop(context),
+                style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Colors.white), // Fixed foreground color to white
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).primaryColor,
+                    )), // Dismiss dialog
                 child: const Text('Cancel'),
               ),
               TextButton(
@@ -497,6 +503,12 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     ),
                   );
                 },
+                style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Colors.white), // Fixed foreground color to white
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).primaryColor,
+                    )),
                 child: const Text('Register'),
               ),
             ],

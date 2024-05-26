@@ -198,6 +198,12 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteBudget();
@@ -208,6 +214,12 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },

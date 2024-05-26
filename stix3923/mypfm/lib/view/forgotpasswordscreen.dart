@@ -53,7 +53,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
-                      labelStyle: TextStyle(),
+                      //labelStyle: TextStyle(),
                       labelText: 'Enter your registered email here',
                       icon: Icon(
                         Icons.mark_email_read,
@@ -82,6 +82,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   void _checkEmail() {
+    if (!_formKey.currentState!.validate()) {
+      Fluttertoast.showToast(
+          msg: "Please fill in the login credentials",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      return;
+    }
     String _email = _emailController.text;
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Verify email in progress.."),
@@ -118,7 +127,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     'Kindly contact us through email <moneyminder_admin@xqksoft.com> if you need any help.\nThank you.'),
                 actions: <Widget>[
                   TextButton(
-                    onPressed: () => Navigator.pop(context), // Dismiss dialog
+                    onPressed: () => Navigator.pop(context),
+                    style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                            Colors.white), // Fixed foreground color to white
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).primaryColor,
+                        )), // Dismiss dialog
                     child: const Text('Ok'),
                   ),
                 ],
@@ -140,7 +155,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     'Kindly complete the verification first.\nYou can check your email for verification.\nThank you.'),
                 actions: <Widget>[
                   TextButton(
-                    onPressed: () => Navigator.pop(context), // Dismiss dialog
+                    onPressed: () => Navigator.pop(context),
+                    style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                            Colors.white), // Fixed foreground color to white
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).primaryColor,
+                        )), // Dismiss dialog
                     child: const Text('Ok'),
                   ),
                 ],

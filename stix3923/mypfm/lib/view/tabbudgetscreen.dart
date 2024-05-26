@@ -664,6 +664,12 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteBudget(budget);
@@ -674,6 +680,12 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -15,7 +15,9 @@ import 'currency_provider.dart';
 class AddRecordScreen extends StatefulWidget {
   final User user;
   final CurrencyProvider currencyProvider;
-  const AddRecordScreen({Key? key, required this.user, required this.currencyProvider}) : super(key: key);
+  const AddRecordScreen(
+      {Key? key, required this.user, required this.currencyProvider})
+      : super(key: key);
 
   @override
   State<AddRecordScreen> createState() => _AddRecordScreenState();
@@ -457,11 +459,28 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                           Navigator.pop(
                                               context); // Close screen after clearing
                                         },
+                                        style: ButtonStyle(
+                                            foregroundColor: MaterialStateProperty
+                                                .all<Color>(Colors
+                                                    .white), // Fixed foreground color to white
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(
+                                              Theme.of(context).primaryColor,
+                                            )),
                                         child: const Text("Yes"),
                                       ),
                                       TextButton(
-                                        onPressed: () => Navigator.pop(
-                                            context), // Dismiss dialog
+                                        onPressed: () => Navigator.pop(context),
+                                        style: ButtonStyle(
+                                            foregroundColor: MaterialStateProperty
+                                                .all<Color>(Colors
+                                                    .white), // Fixed foreground color to white
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(
+                                              Theme.of(context).primaryColor,
+                                            )), // Dismiss dialog
                                         child: const Text("No"),
                                       ),
                                     ],
@@ -532,6 +551,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _addRecord();
@@ -542,6 +567,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -556,9 +587,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     FocusScope.of(context).requestFocus(FocusNode());
     String url = "";
     String _date = _dateController.text;
-    double convertedAmount = _convertAmountSend(
-        double.parse(_amountController.text));
-    String _amount = convertedAmount.toString();    
+    double convertedAmount =
+        _convertAmountSend(double.parse(_amountController.text));
+    String _amount = convertedAmount.toString();
     String _category = _categoryController.text;
     String _account = _accountController.text;
     String? _note = _noteController.text.isEmpty ? null : _noteController.text;
@@ -694,7 +725,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmountSend(double amount) {  
+  double _convertAmountSend(double amount) {
     // Convert the amount using the selected currency rate
     return widget.currencyProvider.convertAmountSend(amount);
   }

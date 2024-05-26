@@ -359,6 +359,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _changePass();
@@ -369,6 +375,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },

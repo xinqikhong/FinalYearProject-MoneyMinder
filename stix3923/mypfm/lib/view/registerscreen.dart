@@ -247,9 +247,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 )),
                           ),
                         ),
+                        
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            fixedSize: Size(screenWidth / 3, 50),
+                            fixedSize: Size(screenWidth / 3.3, 50),
                             foregroundColor:
                                 Colors.white, // Fixed foreground color to white
                             backgroundColor: Theme.of(context).primaryColor,

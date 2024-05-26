@@ -527,6 +527,12 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _editRecord();
@@ -537,6 +543,12 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -702,6 +714,12 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _formKey.currentState?.reset();
@@ -713,6 +731,12 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -741,6 +765,12 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 "Yes",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteRecord(context);
@@ -751,6 +781,12 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 "No",
                 style: TextStyle(),
               ),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () {
                 Navigator.of(context).pop();
               },
