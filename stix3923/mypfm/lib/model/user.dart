@@ -6,6 +6,7 @@ class User {
   String? otp;
   String? phone;
   String? address;
+  String? passtoken;
 
   User(
       {required this.id,
@@ -15,6 +16,7 @@ class User {
       required this.otp,
       required this.phone,
       required this.address,
+      required this.passtoken,
       });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -25,5 +27,6 @@ class User {
     otp = json['otp'];
     phone = json['phone'];
     address = json['address'];
+    passtoken = json['passtoken'];
   }
 }

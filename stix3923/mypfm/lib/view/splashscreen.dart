@@ -87,6 +87,7 @@ class _SplashScreenState extends State<SplashScreen> {
             otp: "unregistered",
             phone: "unregistered",
             address: "unregistered",
+            passtoken: "unregistered"
           );
 
           Timer(
@@ -106,6 +107,7 @@ class _SplashScreenState extends State<SplashScreen> {
         otp: "unregistered",
         phone: "unregistered",
         address: "unregistered",
+        passtoken: "unregistered"
       );
       Timer(
           const Duration(seconds: 3),

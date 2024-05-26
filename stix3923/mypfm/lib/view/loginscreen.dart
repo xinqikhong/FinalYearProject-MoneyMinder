@@ -6,6 +6,7 @@ import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/currency_provider.dart';
 import 'package:mypfm/view/forgotpasswordscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
+//import 'package:mypfm/view/resetpasswordscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
