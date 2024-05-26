@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -30,9 +30,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool _passwordVisible = true;
   final focus = FocusNode();
 
+// Initialize SharedPreferences
+  late SharedPreferences _prefs;
+  // Variable to store the entered email temporarily
+  late String _tempEmail;
+
   @override
   void initState() {
     super.initState();
+    _initPreferences();
+  }
+
+  Future<void> _initPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    // Read the stored email from SharedPreferences
+    _tempEmail = _prefs.getString('tempEmail') ?? '';
+    // Restore the entered email if available
+    if (_tempEmail.isNotEmpty) {
+      _emailController.text = _tempEmail;
+      _isEmailValid = true; // Assuming email is valid if restored
+    }
   }
 
   @override
@@ -59,12 +76,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               Form(
                 key: _formKey,
                 child: TextFormField(
-                    enabled: !_isEmailValid,
+                    //enabled: !_isEmailValid,
                     validator: (val) =>
                         val!.isEmpty || !val.contains("@") || !val.contains(".")
                             ? "Please enter a valid email"
                             : null,
                     controller: _emailController,
+                    onChanged: (val) {
+                    _tempEmail = val!;
+                    // Save entered email to SharedPreferences
+                    _prefs.setString('tempEmail', _tempEmail);
+                  },
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         //labelStyle: TextStyle(),
@@ -78,20 +100,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: !_isEmailValid ? _checkEmail : null,
+                onPressed: _checkEmail,
                 style: ElevatedButton.styleFrom(
                   foregroundColor:
                       Colors.white, // Fixed foreground color to white
                   backgroundColor: Theme.of(context).primaryColor,
                 ), // Set onPressed to null when valid
-                child: const Text('Submit Request',
+                child: const Text('Verify',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
-                  enabled: _isEmailValid && !_isTokenValid,
+                  enabled: _isEmailValid ,
                   controller: _tokenController,
                   keyboardType: TextInputType.emailAddress,
                   //style: const TextStyle(color: Colors.grey),
@@ -104,15 +126,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ))),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: _isEmailValid && !_isTokenValid ? _checkToken : null,
+                onPressed: _isEmailValid ? _checkToken : null,
                 style: ElevatedButton.styleFrom(
                   foregroundColor:
                       Colors.white, // Fixed foreground color to white
-                  backgroundColor: _isEmailValid && !_isTokenValid
+                  backgroundColor: _isEmailValid
                       ? Theme.of(context).primaryColor
                       : Colors.grey,
                 ), // Set onPressed to null when valid
-                child: const Text('Continue',
+                child: const Text('Verify',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
@@ -211,7 +233,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void _checkEmail() {
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
-          msg: "Please fill in the login credentials",
+          msg: "Please enter valid email",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -232,8 +254,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         print(data);
         if (data['status'] == 'success') {
           Fluttertoast.showToast(
-              msg:
-                  "Verification Success.\nKindly check your email for OTP.",
+              msg: "Verification Success.\nKindly check your email for OTP.",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
