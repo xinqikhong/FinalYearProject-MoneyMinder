@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/currency_provider.dart';
+import 'package:mypfm/view/forgotpasswordscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -126,10 +127,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _emailditingController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: const InputDecoration(
-                                    labelStyle: TextStyle(),
+                                    //labelStyle: TextStyle(),
                                     labelText: 'Email',
                                     icon: Icon(
-                                      Icons.phone,
+                                      Icons.email,
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(width: 2.0),
@@ -145,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                               controller: _passEditingController,
                               decoration: InputDecoration(
-                                  labelStyle: const TextStyle(),
+                                  //labelStyle: const TextStyle(),
                                   labelText: 'Password',
                                   icon: const Icon(
                                     Icons.lock,
@@ -181,6 +182,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         onChanged: (bool? value) {
                                           _onRememberMeChanged(value!);
                                         },
+                                        activeColor: Colors
+                                            .orange, // Change the color when the checkbox is selected
+                                        checkColor: Colors.white,
                                       ),
                                       const Text('Remember me',
                                           style: TextStyle(
@@ -193,9 +197,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                     flex: 5,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                          fixedSize: Size(screenWidth / 3, 50)),
-                                      child: const Text('Login'),
+                                        fixedSize: Size(screenWidth / 3, 50),
+                                        foregroundColor: Colors
+                                            .white, // Fixed foreground color to white
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
+                                      ),
                                       onPressed: _loginUser,
+                                      child: const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
                                     ),
                                   ),
                                 ]),
@@ -238,7 +252,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 const Text("Forgot password? ",
                     style: TextStyle(fontSize: 16.0)),
                 GestureDetector(
-                  onTap: null,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen()),
+                    );
+                  },
                   child: const Text(
                     " Click here",
                     style: TextStyle(
@@ -291,7 +311,10 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => MainScreen(user: user, currencyProvider: Provider.of<CurrencyProvider>(context, listen: false)),
+            builder: (context) => MainScreen(
+                user: user,
+                currencyProvider:
+                    Provider.of<CurrencyProvider>(context, listen: false)),
           ),
           (route) => false, // This condition removes all routes from the stack
         );

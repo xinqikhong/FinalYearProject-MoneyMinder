@@ -130,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                             labelText: 'Name',
-                            labelStyle: TextStyle(),
+                            //labelStyle: TextStyle(),
                             icon: Icon(Icons.person),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(width: 2.0),
@@ -150,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                             labelText: 'Email',
-                            labelStyle: TextStyle(),
+                            //labelStyle: TextStyle(),
                             icon: Icon(Icons.email),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(width: 2.0),
@@ -165,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _passEditingController,
                       //keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
-                          labelStyle: const TextStyle(),
+                          //labelStyle: const TextStyle(),
                           labelText: 'Password',
                           icon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
@@ -204,7 +204,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       //keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
                           labelText: 'Re-enter Password',
-                          labelStyle: const TextStyle(),
+                          //labelStyle: const TextStyle(),
                           icon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -249,9 +249,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              fixedSize: Size(screenWidth / 3, 50)),
+                            fixedSize: Size(screenWidth / 3, 50),
+                            foregroundColor:
+                                Colors.white, // Fixed foreground color to white
+                            backgroundColor: Theme.of(context).primaryColor,
+                          ),
                           onPressed: _registerAccountDialog,
-                          child: const Text('Register'),
+                          child: const Text(
+                            'Register',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
                         ),
                       ],
                     ),
@@ -290,7 +298,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           const SizedBox(
             height: 10,
-          ),          
+          ),
         ],
       ),
     );
@@ -463,7 +471,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               fontSize: 14.0);
         }
       } else {
-        print("Failed to connect to the server. Status code: ${response.statusCode}");
+        print(
+            "Failed to connect to the server. Status code: ${response.statusCode}");
         Fluttertoast.showToast(
             msg: "Failed to connect to the server",
             toastLength: Toast.LENGTH_SHORT,
@@ -475,7 +484,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       progressDialog.dismiss();
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
-          msg: "An error occurred: $error",          
+          msg: "An error occurred: $error",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
