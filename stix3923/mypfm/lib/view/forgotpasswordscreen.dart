@@ -48,7 +48,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     // Restore the entered email if available
     if (_tempEmail.isNotEmpty) {
       _emailController.text = _tempEmail;
-      _isEmailValid = true; // Assuming email is valid if restored
+      _isEmailValid = _prefs.getBool('isEmailValid') ?? false;
+      setState(() {}); // Trigger a rebuild to update UI based on _isEmailValid
     }
   }
 
@@ -73,71 +74,88 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Form(
-                key: _formKey,
-                child: TextFormField(
-                    //enabled: !_isEmailValid,
-                    validator: (val) =>
-                        val!.isEmpty || !val.contains("@") || !val.contains(".")
+              // First row containing email field and verify button
+              Row(
+                children: [
+                  Expanded(
+                    child: Form(
+                      key: _formKey,
+                      child: TextFormField(
+                        validator: (val) => val!.isEmpty ||
+                                !val.contains("@") ||
+                                !val.contains(".")
                             ? "Please enter a valid email"
                             : null,
-                    controller: _emailController,
-                    onChanged: (val) {
-                    _tempEmail = val!;
-                    // Save entered email to SharedPreferences
-                    _prefs.setString('tempEmail', _tempEmail);
-                  },
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                        //labelStyle: TextStyle(),
-                        labelText: 'Enter your registered email here',
-                        icon: Icon(
-                          Icons.mark_email_read,
+                        controller: _emailController,
+                        onChanged: (val) {
+                          _tempEmail = val!;
+                          // Save entered email to SharedPreferences
+                          _prefs.setString('tempEmail', _tempEmail);
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'Enter your registered email here',
+                          icon: Icon(
+                            Icons.mark_email_read,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 2.0),
+                          ),
                         ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  ElevatedButton(
+                    onPressed: _checkEmail,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                    child: const Text(
+                      'Verify',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              // Second row containing OTP field and verify button
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      enabled: _isEmailValid,
+                      controller: _tokenController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Enter OTP here',
+                        icon: Icon(Icons.key_rounded),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 2.0),
-                        ))),
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _checkEmail,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      Colors.white, // Fixed foreground color to white
-                  backgroundColor: Theme.of(context).primaryColor,
-                ), // Set onPressed to null when valid
-                child: const Text('Verify',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                  enabled: _isEmailValid ,
-                  controller: _tokenController,
-                  keyboardType: TextInputType.emailAddress,
-                  //style: const TextStyle(color: Colors.grey),
-                  decoration: const InputDecoration(
-                      labelText: 'Enter OTP here',
-                      //labelStyle: TextStyle(color: Colors.grey),
-                      icon: Icon(Icons.key_rounded),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2.0),
-                      ))),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _isEmailValid ? _checkToken : null,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      Colors.white, // Fixed foreground color to white
-                  backgroundColor: _isEmailValid
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey,
-                ), // Set onPressed to null when valid
-                child: const Text('Verify',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  ElevatedButton(
+                    onPressed: _isEmailValid ? _checkToken : null,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: _isEmailValid
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                    ),
+                    child: const Text(
+                      'Verify',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16.0),
               Form(
@@ -261,6 +279,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               fontSize: 14.0);
           setState(() {
             _isEmailValid = true;
+            // Save _isEmailValid to SharedPreferences
+            _prefs.setBool('isEmailValid', true);
           });
           print(_isEmailValid);
         } else if (data['message'] == 'Inactive account') {
