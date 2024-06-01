@@ -13,13 +13,13 @@ class AddBudgetDetailScreen extends StatefulWidget {
   final DateTime selectedMonth;
   final String selectedCategory;
   final CurrencyProvider currencyProvider;
-  const AddBudgetDetailScreen({
-    Key? key,
-    required this.user,
-    required this.selectedMonth,
-    required this.selectedCategory,
-    required this.currencyProvider
-  }) : super(key: key);
+  const AddBudgetDetailScreen(
+      {Key? key,
+      required this.user,
+      required this.selectedMonth,
+      required this.selectedCategory,
+      required this.currencyProvider})
+      : super(key: key);
 
   @override
   State<AddBudgetDetailScreen> createState() => _AddBudgetDetailScreenState();
@@ -61,9 +61,10 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
               ElevatedButton(
                 onPressed: _saveBudget,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.white, // Set your desired background color
-                  foregroundColor: Colors.orange, // Set your desired text color
+                  foregroundColor:
+                      Colors.white, // Fixed foreground color to white
+                  backgroundColor: Theme.of(context)
+                      .primaryColor, // Set your desired text color
                 ),
                 child: const Text(
                   "Save",
@@ -89,14 +90,14 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
     }
 
     String url = "${MyConfig.server}/mypfm/php/addBudget.php";
-    double convertedAmount = _convertAmountSend(
-        double.parse(_amountController.text));
+    double convertedAmount =
+        _convertAmountSend(double.parse(_amountController.text));
     String _amount = convertedAmount.toString();
     print(widget.selectedMonth.toString());
 
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Add budget in progress.."),
-        title: const Text("Adding..."));
+        message: const Text("Add budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Adding...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
 
     await http.post(Uri.parse(url), body: {
@@ -155,7 +156,7 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
   }
 
   // Method to convert amount to selected currency
-  double _convertAmountSend(double amount) {  
+  double _convertAmountSend(double amount) {
     // Convert the amount using the selected currency rate
     return widget.currencyProvider.convertAmountSend(amount);
   }

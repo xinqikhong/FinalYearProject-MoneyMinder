@@ -655,14 +655,14 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete budget",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -678,7 +678,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             TextButton(
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -698,8 +698,8 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
 
   _deleteBudget(var budget) async {
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete budget in progress.."),
-        title: const Text("Deleting..."));
+        message: const Text("Delete budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
 
     print(budget['budget_id']);

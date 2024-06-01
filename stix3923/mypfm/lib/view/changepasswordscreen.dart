@@ -278,8 +278,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   void _checkPass() {
     String _curPass = _curPassEditingController.text;
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Check password in progress.."),
-        title: const Text("Checking..."));
+        message: const Text("Check password in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Checking...", style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/checkPassword.php"),
@@ -396,8 +396,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     String _pass = _newPassEditingController.text;
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Change password in progress.."),
-        title: const Text("Updating..."));
+        message: const Text("Change password in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Updating...", style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/changePassword.php"),

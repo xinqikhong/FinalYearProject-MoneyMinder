@@ -9,7 +9,9 @@ import 'package:mypfm/model/user.dart';
 class AccountListScreen extends StatefulWidget {
   final User user;
   final List<String> accounts;
-  const AccountListScreen({Key? key, required this.user, required this.accounts}) : super(key: key);
+  const AccountListScreen(
+      {Key? key, required this.user, required this.accounts})
+      : super(key: key);
 
   @override
   State<AccountListScreen> createState() => _AccountListScreenState();
@@ -113,12 +115,12 @@ class _AccountListScreenState extends State<AccountListScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () async {
                 // Add to income categories list
                 setState(() {
@@ -211,7 +213,21 @@ class _AccountListScreenState extends State<AccountListScreen> {
                       fontSize: 14.0);
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Save',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         );
@@ -229,23 +245,36 @@ class _AccountListScreenState extends State<AccountListScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 _deleteAccount(context, accountName);
               },
             ),
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

@@ -246,14 +246,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }*/
 
   String? _validatePhone(String value) {
-    if (value != null && value.isNotEmpty && value.length < 9) {
+    if (value.isNotEmpty && value.length < 9) {
       return "Phone number should contains at least 9 digits";
     }
     return null; // No error (empty or valid)
   }
 
   String? _validateAddress(String value) {
-    if (value != null && value.isNotEmpty && value.length < 5) {
+    if (value.isNotEmpty && value.length < 5) {
       return "Address should contains at least 5 characters";
     }
     return null; // No error (empty or valid)
@@ -278,9 +278,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Edit your profile",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               style: ButtonStyle(
@@ -291,7 +292,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   )),
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -307,7 +308,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   )),
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -331,8 +332,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         : _addressEditingController.text;
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Edit profile in progress.."),
-        title: const Text("Editing..."));
+        message: const Text("Edit profile in progress..",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Editing...",
+            style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/editProfile_user.php"),
@@ -371,7 +374,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             focus1.attach(context);
             focus2.attach(context);
           });
-          String errorMessage = data.values.firstWhere(
+          /*String errorMessage = data.values.firstWhere(
                   (value) => value['status'] != 'success',
                   orElse: () => {})['error'] ??
               "Edit Profile Failed";
@@ -380,8 +383,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
+              fontSize: 14.0);*/
+        } else {
+          print(response.body);
+          Fluttertoast.showToast(
+              msg: data['error'] ?? "Edit Profile Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
+
         print(widget.user.name);
         print(widget.user.phone);
         print(widget.user.address);

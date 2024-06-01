@@ -701,14 +701,21 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete record",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -716,9 +723,15 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               },
             ),
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -732,8 +745,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
 
   _deleteRecord(var record) async {
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete record in progress.."),
-        title: const Text("Deleting..."));
+        message: const Text("Delete record in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
     if (record.containsKey('expense_id')) {
       print(record['expense_id']);

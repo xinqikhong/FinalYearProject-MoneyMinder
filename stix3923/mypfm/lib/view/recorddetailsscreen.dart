@@ -518,14 +518,14 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Edit record",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -541,7 +541,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             TextButton(
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -589,8 +589,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
 
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Edit record in progress.."),
-        title: const Text("Editing..."));
+        message: const Text("Edit record in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Editing...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
 
     if (widget.record is Expense) {
@@ -712,7 +712,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             TextButton(
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -729,7 +729,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             TextButton(
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -756,14 +756,14 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete record",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -779,7 +779,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             TextButton(
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -800,8 +800,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
   _deleteRecord(BuildContext context) async {
     String? recordId;
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete record in progress.."),
-        title: const Text("Deleting..."));
+        message: const Text("Delete record in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
     if (widget.record is Expense) {
       recordId = (widget.record as Expense).expenseId;

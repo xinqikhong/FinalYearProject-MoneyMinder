@@ -449,8 +449,20 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("Clear Form"),
-                                    content: const Text("Are you sure?"),
+                                    title: const Text(
+                                      "Clear Form",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight
+                                              .bold // Adjust the font size as needed
+                                          ),
+                                    ),
+                                    content: const Text(
+                                      "Are you sure?",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight
+                                              .bold // Adjust the font size as needed
+                                          ),
+                                    ),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -468,7 +480,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                                     Color>(
                                               Theme.of(context).primaryColor,
                                             )),
-                                        child: const Text("Yes"),
+                                        child: const Text(
+                                          "Yes",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight
+                                                  .bold // Adjust the font size as needed
+                                              ),
+                                        ),
                                       ),
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
@@ -481,7 +499,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                                     Color>(
                                               Theme.of(context).primaryColor,
                                             )), // Dismiss dialog
-                                        child: const Text("No"),
+                                        child: const Text(
+                                          "No",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight
+                                                  .bold // Adjust the font size as needed
+                                              ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -542,14 +566,15 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Add record",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -565,7 +590,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             TextButton(
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -600,8 +625,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     print("Check data: $_date $_amount $_category $_account $_note $_desc");
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Add record in progress.."),
-        title: const Text("Adding..."));
+        message: const Text(
+          "Add record in progress..",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        title: const Text(
+          "Adding...",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
     progressDialog.show();
     if (selectedType == "Expense") {
       url = "${MyConfig.server}/mypfm/php/addExpense.php";
@@ -1214,12 +1245,12 @@ class _AccountSelectionBottomSheetState
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () async {
                 // Validate if the account name is not empty
                 if (newAccountName.isNotEmpty) {
@@ -1302,7 +1333,19 @@ class _AccountSelectionBottomSheetState
                       fontSize: 14.0);
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         );

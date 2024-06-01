@@ -70,7 +70,30 @@ class MyApp extends StatelessWidget {
           selectionColor: Colors.orange,
           selectionHandleColor: Colors.orange,
         ),
-        datePickerTheme: const DatePickerThemeData(
+        datePickerTheme: DatePickerThemeData(
+          //headerBackgroundColor:Colors.orange, // Header background color
+          dayBackgroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.orange;
+            }
+            return null; // Use default color for non-selected days
+          }),          
+          todayBackgroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              //const BorderSide(color: Colors.orange);
+              return Colors.orange;
+            }
+            return null; // Remove background color for today when not selected
+          }), // Background color for today's date
+          dayOverlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.orange.withOpacity(0.4);
+            }
+            return null; // Use default overlay color
+          }),
           dividerColor: Colors.orange,
           surfaceTintColor: Colors.orange,
           backgroundColor: Colors.white,

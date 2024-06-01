@@ -178,11 +178,23 @@ class _MainScreenState extends State<MainScreen> {
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
                     value: 'change_password',
-                    child: Text('Change Password'),
+                    child: Text(
+                      'Change Password',
+                      style: TextStyle(
+                          fontWeight:
+                              FontWeight.bold // Adjust the font size as needed
+                          ),
+                    ),
                   ),
                   const PopupMenuItem<String>(
                     value: 'delete_account',
-                    child: Text('Delete Account'),
+                    child: Text(
+                      'Delete Account',
+                      style: TextStyle(
+                          fontWeight:
+                              FontWeight.bold // Adjust the font size as needed
+                          ),
+                    ),
                   ),
                 ],
                 onSelected: (String value) async {
@@ -255,61 +267,62 @@ class _MainScreenState extends State<MainScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       // Return AlertDialog with the confirmation message
-                      return Theme(
-                        data: ThemeData(
-                          // Set button color to match your app's primary color
-                          primaryColor: Theme.of(context).primaryColor,
+                      return AlertDialog(
+                        title: const Text(
+                          'Log Out',
+                          style: TextStyle(
+                              fontWeight: FontWeight
+                                  .bold // Adjust the font size as needed
+                              ),
                         ),
-                        child: AlertDialog(
-                          title: const Text('Log Out'),
-                          content: const Text(
-                            'Are you sure?',
-                            style: TextStyle(
-                              fontSize: 18, // Adjust the font size as needed
+                        content: const Text(
+                          'Are you sure?',
+                          style: TextStyle(
+                              fontWeight: FontWeight
+                                  .bold // Adjust the font size as needed
+                              ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              // Navigate to the register screen
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    Theme.of(context).primaryColor),
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(
+                                  fontWeight: FontWeight
+                                      .bold // Adjust the font size as needed
+                                  ),
                             ),
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                // Navigate to the register screen
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
+                          TextButton(
+                            onPressed: () {
+                              // Dismiss the dialog
+                              Navigator.pop(context);
+                            },
+                            style: TextButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    Theme.of(context).primaryColor),
+                            child: const Text(
+                              'No',
+                              style: TextStyle(
+                                  fontWeight: FontWeight
+                                      .bold // Adjust the font size as needed
                                   ),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor),
-                              child: const Text(
-                                'Yes',
-                                style: TextStyle(
-                                  fontSize:
-                                      18, // Adjust the font size as needed
-                                ),
-                              ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                // Dismiss the dialog
-                                Navigator.pop(context);
-                              },
-                              style: TextButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor),
-                              child: const Text(
-                                'No',
-                                style: TextStyle(
-                                  fontSize:
-                                      18, // Adjust the font size as needed
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
                     },
                   );
@@ -403,16 +416,22 @@ class _MainScreenState extends State<MainScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete account",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           content: const Text(
               "Are you sure?\nThis action is irreversible and will permanently remove all your data.",
-              style: TextStyle()),
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -420,9 +439,15 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -437,8 +462,8 @@ class _MainScreenState extends State<MainScreen> {
   void _deleteAccount() async {
     print('start _deleteAccount()');
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete account in progress.."),
-        title: const Text("Deleting..."));
+        message: const Text("Delete account in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
     await http.post(
         Uri.parse("${MyConfig.server}/mypfm/php/deleteUserAccount.php"),

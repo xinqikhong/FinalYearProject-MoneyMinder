@@ -12,7 +12,10 @@ class CategoryListScreen extends StatefulWidget {
   final String selectedType;
   final List<String> categories;
   const CategoryListScreen(
-      {Key? key, required this.user, required this.selectedType, required this.categories})
+      {Key? key,
+      required this.user,
+      required this.selectedType,
+      required this.categories})
       : super(key: key);
 
   @override
@@ -136,12 +139,12 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               onPressed: () async {
                 // Add to income categories list
                 setState(() {
@@ -238,7 +241,21 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                       fontSize: 14.0);
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Save',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         );
@@ -256,23 +273,44 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete",
-            style: TextStyle(),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              )),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               onPressed: () {
                 _deleteCategory(context, categoryName);
               },
             ),
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

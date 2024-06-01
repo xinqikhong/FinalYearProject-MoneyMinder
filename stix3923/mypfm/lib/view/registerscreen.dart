@@ -336,14 +336,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Register new account?",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -351,9 +358,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
             ),
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -415,9 +428,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Close",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -440,8 +459,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String _pass = _passEditingController.text;
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Registration in progress.."),
-        title: const Text("Registering..."));
+        message: const Text(
+          "Registration in progress..",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        title: const Text(
+          "Registering...",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/register_user.php"),

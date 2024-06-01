@@ -288,7 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Please wait.."), title: const Text("Login user"));
+        message: const Text("Please wait..", style: TextStyle(fontWeight: FontWeight.bold),), title: const Text("Login user", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
 
     String _email = _emailditingController.text;

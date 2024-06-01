@@ -70,10 +70,10 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                   ElevatedButton(
                     onPressed: _editBudget,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Colors.white, // Set your desired background color
                       foregroundColor:
-                          Colors.orange, // Set your desired text color
+                          Colors.white, // Fixed foreground color to white
+                      backgroundColor: Theme.of(context)
+                          .primaryColor, // Set your desired text color
                     ),
                     child: const Text(
                       "Save",
@@ -84,10 +84,10 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                   ElevatedButton(
                     onPressed: _deleteBudgetDialog,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Colors.white, // Set your desired background color
                       foregroundColor:
-                          Colors.orange, // Set your desired text color
+                          Colors.white, // Fixed foreground color to white
+                      backgroundColor: Theme.of(context)
+                          .primaryColor, // Set your desired text color
                     ),
                     child: const Text(
                       "Delete",
@@ -121,8 +121,8 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
     String _amount = convertedAmount.toString();
 
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Edit budget in progress.."),
-        title: const Text("Editing..."));
+        message: const Text("Edit budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Editing...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
 
     await http.post(Uri.parse(url), body: {
@@ -189,14 +189,14 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete budget",
-            style: TextStyle(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle()),
+          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -212,7 +212,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
             TextButton(
               child: const Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
@@ -232,8 +232,8 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
 
   _deleteBudget() async {
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete budget in progress.."),
-        title: const Text("Deleting..."));
+        message: const Text("Delete budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
     progressDialog.show();
 
     print(widget.budgetId);
