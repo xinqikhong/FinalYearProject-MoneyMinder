@@ -69,7 +69,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         TextFormField(
                             //readOnly: true,
-                            //textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.next,
                             validator: (val) => _validateName(val!),
                             onFieldSubmitted: (v) {
                               FocusScope.of(context).requestFocus(focus);
@@ -108,7 +108,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         TextFormField(
                             //readOnly: true,
-                            //textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.next,
                             validator: (val) => _validatePhone(val!),
                             focusNode: focus,
                             onFieldSubmitted: (v) {
@@ -351,6 +351,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fontSize: 14.0,
           );
           setState(() {
+            widget.user;
             widget.user.name = _nameEditingController.text;
             widget.user.phone = _phoneEditingController.text;
             widget.user.address = _addressEditingController.text;
@@ -358,7 +359,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             focus1.attach(context);
             focus2.attach(context);
           });
-        } else {
           String errorMessage = data.values.firstWhere(
                   (value) => value['status'] != 'success',
                   orElse: () => {})['error'] ??

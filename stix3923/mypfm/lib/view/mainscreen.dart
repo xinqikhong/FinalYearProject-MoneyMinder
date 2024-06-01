@@ -340,7 +340,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _handleEditProfileBtn() {
+  Future<void> _handleEditProfileBtn() async {
     if (widget.user.id == "unregistered") {
       showDialog(
         context: context,
@@ -384,12 +384,13 @@ class _MainScreenState extends State<MainScreen> {
       );
     } else {
       // Navigate to EditProfileScreen for registered users
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => EditProfileScreen(user: widget.user),
         ),
       );
+      setState(() {});
     }
   }
 

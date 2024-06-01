@@ -34,18 +34,27 @@ if (isset($_POST['email'])) {
         $row = $result->fetch_assoc();
         $otp = $row['user_otp'];
 
-        // If account is verified (otp == 1), send password to user's email
+        // If account is verified (otp == 1), generate random token
         if ($otp == 1) {
-            $password = $row['user_password']; // Assuming password is stored in the 'password' column
+            //Generate passtoken
+            $passtoken = rand(10000, 99999);
             
-            // Attempt to send the email
-            $sendPasswordResult = sendPassword($email, $password);
-            if ($sendPasswordResult) {
-                // Email sent successfully
-                $response = array('status' => 'success', 'data' => null);
+            //Update passtoken in database
+            $sqlUpdate = "UPDATE tbl_users SET user_passtoken = '$passtoken' WHERE user_email = '$email'";;
+            // Execute the update query
+            if ($conn->query($sqlUpdate) === TRUE) {
+                // Attempt to send the email
+                $sendPassResetEmailResult = sendPassResetEmail($email, $passtoken);
+                if ($sendPassResetEmailResult) {
+                    // Email sent successfully
+                    $response = array('status' => 'success', 'data' => null);
+                } else {
+                    // Email sending failed
+                    $response = array('status' => 'failed', 'message' => 'Failed to send password');
+                }
             } else {
-                // Email sending failed
-                $response = array('status' => 'failed', 'message' => 'Failed to send password');
+                $response = array('status' => 'failed', 'message' => 'Failed to update passtoken');
+                sendJsonResponse($response);
             }
         }
         // If account is not verified (otp == 0), return 'IInactive account' message
@@ -99,7 +108,7 @@ function sendJsonResponse($sentArray)
     echo $jsonResponse;
 }
 
-function sendPassword($email, $password){
+function sendPassResetEmail($email, $passtoken){
      // Create a new PHPMailer instance
     $mail = new PHPMailer\PHPMailer\PHPMailer();
     
@@ -119,14 +128,14 @@ function sendPassword($email, $password){
 
         // Email content
 $mail->isHTML(true);
-$mail->Subject = 'Money Minder - Password Retrieval';
+$mail->Subject = 'Money Minder - Password Reset';
 $mail->Body = "
     <html>
     <body style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px;'>
-        <h2 style='text-align: left;'>MoneyMinder - Password Retrieval</h2>
-        <p style='text-align: left;'>Your password is: $password</p>
+        <h2 style='text-align: left;'>MoneyMinder Password Reset</h2>
+        <p style='text-align: left;'>One-Time-Password(OTP): $passtoken</p>
         <br>
-        <p style='text-align: left;'>If you did not request your password, please ignore this email.</p>
+        <p style='text-align: left;'>Please enter the provided OTP in the app to reset your password. If you did not request a password reset, please ignore this email.</p>
         <br>
         <p style='text-align: left;'>Thank you,<br>MoneyMinder Team</p>
     </body>
