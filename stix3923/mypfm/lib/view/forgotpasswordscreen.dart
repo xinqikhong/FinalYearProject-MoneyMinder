@@ -88,7 +88,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             : null,
                         controller: _emailController,
                         onChanged: (val) {
-                          _tempEmail = val!;
+                          _tempEmail = val;
                           // Save entered email to SharedPreferences
                           _prefs.setString('tempEmail', _tempEmail);
                         },
@@ -260,8 +260,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }
     String _email = _emailController.text;
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Verify email in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
-        title: const Text("Verifying...", style: TextStyle(fontWeight: FontWeight.bold)));
+        message: const Text("Verify email in progress..",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Verifying...",
+            style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/forgotPassword.php"),
@@ -406,7 +408,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             "Reset password?",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -452,8 +455,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     String _token = _tokenController.text;
     print('_email: $_email, _pass: $_pass, _token:$_token');
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Reset password in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
-        title: const Text("Updating...", style: TextStyle(fontWeight: FontWeight.bold)));
+        message: const Text("Reset password in progress..",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Updating...",
+            style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/resetPassword.php"),
@@ -509,8 +514,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     String _email = _emailController.text;
     print('_token: $_token, _email: $_email');
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Check OTP in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
-        title: const Text("Checking...", style: TextStyle(fontWeight: FontWeight.bold)));
+        message: const Text("Check OTP in progress..",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Checking...",
+            style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/checkToken.php"),
@@ -537,6 +544,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
+          setState(() {
+            _isTokenValid = false;
+          });
         }
       } else {
         print(
