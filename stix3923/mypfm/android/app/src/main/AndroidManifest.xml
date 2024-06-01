@@ -24,9 +24,9 @@
         </intent>
     </queries>
     <application
-        android:label="mypfm"
+        android:label="MoneyMinder"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/mm_app_icon"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
