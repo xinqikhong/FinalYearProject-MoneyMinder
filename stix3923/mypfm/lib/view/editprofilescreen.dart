@@ -156,10 +156,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               //fixedSize: Size(screenWidth / 3, 50)),
                               onPressed: _saveEditDialog,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors
-                                    .white, // Set your desired background color
                                 foregroundColor: Colors
-                                    .orange, // Set your desired text color
+                                    .white, // Fixed foreground color to white
+                                backgroundColor: Theme.of(context)
+                                    .primaryColor, // Set your desired text color
                               ),
                               child: const Text(
                                 'Save',
@@ -283,6 +283,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           content: const Text("Are you sure?", style: TextStyle()),
           actions: <Widget>[
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "Yes",
                 style: TextStyle(),
@@ -293,6 +299,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               },
             ),
             TextButton(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // Fixed foreground color to white
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Theme.of(context).primaryColor,
+                  )),
               child: const Text(
                 "No",
                 style: TextStyle(),
