@@ -662,7 +662,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         ),
       );
       // Refresh the data after returning from the details screen
-      _refresh();
+      _loadRecords(_selectedMonth.year, _selectedMonth.month);
     } else if (record.containsKey('income_id')) {
       print(record['income_id']);
       // It's an income record
@@ -688,7 +688,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         ),
       );
       // Refresh the data after returning from the details screen
-      _refresh();
+      _loadRecords(_selectedMonth.year, _selectedMonth.month);
     }
   }
 
@@ -849,7 +849,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             fontSize: 14.0);
       });
     }
-    _refresh();
+    _loadRecords(_selectedMonth.year, _selectedMonth.month);
   }
 
   // Method to convert amount to selected currency

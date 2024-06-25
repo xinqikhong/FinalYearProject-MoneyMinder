@@ -810,7 +810,11 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
     });
-    _loadBudget(_selectedMonth.year, _selectedMonth.month);
+    expenseProgressData = [];
+    budgetlist = [];
+    expenseList = [];
+    _loadData(_selectedMonth.year, _selectedMonth.month);
+    print('Data reloaded after deleting budget.');
   }
 
   // Method to convert amount to selected currency

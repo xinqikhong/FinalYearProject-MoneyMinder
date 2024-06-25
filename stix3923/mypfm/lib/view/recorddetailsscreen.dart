@@ -520,7 +520,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             "Edit record",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -589,8 +590,14 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
 
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Edit record in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
-        title: const Text("Editing...", style: TextStyle(fontWeight: FontWeight.bold),));
+        message: const Text(
+          "Edit record in progress..",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        title: const Text(
+          "Editing...",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
     progressDialog.show();
 
     if (widget.record is Expense) {
@@ -758,7 +765,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             "Delete record",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -773,7 +781,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                   )),
               onPressed: () {
                 Navigator.of(context).pop();
-                _deleteRecord(context);
+                _deleteRecord();
               },
             ),
             TextButton(
@@ -797,19 +805,30 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
     );
   }
 
-  _deleteRecord(BuildContext context) async {
+  _deleteRecord() async {
     String? recordId;
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete record in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
-        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
+        message: const Text(
+          "Delete record in progress..",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        title: const Text(
+          "Deleting...",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
     progressDialog.show();
-    if (widget.record is Expense) {
-      recordId = (widget.record as Expense).expenseId;
-      await http.post(
-          Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
-          body: {
-            "expense_id": recordId,
-          }).then((response) {
+    try {
+      if (!mounted) return;
+
+      if (widget.record is Expense) {
+        recordId = (widget.record as Expense).expenseId;
+        var response = await http.post(
+            Uri.parse("${MyConfig.server}/mypfm/php/deleteExpense.php"),
+            body: {
+              "expense_id": recordId,
+            });
+        if (!mounted)
+          return; // Check if the widget is still mounted before proceeding
         progressDialog.dismiss();
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
@@ -822,6 +841,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 timeInSecForIosWeb: 1,
                 fontSize: 14.0);
             Navigator.pop(context);
+            return;
           } else {
             print(response.body);
             Fluttertoast.showToast(
@@ -843,24 +863,16 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
-      }).catchError((error) {
-        progressDialog.dismiss();
-        logger.e("An error occurred: $error");
-        Fluttertoast.showToast(
-            msg: "An error occurred: $error",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-      });
-    } else if (widget.record is Income) {
-      recordId = (widget.record as Income).incomeId;
-      print(recordId);
-      await http.post(
-          Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
-          body: {
-            "income_id": recordId,
-          }).then((response) {
+      } else if (widget.record is Income) {
+        recordId = (widget.record as Income).incomeId;
+        print(recordId);
+        var response = await http.post(
+            Uri.parse("${MyConfig.server}/mypfm/php/deleteIncome.php"),
+            body: {
+              "income_id": recordId,
+            });
+        if (!mounted)
+          return; // Check if the widget is still mounted before proceeding
         progressDialog.dismiss();
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
@@ -873,6 +885,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 timeInSecForIosWeb: 1,
                 fontSize: 14.0);
             Navigator.pop(context);
+            return;
           } else {
             print(response.body);
             Fluttertoast.showToast(
@@ -894,7 +907,9 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 14.0);
         }
-      }).catchError((error) {
+      }
+    } catch (error) {
+      if (mounted) {
         progressDialog.dismiss();
         logger.e("An error occurred: $error");
         Fluttertoast.showToast(
@@ -903,7 +918,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
-      });
+      }
     }
   }
 
@@ -1083,11 +1098,11 @@ class _CategorySelectionBottomSheetState
     );
   }
 
-  @override
+  /*@override
   void dispose() {
     _focusScopeNode.dispose();
     super.dispose();
-  }
+  }*/
 
   void _addCategory() {
     showDialog(
