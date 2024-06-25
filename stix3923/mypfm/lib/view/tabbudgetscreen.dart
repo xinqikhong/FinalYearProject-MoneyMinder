@@ -42,9 +42,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   void initState() {
     super.initState();
     _selectedMonth = DateTime.now();
+    expenseProgressData = [];
     budgetlist = [];
     expenseList = [];
-    expenseProgressData = [];
     _loadData(_selectedMonth.year, _selectedMonth.month);
   }
 
@@ -61,7 +61,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           builder: (context, currencyProvider, child) {
         return RefreshIndicator(
           onRefresh: () async {
-            await _loadBudget(_selectedMonth.year, _selectedMonth.month);
+            expenseProgressData = [];
+            budgetlist = [];
+            expenseList = [];
+            _loadData(_selectedMonth.year, _selectedMonth.month);
           },
           child: Column(
             children: [
@@ -174,8 +177,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     }
   }*/
 
-  void _loadData(int year, int month) async {
+  Future<void> _loadData(int year, int month) async {
     if (_isDisposed) {
+      print('Widget is disposed, _loadData exiting.');
       return; // Check if the widget is disposed
     }
     if (widget.user.id == "unregistered") {
@@ -184,25 +188,30 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           titlecenter = "No Records Found";
         });
       }
+      print('User is unregistered, _loadData exiting.');
       return;
     }
 
+    print('Start _loadData for $year-$month');
+
     await _loadBudget(year, month);
     await _loadExpense(year, month);
-    _populateProgressData();
+    await _populateProgressData();
 
     if (!_isDisposed) {
       setState(() {
         // Refresh UI after loading data
+        print('UI refreshed after loading data.');
       });
     } // Refresh UI after loading data
   }
 
   Future<void> _loadBudget(int year, int month) async {
     if (_isDisposed) {
+      print('Widget is disposed, _loadBudget exiting.');
       return; // Check if the widget is disposed
     }
-    print("$month, $year");
+    print("Start _loadBudget for $year-$month");
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadBudget.php"),
         body: {
           'user_id': widget.user.id,
@@ -217,6 +226,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           setState(() {
             budgetlist = extractdata;
           });
+          print('Budget list updated: $budgetlist');
         }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
@@ -225,6 +235,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             titlecenter = "No Records Found";
             budgetlist = []; // Clear existing data
           });
+          print('No records found for budget.');
         }
       } else {
         // Handle other error cases
@@ -232,6 +243,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           setState(() {
             titlecenter = "Error loading budget records";
           });
+          print('Error loading budget records.');
         }
       }
     }).catchError((error) {
@@ -247,9 +259,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
 
   Future<void> _loadExpense(int year, int month) async {
     if (_isDisposed) {
+      print('Widget is disposed, _loadExpense exiting.');
       return; // Check if the widget is disposed
     }
-    print(month);
+    print("Start _loadExpense for $year-$month");
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/loadExpense.php"),
         body: {
           'user_id': widget.user.id,
@@ -267,6 +280,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 .map<Expense>((json) => Expense.fromJson(json))
                 .toList();
           });
+          print('Expense list updated: $expenseList');
         }
       } else if (response.statusCode == 200 && jsondata['status'] == 'failed') {
         // Handle case when no records are found
@@ -275,6 +289,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             titlecenter = "No Records Found";
             expenseList = []; // Clear existing data
           });
+          print('No records found for expense.');
         }
       } else {
         // Handle other error cases
@@ -282,6 +297,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           setState(() {
             titlecenter = "Error loading expense records";
           });
+          print('Error loading expense records.');
         }
       }
     }).catchError((error) {
@@ -338,7 +354,12 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     });
   }*/
 
-  void _populateProgressData() {
+  Future<void> _populateProgressData() async {
+    if (_isDisposed) {
+      print('Widget is disposed, _populateProgressData exiting.');
+      return;
+    }
+
     print('Start _populateProgressData()');
     expenseProgressData.clear();
 
@@ -357,13 +378,25 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             .toStringAsFixed(2), // Format as string with 2 decimal places
         'percentage': 0.0, // Placeholder for percentage (calculated later)
       });
+
       print('$category  $totalExpenseForCategory');
     });
 
-    _calculatePercentage();
+    await _calculatePercentage();
+
+    if (!_isDisposed) {
+      setState(() {
+        print('UI refreshed after populating progress data.');
+      });
+    }
   }
 
-  void _calculatePercentage() {
+  Future<void> _calculatePercentage() async {
+    if (_isDisposed) {
+      print('Widget is disposed, _calculatePercentage exiting.');
+      return;
+    }
+
     // Create a map to store calculated percentages for each category
     var categoryPercentages = {};
 
@@ -383,14 +416,29 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       if (categoryPercentages.containsKey(category)) {
         double budgetAmount = categoryPercentages[category];
         double percentage = (expenseAmount / budgetAmount) * 100;
-        data['percentage'] = percentage.toStringAsFixed(2);
+        if (!_isDisposed) {
+          setState(() {
+            // Refresh UI after calculating percentages
+            data['percentage'] = percentage.toStringAsFixed(2);
+          });
+        }
       } else {
         // Handle case where no budget is found for the category
-        data['percentage'] =
-            '0.00'; // Set percentage to zero (or display a placeholder)
+        if (!_isDisposed) {
+          setState(() {
+            data['percentage'] =
+                '0.00'; // Set percentage to zero (or display a placeholder)
+          });
+        }
       }
-      print(data['category'] + ' ' + data['percentage']);
+      print(data['category'] + ' :' + data['percentage']);
     });
+
+    if (!_isDisposed) {
+      setState(() {
+        print('UI refreshed after calculating percentages.');
+      });
+    }
   }
 
   /*Future<void> _refresh() async {
@@ -631,7 +679,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }
 
   _budgetDetails(var budget) async {
-    print(budget['budget_id']);
+    print('Budget details selected: ${budget['budget_id']}');
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -643,7 +691,12 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             currencyProvider: widget.currencyProvider),
       ),
     );
-    _loadBudget(_selectedMonth.year, _selectedMonth.month);
+    print('Returned from EditBudgetScreen');
+    expenseProgressData = [];
+    budgetlist = [];
+    expenseList = [];
+    _loadData(_selectedMonth.year, _selectedMonth.month);
+    print('Data reloaded after editing budget.');
   }
 
   void _deleteBudgetDialog(var budget) {
@@ -657,7 +710,8 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             "Delete budget",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold)),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -698,8 +752,14 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
 
   _deleteBudget(var budget) async {
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
-        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
+        message: const Text(
+          "Delete budget in progress..",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        title: const Text(
+          "Deleting...",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
     progressDialog.show();
 
     print(budget['budget_id']);
