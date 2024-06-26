@@ -11,7 +11,8 @@ import 'package:logger/logger.dart';
 import 'package:mypfm/view/addbudgetscreen.dart';
 import 'package:mypfm/view/editbudgetscreen.dart';
 import 'package:mypfm/view/registerscreen.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:collection/collection.dart';
 import 'package:provider/provider.dart';
 import 'currency_provider.dart';
@@ -751,7 +752,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
   }
 
   _deleteBudget(var budget) async {
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text(
           "Delete budget in progress..",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -760,14 +761,25 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           "Deleting...",
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
-    progressDialog.show();
+    progressDialog.show();*/
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Deleting...",
+          //message: "Delete record in progress..",
+        );
+      },
+    );
 
     print(budget['budget_id']);
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteBudget.php"),
         body: {
           "budget_id": budget['budget_id'],
         }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(budget['budget_id']); //debug
@@ -801,7 +813,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred:\nPlease try again later.",
