@@ -18,6 +18,7 @@ import 'package:ndialog/ndialog.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'currency_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -51,6 +52,10 @@ class _MainScreenState extends State<MainScreen> {
       TabResourceScreen(user: widget.user),
     ];
   }
+
+  /*void clearPreferencesCallback() {
+    clearPreferences();
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -286,12 +291,13 @@ class _MainScreenState extends State<MainScreen> {
                           TextButton(
                             onPressed: () {
                               // Navigate to the register screen
-                              Navigator.pushReplacement(
+                              /*Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const LoginScreen(),
                                 ),
-                              );
+                              );*/
+                              logout();
                             },
                             style: TextButton.styleFrom(
                                 foregroundColor: Colors.white,
@@ -332,6 +338,16 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', '');
+    await prefs.setString('pass', '');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
@@ -462,8 +478,10 @@ class _MainScreenState extends State<MainScreen> {
   void _deleteAccount() async {
     print('start _deleteAccount()');
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Delete account in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
-        title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold)));
+        message: const Text("Delete account in progress..",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Deleting...",
+            style: TextStyle(fontWeight: FontWeight.bold)));
     progressDialog.show();
     await http.post(
         Uri.parse("${MyConfig.server}/mypfm/php/deleteUserAccount.php"),

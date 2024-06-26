@@ -13,7 +13,10 @@ import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
 import 'mainscreen.dart';
 
+//typedef VoidCallback = void Function();
+
 class LoginScreen extends StatefulWidget {
+  //final VoidCallback clearPreferencesCallback;
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -288,7 +291,14 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text("Please wait..", style: TextStyle(fontWeight: FontWeight.bold),), title: const Text("Login user", style: TextStyle(fontWeight: FontWeight.bold),));
+        message: const Text(
+          "Please wait..",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        title: const Text(
+          "Login user",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ));
     progressDialog.show();
 
     String _email = _emailditingController.text;
@@ -352,7 +362,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setString('email', email);
       await prefs.setString('pass', password);
       Fluttertoast.showToast(
-          msg: "Login Credentials Stored",
+          msg: "Login Credentials Saved",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
