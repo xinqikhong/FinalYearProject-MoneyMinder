@@ -5,7 +5,8 @@ import 'package:logger/logger.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'currency_provider.dart';
 
 class EditBudgetScreen extends StatefulWidget {
@@ -120,16 +121,25 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
         _convertAmountSend(double.parse(_amountController.text));
     String _amount = convertedAmount.toString();
 
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Edit budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
         title: const Text("Editing...", style: TextStyle(fontWeight: FontWeight.bold),));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Updating...",
+        );
+      },
+    );
 
     await http.post(Uri.parse(url), body: {
       "budget_id": widget.budgetId,
       "amount": _amount,
     }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       print(widget.budgetId);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -169,7 +179,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred.\nPlease try again later.",
@@ -231,17 +241,27 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
   }
 
   _deleteBudget() async {
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Delete budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
         title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Deleting...",
+          //message: "Delete record in progress..",
+        );
+      },
+    );
 
     print(widget.budgetId);
     await http.post(Uri.parse("${MyConfig.server}/mypfm/php/deleteBudget.php"),
         body: {
           "budget_id": widget.budgetId,
         }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(widget.budgetId); //debug
@@ -276,7 +296,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred:\nPlease try again later.",
