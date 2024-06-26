@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'currency_provider.dart';
 
 class AddBudgetDetailScreen extends StatefulWidget {
@@ -95,10 +96,19 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
     String _amount = convertedAmount.toString();
     print(widget.selectedMonth.toString());
 
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Add budget in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
         title: const Text("Adding...", style: TextStyle(fontWeight: FontWeight.bold),));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Adding...",
+        );
+      },
+    );
 
     await http.post(Uri.parse(url), body: {
       "user_id": widget.user.id,
@@ -107,7 +117,7 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
       "year": widget.selectedMonth.year.toString(),
       "month": widget.selectedMonth.month.toString(),
     }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       print(widget.user.id);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -144,7 +154,7 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred.\nPlease try again later.",

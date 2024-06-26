@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Container(
           constraints: const BoxConstraints.expand(),
-          color: const Color.fromARGB(255, 255, 248, 199),
+          color: Color.fromARGB(255, 255, 255, 255),
           // Set the background color here
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -44,12 +44,12 @@ class _SplashScreenState extends State<SplashScreen> {
                     fontWeight: FontWeight.bold,
                     color: Colors.deepOrange),
               ),
-              SizedBox(
+              /*SizedBox(
                 height: 10,
               ),
               CircularProgressIndicator(
                 color: Colors.orangeAccent,
-              ),
+              ),*/
             ],
           ),
         ),

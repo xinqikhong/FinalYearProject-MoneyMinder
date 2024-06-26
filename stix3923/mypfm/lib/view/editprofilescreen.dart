@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
@@ -331,12 +332,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ? null
         : _addressEditingController.text;
     FocusScope.of(context).unfocus();
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Edit profile in progress..",
             style: TextStyle(fontWeight: FontWeight.bold)),
         title: const Text("Editing...",
             style: TextStyle(fontWeight: FontWeight.bold)));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Updating...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/editProfile_user.php"),
         body: {
@@ -346,7 +356,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           "phone": _phone ?? "", // Send an empty string if phone is null
           "address": _address ?? "" // Send an empty string if address is null
         }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       print(_phone);
       print(_address);
       if (response.statusCode == 200) {
@@ -409,7 +419,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",

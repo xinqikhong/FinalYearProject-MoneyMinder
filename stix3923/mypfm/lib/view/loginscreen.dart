@@ -10,7 +10,8 @@ import 'package:mypfm/view/registerscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'mainscreen.dart';
 
 //typedef VoidCallback = void Function();
@@ -290,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isChecked = false;
       return;
     }
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text(
           "Please wait..",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -299,7 +300,16 @@ class _LoginScreenState extends State<LoginScreen> {
           "Login user",
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Login..",
+        );
+      },
+    );
 
     String _email = _emailditingController.text;
     String _pass = _passEditingController.text;
@@ -315,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         final currencyProvider =
             Provider.of<CurrencyProvider>(context, listen: false);
         currencyProvider.setUserId(user.id);
@@ -337,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
       }
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
     });
   }
 

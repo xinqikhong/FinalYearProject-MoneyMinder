@@ -6,7 +6,8 @@ import 'package:mypfm/model/user.dart';
 import 'package:intl/intl.dart';
 import 'package:mypfm/view/accountlistscreen.dart';
 import 'package:mypfm/view/categorylistscreen.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 //import 'package:provider/provider.dart';
@@ -624,7 +625,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     print(widget.user.id);
     print("Check data: $_date $_amount $_category $_account $_note $_desc");
     FocusScope.of(context).unfocus();
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text(
           "Add record in progress..",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -633,7 +634,16 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
           "Adding...",
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Adding...",
+        );
+      },
+    );
     if (selectedType == "Expense") {
       url = "${MyConfig.server}/mypfm/php/addExpense.php";
     } else {
@@ -649,7 +659,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
       "note": _note ?? "", // Send an empty string if note is null
       "desc": _desc ?? "" // Send an empty string if address is null
     }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       print(widget.user.id);
       print(_account);
       if (response.statusCode == 200) {
@@ -687,7 +697,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",

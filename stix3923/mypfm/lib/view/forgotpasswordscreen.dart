@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
@@ -259,16 +260,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       return;
     }
     String _email = _emailController.text;
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Verify email in progress..",
             style: TextStyle(fontWeight: FontWeight.bold)),
         title: const Text("Verifying...",
             style: TextStyle(fontWeight: FontWeight.bold)));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Verifying...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/forgotPassword.php"),
         body: {"email": _email}).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
@@ -360,7 +370,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",
@@ -454,12 +464,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     String _pass = _newPassEditingController.text;
     String _token = _tokenController.text;
     print('_email: $_email, _pass: $_pass, _token:$_token');
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Reset password in progress..",
             style: TextStyle(fontWeight: FontWeight.bold)),
         title: const Text("Updating...",
             style: TextStyle(fontWeight: FontWeight.bold)));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Updating...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/resetPassword.php"),
         body: {
@@ -467,7 +486,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           "password": _pass,
           "token": _token
         }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
@@ -498,7 +517,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",
@@ -513,16 +532,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     String _token = _tokenController.text;
     String _email = _emailController.text;
     print('_token: $_token, _email: $_email');
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Check OTP in progress..",
             style: TextStyle(fontWeight: FontWeight.bold)),
         title: const Text("Checking...",
             style: TextStyle(fontWeight: FontWeight.bold)));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Checking...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/checkToken.php"),
         body: {"email": _email, "token": _token}).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
@@ -559,7 +587,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",

@@ -5,7 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/view/loginscreen.dart';
 import 'package:http/http.dart' as http;
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:logger/logger.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -458,7 +459,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String _email = _emailditingController.text;
     String _pass = _passEditingController.text;
     FocusScope.of(context).unfocus();
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text(
           "Registration in progress..",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -467,7 +468,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "Registering...",
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Registering...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/register_user.php"),
         body: {
@@ -475,7 +485,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "email": _email,
           "password": _pass
         }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
@@ -509,7 +519,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",

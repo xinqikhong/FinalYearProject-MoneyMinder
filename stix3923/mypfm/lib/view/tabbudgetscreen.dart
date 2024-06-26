@@ -61,6 +61,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       body: Consumer<CurrencyProvider>(
           builder: (context, currencyProvider, child) {
         return RefreshIndicator(
+          color: Colors.orangeAccent,
           onRefresh: () async {
             expenseProgressData = [];
             budgetlist = [];

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mypfm/model/config.dart';
 import 'package:mypfm/model/user.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
@@ -277,17 +278,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   void _checkPass() {
     String _curPass = _curPassEditingController.text;
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /* progressDialog = ProgressDialog(context,
         message: const Text("Check password in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
         title: const Text("Checking...", style: TextStyle(fontWeight: FontWeight.bold)));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Checking...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/checkPassword.php"),
         body: {
           "user_id": widget.user.id,
           "password": _curPass
         }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
@@ -320,7 +330,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",
@@ -395,14 +405,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     FocusScope.of(context).requestFocus(FocusNode());
     String _pass = _newPassEditingController.text;
     FocusScope.of(context).unfocus();
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Change password in progress..", style: TextStyle(fontWeight: FontWeight.bold)),
         title: const Text("Updating...", style: TextStyle(fontWeight: FontWeight.bold)));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Updating...",
+        );
+      },
+    );
 
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/changePassword.php"),
         body: {"user_id": widget.user.id, "password": _pass}).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print(data);
@@ -433,7 +452,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             fontSize: 14.0);
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",
