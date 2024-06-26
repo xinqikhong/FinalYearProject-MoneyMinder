@@ -8,7 +8,8 @@ import 'package:mypfm/model/income.dart';
 import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/accountlistscreen.dart';
 import 'package:mypfm/view/categorylistscreen.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 //import 'package:provider/provider.dart';
@@ -589,7 +590,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         "Check data: $recordId $_date $_amount $_category $_account $_note $_desc");
 
     FocusScope.of(context).unfocus();
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text(
           "Edit record in progress..",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -598,7 +599,16 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
           "Editing...",
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Updating...",
+        );
+      },
+    );
 
     if (widget.record is Expense) {
       url = "${MyConfig.server}/mypfm/php/editExpense.php";
@@ -617,7 +627,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       "note": _note ?? "", // Send an empty string if note is null
       "desc": _desc ?? "" // Send an empty string if address is null
     }).then((response) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       print(recordId);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -652,7 +662,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
         return;
       }
     }).catchError((error) {
-      progressDialog.dismiss();
+      Navigator.of(context).pop(); // Dismiss the dialog
       logger.e("An error occurred: $error");
       Fluttertoast.showToast(
           msg: "An error occurred: $error",
@@ -807,7 +817,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
 
   _deleteRecord() async {
     String? recordId;
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text(
           "Delete record in progress..",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -816,7 +826,17 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
           "Deleting...",
           style: TextStyle(fontWeight: FontWeight.bold),
         ));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Deleting...",
+          //message: "Delete record in progress..",
+        );
+      },
+    );
     try {
       if (!mounted) return;
 
@@ -829,7 +849,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             });
         if (!mounted)
           return; // Check if the widget is still mounted before proceeding
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           print("Expense ID: $recordId"); //debug
@@ -873,7 +893,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             });
         if (!mounted)
           return; // Check if the widget is still mounted before proceeding
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           print("Income ID: $recordId"); //debug
@@ -910,7 +930,7 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
       }
     } catch (error) {
       if (mounted) {
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         logger.e("An error occurred: $error");
         Fluttertoast.showToast(
             msg: "An error occurred: $error",
