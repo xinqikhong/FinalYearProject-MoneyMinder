@@ -33,8 +33,7 @@ class MyApp extends StatelessWidget {
         primaryColor:
             const Color.fromARGB(255, 255, 147, 24), // Default primary color
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 255, 245,
-              230), // Default app bar background color // Default app bar text color
+          backgroundColor: Color.fromARGB(255, 255, 255, 255), // Default app bar background color // Default app bar text color
         ),
         /*buttonTheme: ButtonThemeData(
           buttonColor:
@@ -108,40 +107,6 @@ class MyApp extends StatelessWidget {
       ),
       title: 'MyPFM',
       home: const SplashScreen(),
-    );
-  }
-}
-
-class CustomProgressDialog extends StatelessWidget {
-  final String title;
-  final String message;
-
-  const CustomProgressDialog({
-    Key? key,
-    required this.title,
-    required this.message,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(message),
-        ],
-      ),
     );
   }
 }
