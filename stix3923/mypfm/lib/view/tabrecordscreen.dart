@@ -14,9 +14,10 @@ import 'package:mypfm/view/registerscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-import 'package:ndialog/ndialog.dart';
+//import 'package:ndialog/ndialog.dart';
 import 'package:provider/provider.dart';
 import 'currency_provider.dart';
+import 'package:mypfm/view/customprogressdialog.dart';
 
 class TabRecordScreen extends StatefulWidget {
   final User user;
@@ -744,10 +745,20 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
   }
 
   _deleteRecord(var record) async {
-    ProgressDialog progressDialog = ProgressDialog(context,
+    /*ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Delete record in progress..", style: TextStyle(fontWeight: FontWeight.bold),),
         title: const Text("Deleting...", style: TextStyle(fontWeight: FontWeight.bold),));
-    progressDialog.show();
+    progressDialog.show();*/
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const CustomProgressDialog(
+          title: "Deleting...",
+          //message: "Delete record in progress..",
+        );
+      },
+    );
     if (record.containsKey('expense_id')) {
       print(record['expense_id']);
       await http.post(
@@ -755,7 +766,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           body: {
             "expense_id": record['expense_id'],
           }).then((response) {
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           print(record['expense_id']); //debug
@@ -789,7 +800,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               fontSize: 14.0);
         }
       }).catchError((error) {
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         logger.e("An error occurred: $error");
         Fluttertoast.showToast(
             msg: "An error occurred: $error",
@@ -805,7 +816,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           body: {
             "income_id": record['income_id'],
           }).then((response) {
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         if (response.statusCode == 200) {
           var data = jsonDecode(response.body);
           print(record['income_id']); //debug
@@ -839,7 +850,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               fontSize: 14.0);
         }
       }).catchError((error) {
-        progressDialog.dismiss();
+        Navigator.of(context).pop(); // Dismiss the dialog
         logger.e("An error occurred: $error");
         Fluttertoast.showToast(
             msg: "An error occurred: $error",

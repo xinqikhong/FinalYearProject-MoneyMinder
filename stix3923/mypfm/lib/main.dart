@@ -111,3 +111,37 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class CustomProgressDialog extends StatelessWidget {
+  final String title;
+  final String message;
+
+  const CustomProgressDialog({
+    Key? key,
+    required this.title,
+    required this.message,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(message),
+        ],
+      ),
+    );
+  }
+}
