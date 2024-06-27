@@ -77,13 +77,13 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             _convertAmountDisplay(totalExpense, selectedCurrency);
         return RefreshIndicator(
           onRefresh: _refresh,
-          color: Colors.orangeAccent,
+          color: Colors.orange,
           child: Column(
             children: [
               // Pagination for months
               Center(
                 child: Container(
-                  color: Color.fromARGB(255, 255, 227, 186),
+                  color: Color.fromARGB(255, 255, 255, 255),
                   height: 40, // Adjust height as needed
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -117,10 +117,10 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                   ),
                 ),
               ),
-              const Divider(height: 2),
+              //const Divider(height: 1),
               // Total income and expenses
               Container(
-                color: Color.fromARGB(255, 255, 245, 230),
+                color: Color.fromARGB(255, 255, 255, 255),
                 padding: const EdgeInsets.all(2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -274,7 +274,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          color: Color.fromARGB(255, 255, 227, 186),
+          color: Color.fromARGB(255, 255, 255, 255),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
@@ -335,7 +335,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               onTap: () => _recordDetails(recordsForDay[i]),
               onLongPress: () => _deleteRecordDialog(recordsForDay[i]),
               child: Container(
-                color: Color.fromARGB(255, 255, 245, 230),
+                color: Color.fromARGB(255, 255, 255, 255),
                 child: Column(
                   children: [
                     ListTile(

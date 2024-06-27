@@ -49,147 +49,171 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         title: const Text(
           "Edit Profile",
           style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 255, 115, 0)),
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.all(8.0),
-            child: Card(
-              elevation: 8,
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-                child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                            //readOnly: true,
-                            textInputAction: TextInputAction.next,
-                            validator: (val) => _validateName(val!),
-                            onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus);
-                            },
-                            autofocus: false,
-                            controller: _nameEditingController,
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                                labelText: 'Name*',
-                                labelStyle: TextStyle(),
-                                icon: Icon(Icons.person),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                ))),
-                        TextFormField(
-                            enabled: false,
-                            //textInputAction: TextInputAction.next,
-                            /*validator: (val) => _validateEmail(val!),
-                            focusNode: focus,
-                            onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus1);
-                            },
-                            autofocus: false,*/
-                            controller: _emailEditingController,
-                            keyboardType: TextInputType.emailAddress,
-                            style: const TextStyle(color: Colors.grey),
-                            decoration: const InputDecoration(
-                                labelText: 'Email*',
-                                labelStyle: TextStyle(color: Colors.grey),
-                                icon: Icon(Icons.email),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                ))),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        TextFormField(
-                            //readOnly: true,
-                            textInputAction: TextInputAction.next,
-                            validator: (val) => _validatePhone(val!),
-                            focusNode: focus,
-                            onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus1);
-                            },
-                            autofocus: false,
-                            controller: _phoneEditingController,
-                            keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
-                                labelText: 'Phone No.',
-                                labelStyle: TextStyle(),
-                                icon: Icon(Icons.phone_android_rounded),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                ))),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        TextFormField(
-                            //readOnly: true,
-                            textInputAction: TextInputAction.done,
-                            validator: (val) => _validateAddress(val!),
-                            focusNode: focus1,
-                            onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus2);
-                            },
-                            autofocus: false,
-                            controller: _addressEditingController,
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                                labelText: 'Address',
-                                labelStyle: TextStyle(),
-                                icon: Icon(Icons.other_houses),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                ))),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              //style: ElevatedButton.styleFrom(
-                              //fixedSize: Size(screenWidth / 3, 50)),
-                              onPressed: _saveEditDialog,
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors
-                                    .white, // Fixed foreground color to white
-                                backgroundColor: Theme.of(context)
-                                    .primaryColor, // Set your desired text color
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(5.0),
+          child: Column(
+            children: [
+              Card(
+                elevation: 4,
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                              //readOnly: true,
+                              textInputAction: TextInputAction.next,
+                              validator: (val) => _validateName(val!),
+                              onFieldSubmitted: (v) {
+                                FocusScope.of(context).requestFocus(focus);
+                              },
+                              autofocus: false,
+                              controller: _nameEditingController,
+                              keyboardType: TextInputType.text,
+                              decoration: const InputDecoration(
+                                  labelText: 'Name*',
+                                  labelStyle: TextStyle(),
+                                  icon: Icon(Icons.person),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 2.0),
+                                  ))),
+                          TextFormField(
+                              enabled: false,
+                              //textInputAction: TextInputAction.next,
+                              /*validator: (val) => _validateEmail(val!),
+                              focusNode: focus,
+                              onFieldSubmitted: (v) {
+                                FocusScope.of(context).requestFocus(focus1);
+                              },
+                              autofocus: false,*/
+                              controller: _emailEditingController,
+                              keyboardType: TextInputType.emailAddress,
+                              style: const TextStyle(color: Colors.grey),
+                              decoration: const InputDecoration(
+                                  labelText: 'Email*',
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  icon: Icon(Icons.email),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 2.0),
+                                  ))),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                              //readOnly: true,
+                              textInputAction: TextInputAction.next,
+                              validator: (val) => _validatePhone(val!),
+                              focusNode: focus,
+                              onFieldSubmitted: (v) {
+                                FocusScope.of(context).requestFocus(focus1);
+                              },
+                              autofocus: false,
+                              controller: _phoneEditingController,
+                              keyboardType: TextInputType.phone,
+                              decoration: const InputDecoration(
+                                  labelText: 'Phone No.',
+                                  labelStyle: TextStyle(),
+                                  icon: Icon(Icons.phone_android_rounded),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 2.0),
+                                  ))),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                              //readOnly: true,
+                              textInputAction: TextInputAction.done,
+                              validator: (val) => _validateAddress(val!),
+                              focusNode: focus1,
+                              onFieldSubmitted: (v) {
+                                FocusScope.of(context).requestFocus(focus2);
+                              },
+                              autofocus: false,
+                              controller: _addressEditingController,
+                              keyboardType: TextInputType.text,
+                              decoration: const InputDecoration(
+                                  labelText: 'Address',
+                                  labelStyle: TextStyle(),
+                                  icon: Icon(Icons.other_houses),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 2.0),
+                                  ))),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          /*Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                //style: ElevatedButton.styleFrom(
+                                //fixedSize: Size(screenWidth / 3, 50)),
+                                onPressed: _saveEditDialog,
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors
+                                      .white, // Fixed foreground color to white
+                                  backgroundColor: Theme.of(context)
+                                      .primaryColor, // Set your desired text color
+                                ),
+                                child: const Text(
+                                  'Save',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
                               ),
-                              child: const Text(
-                                'Save',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                            ),
-                            /*ElevatedButton(
-                              //style: ElevatedButton.styleFrom(
-                              //fixedSize: Size(screenWidth / 3, 50)),
-                              onPressed: _cancelEditDialog,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors
-                                    .white, // Set your desired background color
-                                foregroundColor: Colors
-                                    .orange, // Set your desired text color
-                              ),
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                            ),*/
-                          ],
-                        ),
-                      ],
-                    )),
+                              /*ElevatedButton(
+                                //style: ElevatedButton.styleFrom(
+                                //fixedSize: Size(screenWidth / 3, 50)),
+                                onPressed: _cancelEditDialog,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors
+                                      .white, // Set your desired background color
+                                  foregroundColor: Colors
+                                      .orange, // Set your desired text color
+                                ),
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                              ),*/
+                            ],
+                          ),*/
+                        ],
+                      )),
+                ),
               ),
-            ),
+              const SizedBox(
+                height: 8,
+              ),
+              ElevatedButton(
+                //style: ElevatedButton.styleFrom(
+                //fixedSize: Size(screenWidth / 3, 50)),
+                onPressed: _saveEditDialog,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Color.fromARGB(
+                      255, 255, 115, 0), // Fixed foreground color to white
+                  backgroundColor: Color.fromARGB(
+                      255, 255, 255, 255), // Set your desired text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        18), // Adjust the border radius here
+                  ),
+                ),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -274,48 +298,53 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          title: const Text(
-            "Edit your profile",
-            style: TextStyle(fontWeight: FontWeight.bold),
+        return Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
+            title: const Text(
+              "Edit your profile",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              //textAlign: TextAlign.center,
+            ),
+            content: const Text(
+              "Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              //textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      style: Theme.of(context).textButtonTheme.style,
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _editProfile();
+                      },
+                    ),
+                    TextButton(
+                      style: Theme.of(context).textButtonTheme.style,
+                      child: const Text(
+                        "No",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          content: const Text("Are you sure?",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          actions: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "Yes",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _editProfile();
-              },
-            ),
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "No",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );
@@ -444,6 +473,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           content: const Text("Are you sure?", style: TextStyle()),
           actions: <Widget>[
             TextButton(
+              style: Theme.of(context)
+                  .textButtonTheme
+                  .style, // Fixed foreground color to white
+
               child: const Text(
                 "Yes",
                 style: TextStyle(),

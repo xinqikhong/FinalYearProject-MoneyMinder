@@ -73,7 +73,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               // Pagination for months
               Center(
                 child: Container(
-                  color: Color.fromARGB(255, 255, 227, 186),
+                  color: Color.fromARGB(255, 255, 255, 255),
                   height: 40, // Adjust height as needed
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -107,7 +107,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   ),
                 ),
               ),
-              const Divider(height: 2),
+              //const Divider(height: 2),
               // Budget list
               Expanded(
                 child: budgetlist.isEmpty
@@ -571,7 +571,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       onLongPress: () => _deleteBudgetDialog(budget),
       child: Container(
         constraints: const BoxConstraints(maxWidth: double.infinity),
-        color: Color.fromARGB(255, 255, 245, 230),
+        color: Color.fromARGB(255, 255, 255, 255),
         child: Column(
           children: [
             ListTile(

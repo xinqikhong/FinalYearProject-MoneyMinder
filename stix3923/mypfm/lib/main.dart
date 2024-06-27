@@ -31,9 +31,10 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.orange,
         primaryColor:
-            const Color.fromARGB(255, 255, 147, 24), // Default primary color
+            const Color.fromARGB(255, 255, 115, 0), // Default primary color
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 255, 255, 255), // Default app bar background color // Default app bar text color
+          backgroundColor: Color.fromARGB(255, 255, 255,
+              255), // Default app bar background color // Default app bar text color
         ),
         /*buttonTheme: ButtonThemeData(
           buttonColor:
@@ -45,13 +46,18 @@ class MyApp extends StatelessWidget {
         ),*/
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: const Color.fromARGB(
-                255, 240, 101, 1), // Set text color for TextButtons
+            foregroundColor: const Color.fromARGB(255, 255, 115, 0),
+            backgroundColor: const Color.fromARGB(
+                255, 255, 255, 255), // Set your desired text color
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(18), // Adjust the border radius here
+            ), // Set text color for TextButtons
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor:
-              Color.fromARGB(255, 255, 211, 154), // Set background color
+              Color.fromARGB(255, 255, 227, 186), // Set background color
           foregroundColor: Colors.orange, // Set icon color
         ),
 
@@ -77,7 +83,7 @@ class MyApp extends StatelessWidget {
               return Colors.orange;
             }
             return null; // Use default color for non-selected days
-          }),          
+          }),
           todayBackgroundColor: MaterialStateProperty.resolveWith<Color?>(
               (Set<MaterialState> states) {
             if (states.contains(MaterialState.selected)) {

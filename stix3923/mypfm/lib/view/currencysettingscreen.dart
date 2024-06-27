@@ -97,9 +97,9 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
         appBar: AppBar(
           title: const Text('Currency Setting',
               style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-              )),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 255, 115, 0))),
           centerTitle: true,
         ),
         body: FutureBuilder<Map<String, String>>(
@@ -157,7 +157,9 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
 
                       if (!rateSnapshot.hasData) {
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            color: Colors.orangeAccent,
+                          ),
                         );
                       }
 

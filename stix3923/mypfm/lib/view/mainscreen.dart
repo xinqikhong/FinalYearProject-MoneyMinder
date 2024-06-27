@@ -65,19 +65,19 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(
           maintitle,
           style: const TextStyle(
-            fontSize: 27,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 27,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 255, 115, 0)),
         ),
         centerTitle: true,
-        bottom: const PreferredSize(
+        /*bottom: const PreferredSize(
           preferredSize:
               Size.fromHeight(4.0), // Adjust the height of the divider
           child: Divider(
             color: Colors.grey, // Adjust the color of the divider
             height: 4.0, // Adjust the thickness of the divider
           ),
-        ),
+        ),*/
       ),
       body: tabScreens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -108,11 +108,12 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       endDrawer: Drawer(
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         child: ListView(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.orange.shade100,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 255, 227, 186),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -277,56 +278,59 @@ class _MainScreenState extends State<MainScreen> {
                         title: const Text(
                           'Log Out',
                           style: TextStyle(
-                              fontWeight: FontWeight
-                                  .bold // Adjust the font size as needed
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22 // Adjust the font size as needed
                               ),
                         ),
                         content: const Text(
                           'Are you sure?',
                           style: TextStyle(
-                              fontWeight: FontWeight
-                                  .bold // Adjust the font size as needed
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15 // Adjust the font size as needed
                               ),
                         ),
                         actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              // Navigate to the register screen
-                              /*Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
+                          Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    // Navigate to the register screen
+                                    /*Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const LoginScreen(),
+                                      ),
+                                    );*/
+                                    logout();
+                                  },
+                                  style:
+                                      Theme.of(context).textButtonTheme.style,
+                                  child: const Text(
+                                    'Yes',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight
+                                            .bold, fontSize: 15 // Adjust the font size as needed
+                                        ),
+                                  ),
                                 ),
-                              );*/
-                              logout();
-                            },
-                            style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor:
-                                    Theme.of(context).primaryColor),
-                            child: const Text(
-                              'Yes',
-                              style: TextStyle(
-                                  fontWeight: FontWeight
-                                      .bold // Adjust the font size as needed
+                                TextButton(
+                                  onPressed: () {
+                                    // Dismiss the dialog
+                                    Navigator.pop(context);
+                                  },
+                                  style:
+                                      Theme.of(context).textButtonTheme.style,
+                                  child: const Text(
+                                    'No',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight
+                                            .bold, fontSize: 15 // Adjust the font size as needed
+                                        ),
                                   ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // Dismiss the dialog
-                              Navigator.pop(context);
-                            },
-                            style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor:
-                                    Theme.of(context).primaryColor),
-                            child: const Text(
-                              'No',
-                              style: TextStyle(
-                                  fontWeight: FontWeight
-                                      .bold // Adjust the font size as needed
-                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -428,49 +432,50 @@ class _MainScreenState extends State<MainScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          title: const Text(
-            "Delete account",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: const Text(
+        return Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: const Text(
+              "Delete account",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            ),
+            content: const Text(
               "Are you sure?\nThis action is irreversible and will permanently remove all your data.",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          actions: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "Yes",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteAccount();
-              },
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "No",
-                style: TextStyle(fontWeight: FontWeight.bold),
+            actions: <Widget>[
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      style: Theme.of(context).textButtonTheme.style,
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _deleteAccount();
+                      },
+                    ),
+                    TextButton(
+                      style: Theme.of(context).textButtonTheme.style,
+                      child: const Text(
+                        "No",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
