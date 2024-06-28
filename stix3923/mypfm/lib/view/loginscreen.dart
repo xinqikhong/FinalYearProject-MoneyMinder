@@ -205,6 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     flex: 5,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
+                                        fixedSize: Size(screenWidth / 3.3, 50),
                                         foregroundColor: const Color.fromARGB(
                                             255,
                                             255,

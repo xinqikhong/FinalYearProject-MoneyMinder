@@ -57,11 +57,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth <= 600) {
+    resWidth = screenWidth <= 600 ? screenWidth : screenWidth * 0.75;
+
+    /*if (screenWidth <= 600) {
       resWidth = screenWidth;
     } else {
       resWidth = screenWidth * 0.75;
-    }
+    }*/
 
     return Theme(
       data: Theme.of(context),
@@ -70,7 +72,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Center(
             child: SingleChildScrollView(
               child: Column(
-                children: [upperHalf(context), lowerHalf(context)],
+                children: [
+                  upperHalf(context, resWidth, screenHeight),
+                  lowerHalf(context, resWidth)
+                ],
               ),
             ),
           ),
@@ -79,7 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget upperHalf(BuildContext context) {
+  Widget upperHalf(BuildContext context, double resWidth, double screenHeight) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: SizedBox(
@@ -93,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget lowerHalf(BuildContext context) {
+  Widget lowerHalf(BuildContext context, double resWidth) {
     return Container(
       width: resWidth,
       margin: const EdgeInsets.only(top: 20),
@@ -254,9 +259,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             fixedSize: Size(screenWidth / 3.3, 50),
-                            foregroundColor:
-                                Colors.white, // Fixed foreground color to white
-                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: const Color.fromARGB(255, 255, 115,
+                                0), // Fixed foreground color to white
+                            backgroundColor: Color.fromARGB(255, 255, 255,
+                                255), // Set your desired text color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  18), // Adjust the border radius here
+                            ),
                           ),
                           onPressed: _registerAccountDialog,
                           child: const Text(
