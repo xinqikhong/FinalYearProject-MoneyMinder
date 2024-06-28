@@ -408,7 +408,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return AlertDialog(
           //backgroundColor: Colors.white,
           title: const Text(
-            "EULA",
+            "EULA", style: TextStyle(fontWeight: FontWeight.bold)
           ),
           content: SizedBox(
             height: screenHeight / 1.5,
@@ -422,9 +422,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     softWrap: true,
                     textAlign: TextAlign.justify,
                     text: TextSpan(
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12.0,
                           //color: Colors.black,
+                          color: Theme.of(context).textTheme.bodyText1?.color,
                         ),
                         text: eula),
                   )),

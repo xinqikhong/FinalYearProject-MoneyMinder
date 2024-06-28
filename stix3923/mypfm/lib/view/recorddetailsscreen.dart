@@ -415,14 +415,14 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                           children: [
                             ElevatedButton(
                               onPressed: _editRecordDialog,
-                              style: ElevatedButton.styleFrom(
+                              /*style: ElevatedButton.styleFrom(
                                 foregroundColor:
                                     Color.fromARGB(255, 255, 115, 0),
                                 backgroundColor: Theme.of(context).brightness ==
                                         Brightness.dark
                                     ? Colors.white
                                     : Colors.black,
-                              ),
+                              ),*/
                               child: const Text(
                                 "Save",
                                 style: TextStyle(
@@ -433,14 +433,14 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                               onPressed: () async {
                                 await _deleteRecordDialog(context);
                               },
-                              style: ElevatedButton.styleFrom(
+                              /*style: ElevatedButton.styleFrom(
                                 foregroundColor:
                                     Color.fromARGB(255, 255, 115, 0),
                                 backgroundColor: Theme.of(context).brightness ==
                                         Brightness.dark
                                     ? Colors.white
                                     : Colors.black,
-                              ),
+                              ),*/
                               child: const Text(
                                 'Delete',
                                 style: TextStyle(
@@ -1109,7 +1109,7 @@ class _CategorySelectionBottomSheetState
       builder: (BuildContext context) {
         String newCategoryName = '';
         return AlertDialog(
-          title: const Text('Add'),
+          title: const Text('Add Category', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
           content: TextField(
             onChanged: (value) {
               newCategoryName = value;
@@ -1117,157 +1117,160 @@ class _CategorySelectionBottomSheetState
             decoration: const InputDecoration(hintText: 'Enter category name'),
           ),
           actions: <Widget>[
-            TextButton(
+            /*TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Validate if the category name is not empty
-                if (newCategoryName.isNotEmpty) {
-                  // Validate if the category name is not already in the list
-                  if (!widget.categories.contains(newCategoryName)) {
-                    if (widget.selectedType == "Income") {
-                      // Add to income categories list
-                      setState(() {
-                        widget.categories.add(newCategoryName);
-                      });
-                      // Add logic to add new category to the database
-                      try {
-                        final response = await http.post(
-                          Uri.parse(
-                              "${MyConfig.server}/mypfm/php/addInCat.php"),
-                          body: {
-                            "user_id": widget.user.id,
-                            "category_name": newCategoryName,
-                          },
-                        );
-                        if (response.statusCode == 200) {
-                          // Category added successfully
-                          var data = jsonDecode(response.body);
-                          print(data);
-                          if (data['status'] == 'success') {
-                            Navigator.pop(context);
-                            Fluttertoast.showToast(
-                                msg: "Add Category Success.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 14.0);
+            ),*/
+            Center(
+              child: TextButton(
+                onPressed: () async {
+                  // Validate if the category name is not empty
+                  if (newCategoryName.isNotEmpty) {
+                    // Validate if the category name is not already in the list
+                    if (!widget.categories.contains(newCategoryName)) {
+                      if (widget.selectedType == "Income") {
+                        // Add to income categories list
+                        setState(() {
+                          widget.categories.add(newCategoryName);
+                        });
+                        // Add logic to add new category to the database
+                        try {
+                          final response = await http.post(
+                            Uri.parse(
+                                "${MyConfig.server}/mypfm/php/addInCat.php"),
+                            body: {
+                              "user_id": widget.user.id,
+                              "category_name": newCategoryName,
+                            },
+                          );
+                          if (response.statusCode == 200) {
+                            // Category added successfully
+                            var data = jsonDecode(response.body);
+                            print(data);
+                            if (data['status'] == 'success') {
+                              Navigator.pop(context);
+                              Fluttertoast.showToast(
+                                  msg: "Add Category Success.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  fontSize: 14.0);
+                            } else {
+                              // Handle error
+                              Fluttertoast.showToast(
+                                  msg: "Add Category Failed",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  fontSize: 14.0);
+                            }
+                            return;
                           } else {
-                            // Handle error
+                            print(response.body);
+                            print(
+                                "Failed to connect to the server. Status code: ${response.statusCode}");
                             Fluttertoast.showToast(
-                                msg: "Add Category Failed",
+                                msg: "Failed to connect to the server",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
+                            return;
                           }
-                          return;
-                        } else {
-                          print(response.body);
-                          print(
-                              "Failed to connect to the server. Status code: ${response.statusCode}");
+                        } catch (e) {
+                          logger.e("Error adding category: $e");
+                          // Handle error
                           Fluttertoast.showToast(
-                              msg: "Failed to connect to the server",
+                              msg: "An error occurred: $e",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               fontSize: 14.0);
-                          return;
                         }
-                      } catch (e) {
-                        logger.e("Error adding category: $e");
-                        // Handle error
-                        Fluttertoast.showToast(
-                            msg: "An error occurred: $e",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            fontSize: 14.0);
-                      }
-                    } else if (widget.selectedType == "Expense") {
-                      // Add to expense categories list
-                      setState(() {
-                        widget.categories.add(newCategoryName);
-                      });
-                      // Add logic to add new category to the database
-                      try {
-                        final response = await http.post(
-                          Uri.parse(
-                              "${MyConfig.server}/mypfm/php/addExCat.php"),
-                          body: {
-                            "user_id": widget.user.id,
-                            "category_name": newCategoryName,
-                          },
-                        );
-                        if (response.statusCode == 200) {
-                          // Category added successfully
-                          var data = jsonDecode(response.body);
-                          print(data);
-                          if (data['status'] == 'success') {
-                            Navigator.pop(context);
-                            Fluttertoast.showToast(
-                                msg: "Add Category Success.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 14.0);
+                      } else if (widget.selectedType == "Expense") {
+                        // Add to expense categories list
+                        setState(() {
+                          widget.categories.add(newCategoryName);
+                        });
+                        // Add logic to add new category to the database
+                        try {
+                          final response = await http.post(
+                            Uri.parse(
+                                "${MyConfig.server}/mypfm/php/addExCat.php"),
+                            body: {
+                              "user_id": widget.user.id,
+                              "category_name": newCategoryName,
+                            },
+                          );
+                          if (response.statusCode == 200) {
+                            // Category added successfully
+                            var data = jsonDecode(response.body);
+                            print(data);
+                            if (data['status'] == 'success') {
+                              Navigator.pop(context);
+                              Fluttertoast.showToast(
+                                  msg: "Add Category Success.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  fontSize: 14.0);
+                            } else {
+                              // Handle error
+                              Fluttertoast.showToast(
+                                  msg: "Add Category Failed",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  fontSize: 14.0);
+                            }
+                            return;
                           } else {
-                            // Handle error
+                            print(response.body);
+                            print(
+                                "Failed to connect to the server. Status code: ${response.statusCode}");
                             Fluttertoast.showToast(
-                                msg: "Add Category Failed",
+                                msg: "Failed to connect to the server",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
                                 fontSize: 14.0);
+                            return;
                           }
-                          return;
-                        } else {
-                          print(response.body);
-                          print(
-                              "Failed to connect to the server. Status code: ${response.statusCode}");
+                        } catch (e) {
+                          logger.e("Error adding category: $e");
+                          // Handle error
                           Fluttertoast.showToast(
-                              msg: "Failed to connect to the server",
+                              msg: "An error occurred: $e",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               fontSize: 14.0);
-                          return;
                         }
-                      } catch (e) {
-                        logger.e("Error adding category: $e");
-                        // Handle error
-                        Fluttertoast.showToast(
-                            msg: "An error occurred: $e",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            fontSize: 14.0);
                       }
+                    } else {
+                      // Show error message if category name already exists
+                      Fluttertoast.showToast(
+                          msg: "Category name already exists.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          fontSize: 14.0);
                     }
                   } else {
-                    // Show error message if category name already exists
+                    // Show error message if category name is empty
                     Fluttertoast.showToast(
-                        msg: "Category name already exists.",
+                        msg: "Please enter a category name.",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
                         fontSize: 14.0);
                   }
-                } else {
-                  // Show error message if category name is empty
-                  Fluttertoast.showToast(
-                      msg: "Please enter a category name.",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 14.0);
-                }
-              },
-              child: const Text('Save'),
+                },
+                child: const Text('Save', style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+              ),
             ),
           ],
         );
@@ -1473,7 +1476,7 @@ class _AccountSelectionBottomSheetState
       builder: (BuildContext context) {
         String newAccountName = '';
         return AlertDialog(
-          title: const Text('Add'),
+          title: const Text('Add Account', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
           content: TextField(
             onChanged: (value) {
               newAccountName = value;
@@ -1481,96 +1484,99 @@ class _AccountSelectionBottomSheetState
             decoration: const InputDecoration(hintText: 'Enter account name'),
           ),
           actions: <Widget>[
-            TextButton(
+            /*TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Validate if the account name is not empty
-                if (newAccountName.isNotEmpty) {
-                  // Validate if the account name is not already in the list
-                  if (!widget.accounts.contains(newAccountName)) {
-                    // Add to account list
-                    setState(() {
-                      widget.accounts.add(newAccountName);
-                    });
-                    // Add logic to add new account to the database
-                    try {
-                      final response = await http.post(
-                        Uri.parse(
-                            "${MyConfig.server}/mypfm/php/addAccount.php"),
-                        body: {
-                          "user_id": widget.user.id,
-                          "account_name": newAccountName,
-                        },
-                      );
-                      if (response.statusCode == 200) {
-                        // account added successfully
-                        var data = jsonDecode(response.body);
-                        print(data);
-                        if (data['status'] == 'success') {
-                          Navigator.pop(context);
-                          Fluttertoast.showToast(
-                              msg: "Add Account Success.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              fontSize: 14.0);
+            ),*/
+            Center(
+              child: TextButton(
+                onPressed: () async {
+                  // Validate if the account name is not empty
+                  if (newAccountName.isNotEmpty) {
+                    // Validate if the account name is not already in the list
+                    if (!widget.accounts.contains(newAccountName)) {
+                      // Add to account list
+                      setState(() {
+                        widget.accounts.add(newAccountName);
+                      });
+                      // Add logic to add new account to the database
+                      try {
+                        final response = await http.post(
+                          Uri.parse(
+                              "${MyConfig.server}/mypfm/php/addAccount.php"),
+                          body: {
+                            "user_id": widget.user.id,
+                            "account_name": newAccountName,
+                          },
+                        );
+                        if (response.statusCode == 200) {
+                          // account added successfully
+                          var data = jsonDecode(response.body);
+                          print(data);
+                          if (data['status'] == 'success') {
+                            Navigator.pop(context);
+                            Fluttertoast.showToast(
+                                msg: "Add Account Success.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          } else {
+                            // Handle error
+                            Fluttertoast.showToast(
+                                msg: "Add Account Failed",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          }
+                          return;
                         } else {
-                          // Handle error
+                          print(response.body);
+                          print(
+                              "Failed to connect to the server. Status code: ${response.statusCode}");
                           Fluttertoast.showToast(
-                              msg: "Add Account Failed",
+                              msg: "Failed to connect to the server",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               fontSize: 14.0);
+                          return;
                         }
-                        return;
-                      } else {
-                        print(response.body);
-                        print(
-                            "Failed to connect to the server. Status code: ${response.statusCode}");
+                      } catch (e) {
+                        logger.e("Error adding account: $e");
+                        // Handle error
                         Fluttertoast.showToast(
-                            msg: "Failed to connect to the server",
+                            msg: "An error occurred: $e",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
                             fontSize: 14.0);
-                        return;
                       }
-                    } catch (e) {
-                      logger.e("Error adding account: $e");
-                      // Handle error
+                    } else {
+                      // Show error message if account name already exists
                       Fluttertoast.showToast(
-                          msg: "An error occurred: $e",
+                          msg: "Account name already exists.",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
                           fontSize: 14.0);
                     }
                   } else {
-                    // Show error message if account name already exists
+                    // Show error message if category name is empty
                     Fluttertoast.showToast(
-                        msg: "Account name already exists.",
+                        msg: "Please enter account name.",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
                         fontSize: 14.0);
                   }
-                } else {
-                  // Show error message if category name is empty
-                  Fluttertoast.showToast(
-                      msg: "Please enter account name.",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 14.0);
-                }
-              },
-              child: const Text('Save'),
+                },
+                child: const Text('Save', style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+              ),
             ),
           ],
         );

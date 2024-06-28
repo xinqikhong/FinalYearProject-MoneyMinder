@@ -493,6 +493,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         var data = jsonDecode(response.body);
         print(data);
         if (data['status'] == 'success') {
+          setState(() {
+            _isEmailValid == false;
+            _prefs.setString('tempEmail', '');
+          });
           Fluttertoast.showToast(
               msg: "Password reset successfully.",
               toastLength: Toast.LENGTH_SHORT,

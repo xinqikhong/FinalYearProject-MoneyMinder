@@ -387,13 +387,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     children: [
                       ElevatedButton(
                         onPressed: _addRecordDialog,
-                        style: ElevatedButton.styleFrom(
+                        /*style: ElevatedButton.styleFrom(
                           foregroundColor: Color.fromARGB(255, 255, 115, 0),
                           backgroundColor: Theme.of(context).brightness ==
                                   Brightness.dark
                               ? Colors.white
                               : Colors.black,
-                        ),
+                        ),*/
                         child: const Text(
                           "Save",
                           style: TextStyle(
@@ -459,13 +459,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                             ),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
+                        /*style: ElevatedButton.styleFrom(
                           foregroundColor: Color.fromARGB(255, 255, 115, 0),
                           backgroundColor: Theme.of(context).brightness ==
                                   Brightness.dark
                               ? Colors.white
                               : Colors.black,
-                        ),
+                        ),*/
                         child: const Text(
                           "Clear",
                           style: TextStyle(

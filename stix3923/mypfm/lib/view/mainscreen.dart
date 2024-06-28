@@ -65,10 +65,10 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(
           maintitle,
           style: const TextStyle(
-              fontSize: 27,
-              fontWeight: FontWeight.bold,
-              //color: Color.fromARGB(255, 255, 115, 0)
-              ),
+            fontSize: 27,
+            fontWeight: FontWeight.bold,
+            //color: Color.fromARGB(255, 255, 115, 0)
+          ),
         ),
         centerTitle: true,
         /*bottom: const PreferredSize(
@@ -109,17 +109,15 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       endDrawer: Drawer(
-        backgroundColor: Theme.of(context)
-                      .appBarTheme
-                      .backgroundColor,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         child: ListView(
           children: [
             DrawerHeader(
               margin: EdgeInsets.zero, // Remove default margin
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.dark
-                      ? Color.fromARGB(255, 203, 91, 0)
-                      : Color.fromARGB(255, 255, 227, 186),
+                    ? Color.fromARGB(255, 203, 91, 0)
+                    : Color.fromARGB(255, 255, 227, 186),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -314,8 +312,9 @@ class _MainScreenState extends State<MainScreen> {
                                   child: const Text(
                                     'Yes',
                                     style: TextStyle(
-                                        fontWeight: FontWeight
-                                            .bold, fontSize: 15 // Adjust the font size as needed
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            15 // Adjust the font size as needed
                                         ),
                                   ),
                                 ),
@@ -329,8 +328,9 @@ class _MainScreenState extends State<MainScreen> {
                                   child: const Text(
                                     'No',
                                     style: TextStyle(
-                                        fontWeight: FontWeight
-                                            .bold, fontSize: 15 // Adjust the font size as needed
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            15 // Adjust the font size as needed
                                         ),
                                   ),
                                 ),
@@ -354,9 +354,10 @@ class _MainScreenState extends State<MainScreen> {
     /*SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('email', '');
     await prefs.setString('pass', '');*/
-    Navigator.pushReplacement(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false, // This prevents going back to the previous route
     );
   }
 
@@ -458,7 +459,8 @@ class _MainScreenState extends State<MainScreen> {
                       style: Theme.of(context).textButtonTheme.style,
                       child: const Text(
                         "Yes",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -469,7 +471,8 @@ class _MainScreenState extends State<MainScreen> {
                       style: Theme.of(context).textButtonTheme.style,
                       child: const Text(
                         "No",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
