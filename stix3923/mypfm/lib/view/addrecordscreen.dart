@@ -93,10 +93,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         centerTitle: true,
         title: const Text("Add Record",
             style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                //color: Color.fromARGB(255, 255, 115, 0)
-                )),
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              //color: Color.fromARGB(255, 255, 115, 0)
+            )),
       ),
       body: Container(
         color: Color.fromARGB(255, 255, 255, 255),
@@ -441,10 +441,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                     0), // Fixed foreground color to white
                                 backgroundColor: Color.fromARGB(255, 255, 255,
                                     255), // Set your desired text color
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      18), // Adjust the border radius here
-                                ),
                               ),
                               child: const Text(
                                 "Save",
@@ -525,10 +521,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                                     0), // Fixed foreground color to white
                                 backgroundColor: Color.fromARGB(255, 255, 255,
                                     255), // Set your desired text color
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      18), // Adjust the border radius here
-                                ),
                               ),
                               child: const Text(
                                 "Clear",

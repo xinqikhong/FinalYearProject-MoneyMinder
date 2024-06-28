@@ -110,8 +110,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ElevatedButton(
                     onPressed: _checkEmail,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Color.fromARGB(
+                          255, 255, 115, 0), // Fixed foreground color to white
+                      backgroundColor: Color.fromARGB(
+                          255, 255, 255, 255), // Set your desired text color
                     ),
                     child: const Text(
                       'Verify',
@@ -144,9 +146,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ElevatedButton(
                     onPressed: _isEmailValid ? _checkToken : null,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
+                      foregroundColor: Color.fromARGB(255, 255, 115, 0),
                       backgroundColor: _isEmailValid
-                          ? Theme.of(context).primaryColor
+                          ? Color.fromARGB(255, 255, 255, 255)
                           : Colors.grey,
                     ),
                     child: const Text(
@@ -231,10 +233,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ElevatedButton(
                 onPressed: _isTokenValid ? _resetPassDialog : null,
                 style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      Colors.white, // Fixed foreground color to white
+                  foregroundColor: Color.fromARGB(
+                      255, 255, 115, 0), // Fixed foreground color to white
                   backgroundColor: _isTokenValid
-                      ? Theme.of(context).primaryColor
+                      ? Color.fromARGB(255, 255, 255, 255)
                       : Colors.grey,
                 ), // Set onPressed to null when valid
                 child: const Text('Reset Password',

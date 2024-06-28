@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           /*iconTheme: IconThemeData(
               color: Color.fromARGB(
                   255, 255, 115, 0) // Change this color to your desired color
-              ), */// Default app bar background color // Default app bar text color
+              ), */ // Default app bar background color // Default app bar text color
         ),
         /*buttonTheme: ButtonThemeData(
           buttonColor:
@@ -51,10 +51,10 @@ class MyApp extends StatelessWidget {
             foregroundColor: const Color.fromARGB(255, 255, 115, 0),
             backgroundColor: const Color.fromARGB(
                 255, 255, 255, 255), // Set your desired text color
-            shape: RoundedRectangleBorder(
+            /*shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.circular(18), // Adjust the border radius here
-            ), // Set text color for TextButtons
+            ),*/ // Set text color for TextButtons
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(

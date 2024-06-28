@@ -76,10 +76,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                           255, 255, 115, 0), // Fixed foreground color to white
                       backgroundColor: Color.fromARGB(
                           255, 255, 255, 255), // Set your desired text color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            18), // Adjust the border radius here
-                      ),
+                     
                     ),
                     child: const Text(
                       "Save",
@@ -94,10 +91,7 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                           255, 255, 115, 0), // Fixed foreground color to white
                       backgroundColor: Color.fromARGB(
                           255, 255, 255, 255), // Set your desired text color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            18), // Adjust the border radius here
-                      ),
+                      
                     ),
                     child: const Text(
                       "Delete",

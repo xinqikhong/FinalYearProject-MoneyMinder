@@ -216,10 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             255,
                                             255,
                                             255), // Set your desired text color
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              18), // Adjust the border radius here
-                                        ),
+                                        
                                       ),
                                       onPressed: _loginUser,
                                       child: const Text(
