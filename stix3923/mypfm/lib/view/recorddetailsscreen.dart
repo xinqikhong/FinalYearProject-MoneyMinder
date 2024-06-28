@@ -106,389 +106,336 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
                 )),
       ),
       body: Container(
-        color: Color.fromARGB(255, 255, 255, 255),
-        child: FocusScope(
-          node: _focusScopeNode,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Divider(height: 0.5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedType = "Income";
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
+  color: Theme.of(context).brightness == Brightness.dark
+      ? Colors.black
+      : Colors.white,
+  child: FocusScope(
+    node: _focusScopeNode,
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          Divider(
+            height: 0.5,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedType = "Income";
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selectedType == "Income"
+                              ? Colors.orange
+                              : Colors.transparent,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Center(
+                        child: Text(
+                          'Income',
+                          style: TextStyle(
+                            fontSize: 18,
                             color: selectedType == "Income"
-                                ? Color.fromARGB(255, 255, 255, 255)
-                                : Color.fromARGB(255, 255, 255, 255),
-                            border: Border(
-                              bottom: BorderSide(
-                                color: selectedType == "Income"
-                                    ? Colors.orange
-                                    : Colors.transparent,
-                                width:
-                                    2, // Adjust the width of the bottom border as needed
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Center(
-                              child: Text(
-                                'Income',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: selectedType == "Income"
-                                      ? Colors.orange
-                                      : Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                                ? Color.fromARGB(255, 255, 115, 0)
+                                : Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.grey,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedType = "Expense";
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: selectedType == "Expense"
-                                ? Color.fromARGB(255, 255, 255, 255)
-                                : Color.fromARGB(255, 255, 255, 255),
-                            border: Border(
-                              bottom: BorderSide(
-                                color: selectedType == "Expense"
-                                    ? Colors.orange
-                                    : Colors.transparent,
-                                width:
-                                    2, // Adjust the width of the bottom border as needed
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Center(
-                              child: Text(
-                                'Expense',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: selectedType == "Expense"
-                                      ? Colors.orange
-                                      : Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 20.0, top: 10.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        /*
-                        // Row for Income/Expense buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  selectedType = "Income";
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: selectedType == "Income"
-                                    ? Colors.green
-                                    : Colors.grey[
-                                        200], // Set button color based on selection
-                              ),
-                              child: Text(
-                                "Income",
-                                style: TextStyle(
-                                    color: selectedType == "Income"
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  selectedType = "Expense";
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: selectedType == "Expense"
-                                    ? Colors.red
-                                    : Colors.grey[
-                                        200], // Set button color based on selection
-                              ),
-                              child: Text(
-                                "Expense",
-                                style: TextStyle(
-                                    color: selectedType == "Expense"
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20.0),*/ // Add spacing
-
-                        // Form fields
-                        TextFormField(
-                          controller: _dateController,
-                          readOnly: true, // Make date field read-only
-                          decoration: const InputDecoration(
-                            labelText: "Date",
-                            icon: Icon(Icons.calendar_today),
-                          ),
-                          onTap: () async {
-                            DateTime? initialDate;
-                            if (_dateController.text.isNotEmpty) {
-                              try {
-                                // Parse the date string from _dateController
-                                initialDate = DateFormat('dd/MM/yyyy')
-                                    .parse(_dateController.text);
-                              } on FormatException catch (e) {
-                                print("Error parsing date: $e");
-                                // Handle parsing error (optional)
-                              }
-                            }
-
-                            // Handle date selection using a date picker package (not included here)
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: initialDate ?? DateTime.now(),
-                              firstDate: DateTime(2023, 1, 1),
-                              lastDate: DateTime.now(),
-                            );
-                            if (pickedDate != null) {
-                              final DateFormat formatter = DateFormat(
-                                  'dd/MM/yyyy'); // Adjust format as needed (e.g., 'yyyy-MM-dd')
-                              final formattedDate =
-                                  formatter.format(pickedDate);
-                              setState(() {
-                                _dateController.text = formattedDate.toString();
-                                //focus.requestFocus();
-                              });
-                              _focusScopeNode.requestFocus(focus);
-                              print(_dateController.text);
-                            }
-                          },
-                          validator: (value) =>
-                              value!.isEmpty ? "Please select a date" : null,
-                          /*onFieldSubmitted: (v) {
-                            FocusScope.of(context).requestFocus(focus);
-                          },*/
-                        ),
-                        const SizedBox(height: 10.0),
-
-                        TextFormField(
-                          controller: _amountController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: "Amount",
-                            icon: Icon(Icons.attach_money),
-                          ),
-                          validator: (value) =>
-                              value!.isEmpty ? "Please enter amount" : null,
-                          focusNode: focus,
-                          textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (v) {
-                            _focusScopeNode.requestFocus(focus1);
-                          },
-                        ),
-                        const SizedBox(height: 10.0),
-
-                        GestureDetector(
-                          onTap: () {
-                            // Open bottom sheet when tapped
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) =>
-                                  CategorySelectionBottomSheet(
-                                      categories: selectedType == "Expense"
-                                          ? exCat
-                                          : inCat,
-                                      onCategorySelected: (selectedCategory) {
-                                        setState(() {
-                                          _categoryController.text =
-                                              selectedCategory;
-                                        });
-                                        _focusScopeNode.requestFocus(focus2);
-                                      },
-                                      selectedType: selectedType,
-                                      user: widget.user,
-                                      fetchCat: fetchCat),
-                            );
-                          },
-                          child: AbsorbPointer(
-                            // Disable text field interaction to prevent keyboard from showing
-                            absorbing: true,
-                            child: TextFormField(
-                              readOnly: true,
-                              controller: _categoryController,
-                              decoration: const InputDecoration(
-                                labelText: "Category",
-                                icon: Icon(Icons.category),
-                              ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please select category";
-                                }
-                                // Check if the selected category is valid
-                                String selectedCategory = value.trim();
-                                List<String> validCategories =
-                                    selectedType == "Expense" ? exCat : inCat;
-                                if (!validCategories
-                                    .contains(selectedCategory)) {
-                                  return "Please select a valid category";
-                                }
-                                return null; // Return null if validation passes
-                              },
-                              focusNode: focus1,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10.0),
-
-                        TextFormField(
-                          readOnly: true,
-                          controller:
-                              _accountController, // Make account field read-only
-                          decoration: const InputDecoration(
-                            labelText: "Account",
-                            icon: Icon(Icons
-                                .account_balance), // Optional icon for the field
-                          ),
-                          validator: (value) =>
-                              value!.isEmpty ? "Please select account" : null,
-                          focusNode: focus2,
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => AccountSelectionBottomSheet(
-                                  accounts: accounts, // Pass your accounts list
-                                  onAccountSelected: (selectedAccount) {
-                                    setState(() {
-                                      _accountController.text = selectedAccount;
-                                    });
-                                    _focusScopeNode.requestFocus(focus3);
-                                  },
-                                  user: widget.user,
-                                  fetchAccount: fetchAccount),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 10.0),
-
-                        TextFormField(
-                          controller: _noteController,
-                          decoration: const InputDecoration(
-                            labelText: "Note (Optional)",
-                            icon: Icon(Icons.note_alt_outlined),
-                          ),
-                          focusNode: focus3,
-                          textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (v) {
-                            _focusScopeNode.requestFocus(focus4);
-                          },
-                        ),
-                        const SizedBox(height: 10.0),
-
-                        TextFormField(
-                            //textInputAction: TextInputAction.next,
-                            focusNode: focus4,
-                            onFieldSubmitted: (v) {
-                              _focusScopeNode.requestFocus(focus5);
-                            },
-                            maxLines: 4,
-                            controller: _descriptionController,
-                            keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                                labelText: 'Description (Optional)',
-                                alignLabelWithHint: true,
-                                //labelStyle: TextStyle(),
-                                icon: Icon(
-                                  Icons.description_outlined,
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                ))),
-                        const SizedBox(height: 20.0),
-
-                        // Row for Save and Cancel buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: _editRecordDialog,
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Color.fromARGB(255, 255, 115,
-                                    0), // Fixed foreground color to white
-                                backgroundColor: Color.fromARGB(255, 255, 255,
-                                    255), // Set your desired text color
-                                
-                              ),
-                              child: const Text(
-                                "Save",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 17),
-                              ),
-                            ),
-                            ElevatedButton(
-                              //style: ElevatedButton.styleFrom(
-                              //fixedSize: Size(screenWidth / 3, 50)),
-                              onPressed: () async {
-                                await _deleteRecordDialog(
-                                    context); // Show delete confirmation dialog
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Color.fromARGB(255, 255, 115,
-                                    0), // Fixed foreground color to white
-                                backgroundColor: Color.fromARGB(255, 255, 255,
-                                    255), // Set your desired text color
-                                
-                              ),
-                              child: const Text(
-                                'Delete',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 17),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                   ),
                 ),
-              ],
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedType = "Expense";
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selectedType == "Expense"
+                              ? Colors.orange
+                              : Colors.transparent,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Center(
+                        child: Text(
+                          'Expense',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: selectedType == "Expense"
+                                ? Color.fromARGB(255, 255, 115, 0)
+                                : Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
+            margin: const EdgeInsets.only(
+                left: 20.0, right: 20.0, bottom: 20.0, top: 10.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _dateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Date",
+                      icon: Icon(Icons.calendar_today,
+                          color: Theme.of(context).iconTheme.color),
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).textTheme.bodyText1!.color),
+                    ),
+                    onTap: () async {
+                      DateTime? initialDate;
+                      if (_dateController.text.isNotEmpty) {
+                        try {
+                          initialDate = DateFormat('dd/MM/yyyy')
+                              .parse(_dateController.text);
+                        } on FormatException catch (e) {
+                          print("Error parsing date: $e");
+                        }
+                      }
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: initialDate ?? DateTime.now(),
+                        firstDate: DateTime(2023, 1, 1),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null) {
+                        final DateFormat formatter =
+                            DateFormat('dd/MM/yyyy');
+                        final formattedDate = formatter.format(pickedDate);
+                        setState(() {
+                          _dateController.text = formattedDate.toString();
+                        });
+                        _focusScopeNode.requestFocus(focus);
+                        print(_dateController.text);
+                      }
+                    },
+                    validator: (value) =>
+                        value!.isEmpty ? "Please select a date" : null,
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Amount",
+                      icon: Icon(Icons.attach_money,
+                          color: Theme.of(context).iconTheme.color),
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).textTheme.bodyText1!.color),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? "Please enter amount" : null,
+                    focusNode: focus,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (v) {
+                      _focusScopeNode.requestFocus(focus1);
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) =>
+                              CategorySelectionBottomSheet(
+                                  categories: selectedType == "Expense"
+                                      ? exCat
+                                      : inCat,
+                                  onCategorySelected: (selectedCategory) {
+                                    setState(() {
+                                      _categoryController.text =
+                                          selectedCategory;
+                                    });
+                                    _focusScopeNode.requestFocus(focus2);
+                                  },
+                                  selectedType: selectedType,
+                                  user: widget.user,
+                                  fetchCat: fetchCat));
+                    },
+                    child: AbsorbPointer(
+                      absorbing: true,
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: _categoryController,
+                        decoration: InputDecoration(
+                          labelText: "Category",
+                          icon: Icon(Icons.category,
+                              color: Theme.of(context).iconTheme.color),
+                          labelStyle: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .color),
+                        ),
+                        validator: (value) =>
+                            value!.isEmpty ? "Please select category" : null,
+                        focusNode: focus1,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    readOnly: true,
+                    controller: _accountController,
+                    decoration: InputDecoration(
+                      labelText: "Account",
+                      icon: Icon(Icons.account_balance,
+                          color: Theme.of(context).iconTheme.color),
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).textTheme.bodyText1!.color),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? "Please select account" : null,
+                    focusNode: focus2,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => AccountSelectionBottomSheet(
+                            accounts: accounts,
+                            onAccountSelected: (selectedAccount) {
+                              setState(() {
+                                _accountController.text = selectedAccount;
+                              });
+                              _focusScopeNode.requestFocus(focus3);
+                            },
+                            user: widget.user,
+                            fetchAccount: fetchAccount),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    controller: _noteController,
+                    decoration: InputDecoration(
+                      labelText: "Note (Optional)",
+                      icon: Icon(Icons.note_alt_outlined,
+                          color: Theme.of(context).iconTheme.color),
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).textTheme.bodyText1!.color),
+                    ),
+                    focusNode: focus3,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (v) {
+                      _focusScopeNode.requestFocus(focus4);
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    focusNode: focus4,
+                    onFieldSubmitted: (v) {
+                      _focusScopeNode.requestFocus(focus5);
+                    },
+                    maxLines: 4,
+                    controller: _descriptionController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: 'Description (Optional)',
+                      alignLabelWithHint: true,
+                      icon: Icon(Icons.description_outlined,
+                          color: Theme.of(context).iconTheme.color),
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).textTheme.bodyText1!.color),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _editRecordDialog,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Color.fromARGB(255, 255, 115, 0),
+                          backgroundColor: Theme.of(context).brightness ==
+                                  Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        child: const Text(
+                          "Save",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await _deleteRecordDialog(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Color.fromARGB(255, 255, 115, 0),
+                          backgroundColor: Theme.of(context).brightness ==
+                                  Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
+    ),
+  ),
+),
+
     );
   }
 
