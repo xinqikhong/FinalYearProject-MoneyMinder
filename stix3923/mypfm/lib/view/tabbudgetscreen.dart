@@ -677,27 +677,34 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
           return AlertDialog(
             title: const Text(
               'Please Register',
-              style: TextStyle(
-                fontSize: 20, // Adjust the font size as needed
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
-            content: const Text('You need to register first to add budget.'),
+            content: const Text(
+              'Register first to add budget.',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
             actions: <Widget>[
-              TextButton(
+              /*TextButton(
                 onPressed: () => Navigator.pop(context), // Dismiss dialog
                 child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to the RegisterScreen
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
-                },
-                child: const Text('Register'),
+              ),*/
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to the RegisterScreen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterScreen(),
+                      ),
+                    );
+                  },
+                  style: Theme.of(context).textButtonTheme.style,
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
               ),
             ],
           );

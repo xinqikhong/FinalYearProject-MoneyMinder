@@ -202,11 +202,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                     flex: 5,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        fixedSize: Size(screenWidth / 3, 50),
-                                        foregroundColor: Colors
-                                            .white, // Fixed foreground color to white
-                                        backgroundColor:
-                                            Theme.of(context).primaryColor,
+                                        foregroundColor: const Color.fromARGB(
+                                            255,
+                                            255,
+                                            115,
+                                            0), // Fixed foreground color to white
+                                        backgroundColor: Color.fromARGB(
+                                            255,
+                                            255,
+                                            255,
+                                            255), // Set your desired text color
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              18), // Adjust the border radius here
+                                        ),
                                       ),
                                       onPressed: _loginUser,
                                       child: const Text(

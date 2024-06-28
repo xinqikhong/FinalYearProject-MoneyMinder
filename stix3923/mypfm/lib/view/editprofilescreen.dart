@@ -44,14 +44,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(        
         centerTitle: true,
         title: const Text(
           "Edit Profile",
           style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 255, 115, 0)),
+              //color: Color.fromARGB(255, 255, 115, 0)
+              ),
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
@@ -323,7 +324,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       style: Theme.of(context).textButtonTheme.style,
                       child: const Text(
                         "Yes",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -334,7 +336,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       style: Theme.of(context).textButtonTheme.style,
                       child: const Text(
                         "No",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();

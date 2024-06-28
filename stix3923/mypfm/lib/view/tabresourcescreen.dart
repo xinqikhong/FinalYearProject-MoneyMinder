@@ -326,28 +326,49 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                             builder: (BuildContext context) {
                                               return AlertDialog(
                                                 title: const Text(
-                                                    'Please Register'),
+                                                  'Please Register',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 22),
+                                                ),
                                                 content: const Text(
-                                                    'You need to register first to view articles.'),
+                                                  'Register to view more articles.',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15),
+                                                ),
                                                 actions: <Widget>[
-                                                  TextButton(
+                                                  /*TextButton(
                                                     onPressed: () => Navigator.pop(
                                                         context), // Dismiss dialog
                                                     child: const Text('Cancel'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      // Navigate to the RegisterScreen
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const RegisterScreen(),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child:
-                                                        const Text('Register'),
+                                                  ),*/
+                                                  Center(
+                                                    child: TextButton(
+                                                      style: Theme.of(context)
+                                                          .textButtonTheme
+                                                          .style,
+                                                      onPressed: () {
+                                                        // Navigate to the RegisterScreen
+                                                        Navigator
+                                                            .pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                const RegisterScreen(),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: const Text(
+                                                        'Register',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                               );

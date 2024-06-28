@@ -523,13 +523,14 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
           return AlertDialog(
             title: const Text(
               'Please Register',
-              style: TextStyle(
-                fontSize: 20, // Adjust the font size as needed
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
-            content: const Text('You need to register first to add records.'),
+            content: const Text(
+              'Register first to add records.',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
             actions: <Widget>[
-              TextButton(
+              /*TextButton(
                 onPressed: () => Navigator.pop(context),
                 style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all<Color>(
@@ -538,24 +539,24 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                       Theme.of(context).primaryColor,
                     )), // Dismiss dialog
                 child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to the RegisterScreen
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
-                },
-                style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all<Color>(
-                        Colors.white), // Fixed foreground color to white
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Theme.of(context).primaryColor,
-                    )),
-                child: const Text('Register'),
+              ),*/
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to the RegisterScreen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterScreen(),
+                      ),
+                    );
+                  },
+                  style: Theme.of(context).textButtonTheme.style,
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
               ),
             ],
           );

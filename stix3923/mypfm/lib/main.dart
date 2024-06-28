@@ -33,8 +33,11 @@ class MyApp extends StatelessWidget {
         primaryColor:
             const Color.fromARGB(255, 255, 115, 0), // Default primary color
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 255, 255,
-              255), // Default app bar background color // Default app bar text color
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          /*iconTheme: IconThemeData(
+              color: Color.fromARGB(
+                  255, 255, 115, 0) // Change this color to your desired color
+              ), */// Default app bar background color // Default app bar text color
         ),
         /*buttonTheme: ButtonThemeData(
           buttonColor:
@@ -103,10 +106,9 @@ class MyApp extends StatelessWidget {
           surfaceTintColor: Colors.orange,
           backgroundColor: Colors.white,
         ),
-        iconTheme: const IconThemeData(
-            // Set icon theme for AppBar
-            //color: Color.fromARGB(255, 240, 101, 1), // Set icon color to orange
-            ),
+        /*iconTheme: IconThemeData(
+          color: Colors.orange, // Change this color to your desired color
+        ),*/
 
         fontFamily: 'Montserrat',
         // Set your primary color here

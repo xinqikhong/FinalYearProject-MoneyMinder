@@ -102,7 +102,8 @@ class _RecordDetailsScreenState extends State<RecordDetailsScreen> {
             style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 255, 115, 0))),
+                //color: Color.fromARGB(255, 255, 115, 0)
+                )),
       ),
       body: Container(
         color: Color.fromARGB(255, 255, 255, 255),

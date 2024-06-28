@@ -99,7 +99,8 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
               style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 255, 115, 0))),
+                  //color: Color.fromARGB(255, 255, 115, 0)
+                  )),
           centerTitle: true,
         ),
         body: FutureBuilder<Map<String, String>>(
