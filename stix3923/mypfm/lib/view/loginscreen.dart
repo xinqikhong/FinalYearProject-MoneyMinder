@@ -56,12 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+    resWidth = screenWidth <= 600 ? screenWidth : screenWidth * 0.75;
 
-    if (screenWidth <= 600) {
+
+    /*if (screenWidth <= 600) {
       resWidth = screenWidth;
     } else {
       resWidth = screenWidth * 0.75;
-    }
+    }*/
 
     return Theme(
       data: Theme.of(context),
@@ -70,7 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [upperHalf(context), lowerHalf(context)],
+              children: [upperHalf(context, resWidth, screenHeight),
+            lowerHalf(context, resWidth)],
             ),
           ),
         ),
@@ -78,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget upperHalf(BuildContext context) {
+  Widget upperHalf(BuildContext context, double resWidth, double screenHeight) {
     return SizedBox(
       height: screenHeight / 4.5,
       width: resWidth * 0.9,
@@ -89,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget lowerHalf(BuildContext context) {
+  Widget lowerHalf(BuildContext context, double resWidth) {
     return Container(
         width: resWidth,
         margin: const EdgeInsets.only(top: 20),
