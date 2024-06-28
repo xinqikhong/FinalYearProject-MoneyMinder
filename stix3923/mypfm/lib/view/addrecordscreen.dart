@@ -750,81 +750,90 @@ class _CategorySelectionBottomSheetState
   @override
   Widget build(BuildContext context) {
     return FocusScope(
-      node: _focusScopeNode,
-      child: Container(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+  node: _focusScopeNode,
+  child: Container(
+    color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.all(16.0), // Add some padding
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Set minimum height
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Category",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _editCategoryScreen();
-                          print("Edit button pressed!"); // Placeholder for now
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const Divider(),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 3, // Adjust columns as needed
-                  childAspectRatio: 1.8,
-                  physics:
-                      const ClampingScrollPhysics(), // Adjust cell aspect ratio for better look
-                  children: widget.categories
-                      .map((category) => _CategoryItem(
-                            category: category,
-                            onPressed: () => {
-                              widget.onCategorySelected(category),
-                              Navigator.pop(context),
-                            },
-                          ))
-                      .toList(),
+              Text(
+                "Category",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyText1!.color,
                 ),
               ),
-              const SizedBox(height: 10.0),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FloatingActionButton(
-                      onPressed: () {
-                        // Handle "Add" button press (navigate to add category screen or implement logic here)
-                        _addCategory(); // Placeholder for now
-                      },
-                      tooltip: "Add Category",
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Icon(Icons.add)),
+                  IconButton(
+                    onPressed: () {
+                      _editCategoryScreen();
+                      print("Edit button pressed!"); // Placeholder for now
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.close,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
-        ),
+          Divider(
+            color: Theme.of(context).dividerColor,
+          ),
+          Expanded(
+            // Allows the content to fill the remaining space
+            child: GridView.count(
+              crossAxisCount: 3, // Adjust columns as needed
+              childAspectRatio: 1.8,
+              physics: const ClampingScrollPhysics(), // Adjust cell aspect ratio for better look
+              children: widget.categories
+                  .map((category) => _CategoryItem(
+                        category: category,
+                        onPressed: () {
+                          widget.onCategorySelected(category);
+                          Navigator.pop(context); // Close after selection
+                        },
+                      ))
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 10.0), // Add a little spacing
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  _addCategory(); // Placeholder for now
+                },
+                tooltip: "Add Category",
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Icon(Icons.add),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
+    ),
+  ),
+);
+
   }
 
   @override
@@ -1114,81 +1123,91 @@ class _AccountSelectionBottomSheetState
   @override
   Widget build(BuildContext context) {
     return FocusScope(
-      node: _focusScopeNode,
-      child: Container(
-        color: Colors.white, // Set background color
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add some padding
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Set minimum height
+  node: _focusScopeNode,
+  child: Container(
+    color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.all(16.0), // Add some padding
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Set minimum height
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Account",
-                    style:
-                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          // Handle "Edit" button press (navigate to edit screen or implement logic here)
-                          _editAccScreen();
-                          print("Edit button pressed!"); // Placeholder for now
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
-                      IconButton(
-                        onPressed: () =>
-                            Navigator.pop(context), // Close the bottom sheet
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const Divider(), // Add a divider line
-              Expanded(
-                // Allows the content to fill the remaining space
-                child: GridView.count(
-                  crossAxisCount: 3,
-                  // 3 accounts per row
-                  childAspectRatio: 1.8,
-                  physics: const ClampingScrollPhysics(),
-                  children: widget.accounts
-                      .map((account) => _AccountItem(
-                            account: account,
-                            onPressed: () {
-                              widget.onAccountSelected(account);
-                              Navigator.pop(context); // Close after selection
-                            },
-                          ))
-                      .toList(),
+              Text(
+                "Account",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyText1!.color,
                 ),
               ),
-              const SizedBox(height: 10.0), // Add a little spacing
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FloatingActionButton(
-                      onPressed: () {
-                        // Handle "Add" button press (navigate to add category screen or implement logic here)
-                        _addAcc(); // Placeholder for now
-                      },
-                      tooltip: "Add Account",
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Icon(Icons.add)),
+                  IconButton(
+                    onPressed: () {
+                      _editAccScreen();
+                      print("Edit button pressed!"); // Placeholder for now
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context), // Close the bottom sheet
+                    icon: Icon(
+                      Icons.close,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
-        ),
+          Divider(
+            color: Theme.of(context).dividerColor,
+          ),
+          Expanded(
+            // Allows the content to fill the remaining space
+            child: GridView.count(
+              crossAxisCount: 3,
+              // 3 accounts per row
+              childAspectRatio: 1.8,
+              physics: const ClampingScrollPhysics(),
+              children: widget.accounts
+                  .map((account) => _AccountItem(
+                        account: account,
+                        onPressed: () {
+                          widget.onAccountSelected(account);
+                          Navigator.pop(context); // Close after selection
+                        },
+                      ))
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 10.0), // Add a little spacing
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  _addAcc(); // Placeholder for now
+                },
+                tooltip: "Add Account",
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Icon(Icons.add),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
+    ),
+  ),
+);
+
   }
 
   @override
