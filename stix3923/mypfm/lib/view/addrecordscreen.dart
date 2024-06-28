@@ -93,9 +93,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         centerTitle: true,
         title: const Text("Add Record",
             style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            )),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 115, 0))),
       ),
       body: Container(
         color: Color.fromARGB(255, 255, 255, 255),

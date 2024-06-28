@@ -37,9 +37,9 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
       appBar: AppBar(
         title: Text(widget.selectedCategory,
             style: const TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            )),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 115, 0))),
         centerTitle: true,
       ),
       body: Padding(
@@ -62,14 +62,18 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
               ElevatedButton(
                 onPressed: _saveBudget,
                 style: ElevatedButton.styleFrom(
-                  foregroundColor:
-                      Colors.white, // Fixed foreground color to white
-                  backgroundColor: Theme.of(context)
-                      .primaryColor, // Set your desired text color
+                  foregroundColor: Color.fromARGB(
+                      255, 255, 115, 0), // Fixed foreground color to white
+                  backgroundColor: Color.fromARGB(
+                      255, 255, 255, 255), // Set your desired text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        18), // Adjust the border radius here
+                  ),
                 ),
                 child: const Text(
                   "Save",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
               ),
             ],

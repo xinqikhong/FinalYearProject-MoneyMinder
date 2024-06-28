@@ -46,9 +46,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       appBar: AppBar(
         title: const Text("Add Budget",
             style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            )),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 115, 0))),
         centerTitle: true,
       ),
       body: Column(
@@ -56,7 +56,10 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
           const Divider(height: 1),
           Expanded(
             child: excatlist.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    color: Colors.orangeAccent,
+                  ))
                 : ListView.builder(
                     shrinkWrap: true,
                     //physics: const NeverScrollableScrollPhysics(),
@@ -64,7 +67,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                     itemBuilder: (context, index) {
                       String categoryName = displayCat[index];
                       return Container(
-                        color: const Color.fromARGB(255, 255, 245, 230),
+                        color: Color.fromARGB(255, 255, 255, 255),
                         child: Column(
                           children: [
                             ListTile(

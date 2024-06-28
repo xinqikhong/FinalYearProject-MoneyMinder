@@ -43,9 +43,9 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
       appBar: AppBar(
         title: Text(widget.budgetCategory,
             style: const TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            )),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 115, 0))),
         centerTitle: true,
       ),
       body: Padding(
@@ -71,29 +71,37 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                   ElevatedButton(
                     onPressed: _editBudget,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor:
-                          Colors.white, // Fixed foreground color to white
-                      backgroundColor: Theme.of(context)
-                          .primaryColor, // Set your desired text color
+                      foregroundColor: Color.fromARGB(
+                          255, 255, 115, 0), // Fixed foreground color to white
+                      backgroundColor: Color.fromARGB(
+                          255, 255, 255, 255), // Set your desired text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            18), // Adjust the border radius here
+                      ),
                     ),
                     child: const Text(
                       "Save",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                     ),
                   ),
                   ElevatedButton(
                     onPressed: _deleteBudgetDialog,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor:
-                          Colors.white, // Fixed foreground color to white
-                      backgroundColor: Theme.of(context)
-                          .primaryColor, // Set your desired text color
+                      foregroundColor: Color.fromARGB(
+                          255, 255, 115, 0), // Fixed foreground color to white
+                      backgroundColor: Color.fromARGB(
+                          255, 255, 255, 255), // Set your desired text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            18), // Adjust the border radius here
+                      ),
                     ),
                     child: const Text(
                       "Delete",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                     ),
                   ),
                 ],
@@ -199,40 +207,40 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete budget",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
-          content: const Text("Are you sure?", style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("Are you sure?",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           actions: <Widget>[
-            TextButton(
-              child: const Text(
-                "Yes",
-                style: TextStyle(fontWeight: FontWeight.bold),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    child: const Text(
+                      "Yes",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    style: Theme.of(context).textButtonTheme.style,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _deleteBudget();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      "No",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    style: Theme.of(context).textButtonTheme.style,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteBudget();
-              },
-            ),
-            TextButton(
-              child: const Text(
-                "No",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
         );

@@ -233,6 +233,41 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
       initialDate: _selectedMonth,
       firstDate: DateTime(2010),
       lastDate: DateTime(2050),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Color.fromARGB(255, 255, 115, 0), // Header and selected text color
+            //accentColor: Colors.orange, // Circle color for selected date
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+            colorScheme: const ColorScheme.light(
+              primary: Color.fromARGB(255, 255, 115, 0), // Header background color
+              onPrimary: Colors.white, // Text color on header
+              surface: Color.fromARGB(255, 255, 115, 0), // Calendar background color
+              onSurface: Colors.black, // Calendar day text color
+              secondary: Color.fromARGB(255, 255, 115, 0), // Header background color
+              onSecondary: Colors.white, // Text color on header
+            ),
+            dialogBackgroundColor: Colors.white,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor:
+                    Color.fromARGB(255, 255, 115, 0), // Set the text color for buttons
+              ),
+            ),
+            highlightColor:
+                Color.fromARGB(255, 255, 115, 0), // Selection highlight color
+            textSelectionTheme: TextSelectionThemeData(
+              selectionColor: Color.fromARGB(255, 255, 115, 0),
+            ), // Background color for the picker dialog
+            sliderTheme: SliderThemeData(
+              thumbColor: Color.fromARGB(255, 255, 115, 0),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
       if (!_isDisposed) {

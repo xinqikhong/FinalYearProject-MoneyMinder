@@ -472,44 +472,40 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Colors.orange, // Header and selected text color
+            primaryColor: Color.fromARGB(
+                255, 255, 115, 0), // Header and selected text color
             //accentColor: Colors.orange, // Circle color for selected date
             buttonTheme: const ButtonThemeData(
               textTheme: ButtonTextTheme.primary,
             ),
             colorScheme: const ColorScheme.light(
-              primary: Colors.orange, // Header background color
+              primary:
+                  Color.fromARGB(255, 255, 115, 0), // Header background color
               onPrimary: Colors.white, // Text color on header
-              surface: Colors.orange, // Calendar background color
+              surface:
+                  Color.fromARGB(255, 255, 115, 0), // Calendar background color
               onSurface: Colors.black, // Calendar day text color
-              secondary: Colors.orange, // Header background color
+              secondary:
+                  Color.fromARGB(255, 255, 115, 0), // Header background color
               onSecondary: Colors.white, // Text color on header
             ),
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor:
-                    Colors.orange, // Set the text color for buttons
+                foregroundColor: Color.fromARGB(
+                    255, 255, 115, 0), // Set the text color for buttons
               ),
             ),
             highlightColor:
-                Colors.orange.withOpacity(0.3), // Selection highlight color
+                Color.fromARGB(255, 255, 115, 0), // Selection highlight color
             textSelectionTheme: TextSelectionThemeData(
-              selectionColor: Colors.orange.withOpacity(0.3),
+              selectionColor: Color.fromARGB(255, 255, 115, 0),
             ), // Background color for the picker dialog
             sliderTheme: SliderThemeData(
-              thumbColor: Colors.orange.withOpacity(0.3),
+              thumbColor: Color.fromARGB(255, 255, 115, 0),
             ),
           ),
-          child: Builder(
-            // Wrap with Builder to access context
-            builder: (context) => Container(
-              decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
-              ),
-              child: child!,
-            ),
-          ),
+          child: child!,
         );
       },
     );
