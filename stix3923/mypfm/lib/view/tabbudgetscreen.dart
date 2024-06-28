@@ -749,41 +749,40 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete budget",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
           content: const Text("Are you sure?",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           actions: <Widget>[
-            TextButton(
-              child: const Text(
-                "Yes",
-                style: TextStyle(fontWeight: FontWeight.bold),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    child: const Text(
+                      "Yes",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    style: Theme.of(context).textButtonTheme.style,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _deleteBudget(budget);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      "No",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    style: Theme.of(context).textButtonTheme.style,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteBudget(budget);
-              },
-            ),
-            TextButton(
-              child: const Text(
-                "No",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
         );

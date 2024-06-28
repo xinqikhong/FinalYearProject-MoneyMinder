@@ -108,115 +108,116 @@ class _AccountListScreenState extends State<AccountListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit'),
+          title: const Text(
+            'Edit',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+          ),
           content: TextField(
             controller: _accountController,
             decoration: InputDecoration(hintText: accountName),
           ),
           actions: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              onPressed: () async {
-                // Add to income categories list
-                setState(() {
-                  newAccountName = _accountController.text;
-                });
-                // Validate if the category name is not empty
-                if (newAccountName.isNotEmpty) {
-                  // Validate if the category name is not already in the list
-                  if (!widget.accounts.contains(newAccountName)) {
-                    url = "${MyConfig.server}/mypfm/php/editAccount.php";
-                    print(widget.user.id);
-                    print("Check selected category: $accountName");
-                    print("Check new category: $newAccountName");
-                    // Add logic to add new category to the database
-                    try {
-                      final response = await http.post(
-                        Uri.parse(url),
-                        body: {
-                          "user_id": widget.user.id,
-                          "old_name": accountName,
-                          "new_name": newAccountName
-                        },
-                      );
-                      if (response.statusCode == 200) {
-                        // Category added successfully
-                        var data = jsonDecode(response.body);
-                        print(data);
-                        if (data['status'] == 'success') {
-                          setState(() {
-                            widget.accounts.remove(
-                                accountName); // Remove old category name
-                            widget.accounts
-                                .add(newAccountName); // Add new category name
-                          });
-                          Navigator.pop(context);
-                          Fluttertoast.showToast(
-                              msg: "Edit Account Success.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              fontSize: 14.0);
+            Center(
+              child: TextButton(
+                style: Theme.of(context).textButtonTheme.style,
+                onPressed: () async {
+                  // Add to income categories list
+                  setState(() {
+                    newAccountName = _accountController.text;
+                  });
+                  // Validate if the category name is not empty
+                  if (newAccountName.isNotEmpty) {
+                    // Validate if the category name is not already in the list
+                    if (!widget.accounts.contains(newAccountName)) {
+                      url = "${MyConfig.server}/mypfm/php/editAccount.php";
+                      print(widget.user.id);
+                      print("Check selected category: $accountName");
+                      print("Check new category: $newAccountName");
+                      // Add logic to add new category to the database
+                      try {
+                        final response = await http.post(
+                          Uri.parse(url),
+                          body: {
+                            "user_id": widget.user.id,
+                            "old_name": accountName,
+                            "new_name": newAccountName
+                          },
+                        );
+                        if (response.statusCode == 200) {
+                          // Category added successfully
+                          var data = jsonDecode(response.body);
+                          print(data);
+                          if (data['status'] == 'success') {
+                            setState(() {
+                              widget.accounts.remove(
+                                  accountName); // Remove old category name
+                              widget.accounts
+                                  .add(newAccountName); // Add new category name
+                            });
+                            Navigator.pop(context);
+                            Fluttertoast.showToast(
+                                msg: "Edit Account Success.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          } else {
+                            // Handle error
+                            Fluttertoast.showToast(
+                                msg: "Edit Account Failed",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                fontSize: 14.0);
+                          }
+                          return;
                         } else {
-                          // Handle error
+                          print(response.body);
+                          print(
+                              "Failed to connect to the server. Status code: ${response.statusCode}");
                           Fluttertoast.showToast(
-                              msg: "Edit Account Failed",
+                              msg: "Failed to connect to the server",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               fontSize: 14.0);
+                          return;
                         }
-                        return;
-                      } else {
-                        print(response.body);
-                        print(
-                            "Failed to connect to the server. Status code: ${response.statusCode}");
+                      } catch (e) {
+                        logger.e("Error edit account: $e");
+                        // Handle error
                         Fluttertoast.showToast(
-                            msg: "Failed to connect to the server",
+                            msg: "An error occurred: $e",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
                             fontSize: 14.0);
-                        return;
                       }
-                    } catch (e) {
-                      logger.e("Error edit account: $e");
-                      // Handle error
+                    } else {
+                      // Show error message if category name already exists
                       Fluttertoast.showToast(
-                          msg: "An error occurred: $e",
+                          msg: "Account name already exists.",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
                           fontSize: 14.0);
                     }
                   } else {
-                    // Show error message if category name already exists
+                    // Show error message if category name is empty
                     Fluttertoast.showToast(
-                        msg: "Account name already exists.",
+                        msg: "Please enter account name.",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 1,
                         fontSize: 14.0);
                   }
-                } else {
-                  // Show error message if category name is empty
-                  Fluttertoast.showToast(
-                      msg: "Please enter account name.",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 14.0);
-                }
-              },
-              child: const Text('Save',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+                },
+                child: const Text('Save',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+              ),
             ),
-            TextButton(
+            /*TextButton(
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
                       Colors.white), // Fixed foreground color to white
@@ -228,7 +229,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
               },
               child: const Text('Cancel',
                   style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
+            ),*/
           ],
         );
       },
@@ -245,40 +246,39 @@ class _AccountListScreenState extends State<AccountListScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
           content: const Text("Are you sure?",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           actions: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "Yes",
-                style: TextStyle(fontWeight: FontWeight.bold),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    style: Theme.of(context).textButtonTheme.style,
+                    child: const Text(
+                      "Yes",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    onPressed: () {
+                      _deleteAccount(context, accountName);
+                    },
+                  ),
+                  TextButton(
+                    style: Theme.of(context).textButtonTheme.style,
+                    child: const Text(
+                      "No",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
-              onPressed: () {
-                _deleteAccount(context, accountName);
-              },
-            ),
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "No",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
         );

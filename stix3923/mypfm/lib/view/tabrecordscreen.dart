@@ -747,41 +747,40 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           title: const Text(
             "Delete record",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
           content: const Text("Are you sure?",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           actions: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "Yes",
-                style: TextStyle(fontWeight: FontWeight.bold),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    style: Theme.of(context).textButtonTheme.style,
+                    child: const Text(
+                      "Yes",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _deleteRecord(record);
+                    },
+                  ),
+                  TextButton(
+                    style: Theme.of(context).textButtonTheme.style,
+                    child: const Text(
+                      "No",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteRecord(record);
-              },
-            ),
-            TextButton(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Colors.white), // Fixed foreground color to white
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor,
-                  )),
-              child: const Text(
-                "No",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
         );
