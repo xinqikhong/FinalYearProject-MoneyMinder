@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Container(
           constraints: const BoxConstraints.expand(),
-          color: Color.fromARGB(255, 255, 255, 255),
+          //color: Color.fromARGB(255, 255, 255, 255),
           // Set the background color here
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,

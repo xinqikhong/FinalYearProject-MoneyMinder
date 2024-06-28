@@ -102,136 +102,125 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
           children: [
             Card(
-                elevation: 10,
-                child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-                    child: Theme(
-                      data: Theme.of(context),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
+              elevation: 10,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
+                color: Theme.of(context).cardColor, // Use card color from theme
+                child: Theme(
+                  data: Theme.of(
+                      context), // Inherit theme data for consistent styling
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: resWidth * 0.05,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          textInputAction: TextInputAction.next,
+                          validator: (val) => val!.isEmpty ||
+                                  !val.contains("@") ||
+                                  !val.contains(".")
+                              ? "Please enter a valid email"
+                              : null,
+                          focusNode: focus,
+                          onFieldSubmitted: (v) {
+                            FocusScope.of(context).requestFocus(focus1);
+                          },
+                          controller: _emailditingController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            icon: Icon(Icons.email),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          textInputAction: TextInputAction.done,
+                          validator: (val) =>
+                              val!.isEmpty ? "Please enter a password" : null,
+                          focusNode: focus1,
+                          onFieldSubmitted: (v) {
+                            FocusScope.of(context).requestFocus(focus2);
+                          },
+                          controller: _passEditingController,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            icon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0),
+                            ),
+                          ),
+                          obscureText: _passwordVisible,
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Login",
-                              style: TextStyle(
-                                fontSize: resWidth * 0.05,
-                                fontWeight: FontWeight.w600,
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: _isChecked,
+                                  onChanged: (bool? value) {
+                                    _onRememberMeChanged(value!);
+                                  },
+                                  activeColor: Colors.orange,
+                                  checkColor: Colors.white,
+                                ),
+                                const Text(
+                                  'Remember me',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size(screenWidth / 3.3, 50),
+                                /*foregroundColor:
+                                    const Color.fromARGB(255, 255, 115, 0),
+                                backgroundColor: Colors.white,*/
+                              ),
+                              onPressed: _loginUser,
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                                textInputAction: TextInputAction.next,
-                                validator: (val) => val!.isEmpty ||
-                                        !val.contains("@") ||
-                                        !val.contains(".")
-                                    ? "Please enter a valid email"
-                                    : null,
-                                focusNode: focus,
-                                onFieldSubmitted: (v) {
-                                  FocusScope.of(context).requestFocus(focus1);
-                                },
-                                controller: _emailditingController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                    //labelStyle: TextStyle(),
-                                    labelText: 'Email',
-                                    icon: Icon(
-                                      Icons.email,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(width: 2.0),
-                                    ))),
-                            TextFormField(
-                              textInputAction: TextInputAction.done,
-                              validator: (val) => val!.isEmpty
-                                  ? "Please enter a password"
-                                  : null,
-                              focusNode: focus1,
-                              onFieldSubmitted: (v) {
-                                FocusScope.of(context).requestFocus(focus2);
-                              },
-                              controller: _passEditingController,
-                              decoration: InputDecoration(
-                                  //labelStyle: const TextStyle(),
-                                  labelText: 'Password',
-                                  icon: const Icon(
-                                    Icons.lock,
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _passwordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _passwordVisible = !_passwordVisible;
-                                      });
-                                    },
-                                  ),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  )),
-                              obscureText: _passwordVisible,
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _isChecked,
-                                        onChanged: (bool? value) {
-                                          _onRememberMeChanged(value!);
-                                        },
-                                        activeColor: Colors
-                                            .orange, // Change the color when the checkbox is selected
-                                        checkColor: Colors.white,
-                                      ),
-                                      const Text('Remember me',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          )),
-                                    ],
-                                  ),
-                                  Flexible(
-                                    flex: 5,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        fixedSize: Size(screenWidth / 3.3, 50),
-                                        foregroundColor: const Color.fromARGB(
-                                            255,
-                                            255,
-                                            115,
-                                            0), // Fixed foreground color to white
-                                        backgroundColor: Color.fromARGB(
-                                            255,
-                                            255,
-                                            255,
-                                            255), // Set your desired text color
-                                      ),
-                                      onPressed: _loginUser,
-                                      child: const Text(
-                                        'Login',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
-                                    ),
-                                  ),
-                                ]),
                           ],
                         ),
-                      ),
-                    ))),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),

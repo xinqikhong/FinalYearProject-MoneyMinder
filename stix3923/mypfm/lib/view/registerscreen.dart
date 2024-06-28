@@ -109,10 +109,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             elevation: 10,
             child: Container(
               padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-              color: Colors.white,
+              color: Theme.of(context).cardColor, // Use card color from theme
               child: Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Register",
@@ -121,46 +122,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(
-                      height: 6,
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      validator: (val) => val!.isEmpty || (val.length < 3)
+                          ? "Name must be longer than 3"
+                          : null,
+                      onFieldSubmitted: (v) {
+                        FocusScope.of(context).requestFocus(focus);
+                      },
+                      controller: _nameEditingController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                        icon: Icon(Icons.person),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2.0),
+                        ),
+                      ),
                     ),
                     TextFormField(
-                        textInputAction: TextInputAction.next,
-                        validator: (val) => val!.isEmpty || (val.length < 3)
-                            ? "Name must be longer than 3"
-                            : null,
-                        onFieldSubmitted: (v) {
-                          FocusScope.of(context).requestFocus(focus);
-                        },
-                        controller: _nameEditingController,
-                        keyboardType: TextInputType.text,
-                        decoration: const InputDecoration(
-                            labelText: 'Name',
-                            //labelStyle: TextStyle(),
-                            icon: Icon(Icons.person),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 2.0),
-                            ))),
-                    TextFormField(
-                        textInputAction: TextInputAction.next,
-                        validator: (val) => val!.isEmpty ||
-                                !val.contains("@") ||
-                                !val.contains(".")
-                            ? "Enter a valid email (e.g. abc@example.com)"
-                            : null,
-                        focusNode: focus,
-                        onFieldSubmitted: (v) {
-                          FocusScope.of(context).requestFocus(focus1);
-                        },
-                        controller: _emailditingController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                            labelText: 'Email',
-                            //labelStyle: TextStyle(),
-                            icon: Icon(Icons.email),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 2.0),
-                            ))),
+                      textInputAction: TextInputAction.next,
+                      validator: (val) => val!.isEmpty ||
+                              !val.contains("@") ||
+                              !val.contains(".")
+                          ? "Enter a valid email (e.g. abc@example.com)"
+                          : null,
+                      focusNode: focus,
+                      onFieldSubmitted: (v) {
+                        FocusScope.of(context).requestFocus(focus1);
+                      },
+                      controller: _emailditingController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        icon: Icon(Icons.email),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2.0),
+                        ),
+                      ),
+                    ),
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       validator: (val) => validatePassword(val.toString()),
@@ -169,26 +170,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         FocusScope.of(context).requestFocus(focus2);
                       },
                       controller: _passEditingController,
-                      //keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
-                          //labelStyle: const TextStyle(),
-                          labelText: 'Password',
-                          icon: const Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _passwordVisible = !_passwordVisible;
-                              });
-                            },
+                        labelText: 'Password',
+                        icon: Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(width: 2.0),
-                          )),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2.0),
+                        ),
+                      ),
                       obscureText: _passwordVisible,
                     ),
                     TextFormField(
@@ -197,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: (val) {
                         validatePassword(val.toString());
                         if (val != _passEditingController.text) {
-                          return "Password do not match";
+                          return "Passwords do not match";
                         } else {
                           return null;
                         }
@@ -207,31 +207,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         FocusScope.of(context).requestFocus(focus3);
                       },
                       controller: _pass2EditingController,
-                      //keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
-                          labelText: 'Re-enter Password',
-                          //labelStyle: const TextStyle(),
-                          icon: const Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _passwordVisible = !_passwordVisible;
-                              });
-                            },
+                        labelText: 'Re-enter Password',
+                        icon: Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(width: 2.0),
-                          )),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2.0),
+                        ),
+                      ),
                       obscureText: _passwordVisible,
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -242,33 +239,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               _isChecked = value!;
                             });
                           },
-                          activeColor: Colors
-                              .orange, // Change the color when the checkbox is selected
+                          activeColor: Colors.orange,
                           checkColor: Colors.white,
                         ),
                         Flexible(
                           child: GestureDetector(
                             onTap: _showEULA,
-                            child: const Text('Agree with terms',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                )),
+                            child: const Text(
+                              'Agree with terms',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             fixedSize: Size(screenWidth / 3.3, 50),
-                            foregroundColor: const Color.fromARGB(255, 255, 115,
-                                0), // Fixed foreground color to white
-                            backgroundColor: Color.fromARGB(255, 255, 255,
-                                255), // Set your desired text color
+                            /*foregroundColor:
+                                const Color.fromARGB(255, 255, 115, 0),
+                            backgroundColor: Colors.white,*/
                           ),
                           onPressed: _registerAccountDialog,
                           child: const Text(
                             'Register',
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ],
@@ -407,7 +406,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.white,
           title: const Text(
             "EULA",
           ),
@@ -425,7 +424,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     text: TextSpan(
                         style: const TextStyle(
                           fontSize: 12.0,
-                          color: Colors.black,
+                          //color: Colors.black,
                         ),
                         text: eula),
                   )),
@@ -435,12 +434,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              style: ButtonStyle(
+              /*style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(
                       Colors.white), // Fixed foreground color to white
                   backgroundColor: MaterialStateProperty.all<Color>(
                     Theme.of(context).primaryColor,
-                  )),
+                  )),*/
               child: const Text(
                 "Close",
                 style: TextStyle(fontWeight: FontWeight.bold),
