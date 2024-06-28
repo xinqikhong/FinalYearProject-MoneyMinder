@@ -395,7 +395,7 @@ class _TabResourceScreenState extends State<TabResourceScreen> {
                                         }
                                       },
                                     ),
-                                    const Divider(height: 2),
+                                    Divider(height: 1, color: Theme.of(context).dividerColor),
                                   ],
                                 );
                               },
