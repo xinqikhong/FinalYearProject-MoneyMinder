@@ -109,67 +109,70 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       endDrawer: Drawer(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Theme.of(context)
+                      .appBarTheme
+                      .backgroundColor,
         child: ListView(
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 255, 227, 186),
+              margin: EdgeInsets.zero, // Remove default margin
+              decoration:  BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                      ? Color.fromARGB(255, 203, 91, 0)
+                      : Color.fromARGB(255, 255, 227, 186),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const CircleAvatar(
-                      backgroundColor: Colors.orange,
-                      radius: 20,
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    radius: 20,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 24,
                     ),
-                    SizedBox(
-                      width: 150,
-                      //flex: 10,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.user.name.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            //textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    width: 150,
+                    //flex: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.user.name.toString(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
-                          Text(
-                            widget.user.email.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            //textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          //textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          widget.user.email.toString(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Colors.grey,
                           ),
-                        ],
-                      ),
+                          overflow: TextOverflow.ellipsis,
+                          //textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: widget.user.id != "unregistered"
-                          ? _handleEditProfileBtn
-                          : null,
-                    ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: widget.user.id != "unregistered"
+                        ? _handleEditProfileBtn
+                        : null,
+                  ),
+                ],
               ),
             ),
+            //Divider(height: 1, color: Theme.of(context).dividerColor),
             ListTile(
               enabled: widget.user.id != "unregistered",
               title: const Text(
