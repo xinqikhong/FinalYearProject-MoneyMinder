@@ -62,12 +62,12 @@ class _AddBudgetDetailScreenState extends State<AddBudgetDetailScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _saveBudget,
-                style: ElevatedButton.styleFrom(
+                /*style: ElevatedButton.styleFrom(
                   foregroundColor: const Color.fromARGB(
                       255, 255, 115, 0), // Fixed foreground color to white
                   backgroundColor: const Color.fromARGB(
                       255, 255, 255, 255), // Set your desired text color
-                ),
+                ),*/
                 child: const Text(
                   "Save",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),

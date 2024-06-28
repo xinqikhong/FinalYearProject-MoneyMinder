@@ -71,13 +71,13 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: _editBudget,
-                    style: ElevatedButton.styleFrom(
+                    /*style: ElevatedButton.styleFrom(
                       foregroundColor: Color.fromARGB(
                           255, 255, 115, 0), // Fixed foreground color to white
                       backgroundColor: Color.fromARGB(
                           255, 255, 255, 255), // Set your desired text color
                      
-                    ),
+                    ),*/
                     child: const Text(
                       "Save",
                       style:
@@ -86,13 +86,13 @@ class _EditBudgetScreenState extends State<EditBudgetScreen> {
                   ),
                   ElevatedButton(
                     onPressed: _deleteBudgetDialog,
-                    style: ElevatedButton.styleFrom(
+                    /*style: ElevatedButton.styleFrom(
                       foregroundColor: Color.fromARGB(
                           255, 255, 115, 0), // Fixed foreground color to white
                       backgroundColor: Color.fromARGB(
                           255, 255, 255, 255), // Set your desired text color
                       
-                    ),
+                    ),*/
                     child: const Text(
                       "Delete",
                       style:

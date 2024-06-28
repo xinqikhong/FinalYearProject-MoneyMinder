@@ -171,13 +171,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 //style: ElevatedButton.styleFrom(
                 //fixedSize: Size(screenWidth / 3, 50)),
                 onPressed: _saveEditDialog,
-                style: ElevatedButton.styleFrom(
+                /*style: ElevatedButton.styleFrom(
                   foregroundColor: Color.fromARGB(
                       255, 255, 115, 0), // Fixed foreground color to white
                   backgroundColor: Color.fromARGB(
                       255, 255, 255, 255), // Set your desired text color
                   
-                ),
+                ),*/
                 child: const Text(
                   'Save',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
