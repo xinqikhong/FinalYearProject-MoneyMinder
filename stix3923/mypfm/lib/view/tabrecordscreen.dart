@@ -83,16 +83,18 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               // Pagination for months
               Center(
                 child: Container(
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  color: Theme.of(context)
+                      .appBarTheme
+                      .backgroundColor, // Use theme color
                   height: 40, // Adjust height as needed
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
                         onPressed: _goToPreviousMonth,
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
-                          color: Colors.black,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                       ),
                       TextButton(
@@ -101,26 +103,31 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         },
                         child: Text(
                           DateFormat('MMM yyyy').format(_selectedMonth),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ), // Display selected month
                       IconButton(
                         onPressed: _goToNextMonth,
                         icon: const Icon(Icons.arrow_forward_ios_rounded),
-                        color: Colors.black,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .color, // Use theme text color
                       ),
                     ],
                   ),
                 ),
               ),
+
               //const Divider(height: 1),
               // Total income and expenses
               Container(
-                color: Color.fromARGB(255, 255, 255, 255),
+                color: Theme.of(context)
+                    .scaffoldBackgroundColor, // Set background color
                 padding: const EdgeInsets.all(2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -164,7 +171,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                   ],
                 ),
               ),
-              const Divider(height: 1),
+
+              Divider(height: 1, color: Theme.of(context).dividerColor),
               // Record list
               Expanded(
                 child: expenselist.isEmpty && incomelist.isEmpty
@@ -196,7 +204,8 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30), // Adjust the value as needed
         ),
-        child: const Icon(Icons.add, 
+        child: const Icon(
+          Icons.add,
           //color: Colors.white, // Change this color to your desired color
         ),
       ),
@@ -208,7 +217,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
     // Get the selected currency from the provider
     Currency? selectedCurrencyObject = widget.currencyProvider.selectedCurrency;
 
-// Get the currency code
+    // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
 
     // Combine income and expense records into a single list
@@ -272,11 +281,16 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       }
     }
 
+    // Determine the text color based on theme brightness
+    Color textColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white
+        : Colors.black;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          color: Color.fromARGB(255, 255, 255, 255),
+          color: Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
@@ -284,8 +298,11 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               children: [
                 Text(
                   '${sortedDates[index].day}/${sortedDates[index].month}',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
                 SizedBox(
                   width: 200,
@@ -294,21 +311,20 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                     children: [
                       Text(
                         '$selectedCurrency ${convertedDailyIncome.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.blue),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.blue,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      /*const SizedBox(
-                        width: 30,
-                      ),*/
                       Text(
                         '$selectedCurrency ${convertedDailyExpense.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.red),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -318,7 +334,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
             ),
           ),
         ),
-        const Divider(height: 1),
+        Divider(height: 1, color: Theme.of(context).dividerColor),
         // Use ListView.builder to iterate over recordsForDay
         ListView.builder(
           shrinkWrap: true,
@@ -337,7 +353,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
               onTap: () => _recordDetails(recordsForDay[i]),
               onLongPress: () => _deleteRecordDialog(recordsForDay[i]),
               child: Container(
-                color: Color.fromARGB(255, 255, 255, 255),
+                color: Theme.of(context).scaffoldBackgroundColor,
                 child: Column(
                   children: [
                     ListTile(
@@ -360,17 +376,21 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                                 : (record.containsKey('expense_category')
                                     ? record['expense_category']
                                     : record['income_category']),
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                       subtitle: Text(
                         record.containsKey('expense_category')
                             ? record['expense_category']
                             : record['income_category'],
-                        style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
                       ),
                       trailing: Text(
                         '$selectedCurrency ${convertedAmount.toStringAsFixed(2)}',
@@ -383,7 +403,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
                         ),
                       ),
                     ),
-                    const Divider(height: 1),
+                    Divider(height: 1, color: Theme.of(context).dividerColor),
                   ],
                 ),
               ),
@@ -423,45 +443,55 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
       firstDate: DateTime(2010),
       lastDate: DateTime(2050),
       builder: (context, child) {
+        ThemeData currentTheme = Theme.of(context);
+        Color primaryColor = currentTheme.primaryColor;
+        Color onPrimaryColor = currentTheme.colorScheme.onPrimary;
+        Color surfaceColor = currentTheme.colorScheme.surface;
+        Color onSurfaceColor = currentTheme.colorScheme.onSurface;
+        Color secondaryColor = currentTheme.colorScheme.secondary;
+        Color onSecondaryColor = currentTheme.colorScheme.onSecondary;
+        Color highlightColor = currentTheme.highlightColor;
+        // Access selectionColor based on a specific state or set a default value
+        Color selectionColor =
+            currentTheme.textSelectionTheme.selectionColor ?? Colors.blue;
+
+        // Access textButtonColor based on a specific state or set a default value
+        Color textButtonColor = currentTheme
+                .textButtonTheme.style!.foregroundColor
+                ?.resolve({MaterialState.selected}) ??
+            Colors.black;
+        Color dialogBackgroundColor = currentTheme.dialogBackgroundColor;
+
         return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Color.fromARGB(
-                255, 255, 115, 0), // Header and selected text color
-            //accentColor: Colors.orange, // Circle color for selected date
-            buttonTheme: const ButtonThemeData(
-              textTheme: ButtonTextTheme.primary,
+          data: currentTheme.copyWith(
+            primaryColor: primaryColor,
+            colorScheme: currentTheme.colorScheme.copyWith(
+              primary: primaryColor,
+              onPrimary: onPrimaryColor,
+              surface: surfaceColor,
+              onSurface: onSurfaceColor,
+              secondary: secondaryColor,
+              onSecondary: onSecondaryColor,
             ),
-            colorScheme: const ColorScheme.light(
-              primary:
-                  Color.fromARGB(255, 255, 115, 0), // Header background color
-              onPrimary: Colors.white, // Text color on header
-              surface:
-                  Color.fromARGB(255, 255, 115, 0), // Calendar background color
-              onSurface: Colors.black, // Calendar day text color
-              secondary:
-                  Color.fromARGB(255, 255, 115, 0), // Header background color
-              onSecondary: Colors.white, // Text color on header
-            ),
-            dialogBackgroundColor: Colors.white,
+            dialogBackgroundColor: dialogBackgroundColor,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Color.fromARGB(
-                    255, 255, 115, 0), // Set the text color for buttons
+                foregroundColor: textButtonColor,
               ),
             ),
-            highlightColor:
-                Color.fromARGB(255, 255, 115, 0), // Selection highlight color
+            highlightColor: highlightColor,
             textSelectionTheme: TextSelectionThemeData(
-              selectionColor: Color.fromARGB(255, 255, 115, 0),
-            ), // Background color for the picker dialog
-            sliderTheme: SliderThemeData(
-              thumbColor: Color.fromARGB(255, 255, 115, 0),
+              selectionColor: selectionColor,
+            ),
+            sliderTheme: currentTheme.sliderTheme.copyWith(
+              thumbColor: primaryColor, // Adjust as needed
             ),
           ),
           child: child!,
         );
       },
     );
+
     if (pickedMonth != null && pickedMonth != _selectedMonth) {
       if (!_isDisposed) {
         setState(() {
@@ -471,6 +501,7 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         });
       }
     }
+
     return null;
   }
 
