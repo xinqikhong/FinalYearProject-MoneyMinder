@@ -7,6 +7,7 @@ import 'package:mypfm/model/user.dart';
 import 'package:mypfm/view/customprogressdialog.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final User user;
@@ -423,6 +424,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         var data = jsonDecode(response.body);
         print(data);
         if (data['status'] == 'success') {
+          updateSP(_pass);
           Fluttertoast.showToast(
               msg: "Password update success.",
               toastLength: Toast.LENGTH_SHORT,
@@ -458,5 +460,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
     });
+  }
+  
+  void updateSP(String pass) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('pass', pass);
   }
 }

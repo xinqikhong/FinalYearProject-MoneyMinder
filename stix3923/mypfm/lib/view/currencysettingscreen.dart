@@ -215,7 +215,7 @@ class _CurrencySettingScreenState extends State<CurrencySettingScreen> {
                                   //Navigator.pop(context);
                                 },
                               ),
-                              const Divider(height: 2),
+                              Divider(height: 1, color: Theme.of(context).dividerColor),
                             ],
                           );
                         },
