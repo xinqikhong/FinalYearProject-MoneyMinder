@@ -53,57 +53,70 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         centerTitle: true,
       ),
       body: Column(
-        children: [
-          const Divider(height: 1),
-          Expanded(
-            child: excatlist.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(
-                    color: Colors.orangeAccent,
-                  ))
-                : ListView.builder(
-                    shrinkWrap: true,
-                    //physics: const NeverScrollableScrollPhysics(),
-                    itemCount: displayCat.length,
-                    itemBuilder: (context, index) {
-                      String categoryName = displayCat[index];
-                      return Container(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        child: Column(
+  children: [
+    Divider(
+      height: 1,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.black,
+    ),
+    Expanded(
+      child: excatlist.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: Colors.orangeAccent,
+            ))
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: displayCat.length,
+              itemBuilder: (context, index) {
+                String categoryName = displayCat[index];
+                return Container(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.white,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        title: Text(
+                          categoryName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).textTheme.bodyText1!.color,
+                          ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            ListTile(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              title: Text(categoryName,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      // Handle edit button press for the category
-                                      String selectedCategory = categoryName;
-                                      _addBudget(selectedCategory);
-                                    },
-                                    icon: const Icon(
-                                      Icons.add_circle,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
+                            IconButton(
+                              onPressed: () {
+                                String selectedCategory = categoryName;
+                                _addBudget(selectedCategory);
+                              },
+                              icon: const Icon(
+                                Icons.add_circle,
+                                color: Colors.green,
                               ),
                             ),
-                            const Divider(height: 1),
                           ],
                         ),
-                      );
-                    },
+                      ),
+                      Divider(
+                        height: 1,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                    ],
                   ),
-          ),
-        ],
-      ),
+                );
+              },
+            ),
+    ),
+  ],
+),
+
     );
   }
 
