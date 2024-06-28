@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       localizationsDelegates: const [
-        // ... existing delegates
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         MonthYearPickerLocalizations.delegate,
@@ -113,6 +112,69 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
         // Set your primary color here
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.orange,
+        primaryColor: const Color.fromARGB(255, 255, 115, 0),
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color.fromARGB(255, 255, 115, 0),
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color.fromARGB(255, 255, 227, 186),
+          foregroundColor: Colors.orange,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Color.fromARGB(255, 255, 227, 186), width: 2.0),
+          ),
+          labelStyle: TextStyle(color: Colors.grey),
+        ),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.orange,
+          selectionColor: Colors.orange,
+          selectionHandleColor: Colors.orange,
+        ),
+        datePickerTheme: DatePickerThemeData(
+          dayBackgroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.orange;
+            }
+            return null;
+          }),
+          todayBackgroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.orange;
+            }
+            return null;
+          }),
+          dayOverlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.orange.withOpacity(0.4);
+            }
+            return null;
+          }),
+          dividerColor: Colors.orange,
+          surfaceTintColor: Colors.orange,
+          backgroundColor: Colors.black,
+        ),
+        fontFamily: 'Montserrat',
+      ),
+      themeMode: ThemeMode.system,
       title: 'MyPFM',
       home: const SplashScreen(),
     );
