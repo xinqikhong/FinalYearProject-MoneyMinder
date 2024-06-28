@@ -18,7 +18,7 @@ import 'package:mypfm/view/tabresourcescreen.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'currency_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mypfm/view/customprogressdialog.dart';
 
 class MainScreen extends StatefulWidget {
