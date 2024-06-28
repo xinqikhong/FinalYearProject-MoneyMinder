@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     resWidth = screenWidth <= 600 ? screenWidth : screenWidth * 0.75;
 
-
     /*if (screenWidth <= 600) {
       resWidth = screenWidth;
     } else {
@@ -72,8 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [upperHalf(context, resWidth, screenHeight),
-            lowerHalf(context, resWidth)],
+              children: [
+                upperHalf(context, resWidth, screenHeight),
+                lowerHalf(context, resWidth)
+              ],
             ),
           ),
         ),
@@ -216,7 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                             255,
                                             255,
                                             255), // Set your desired text color
-                                        
                                       ),
                                       onPressed: _loginUser,
                                       child: const Text(
@@ -289,8 +289,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _loginUser() {
-    FocusScope.of(context).requestFocus(FocusNode());
     FocusScope.of(context).unfocus();
+
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
           msg: "Please fill in the login credentials",
@@ -301,16 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isChecked = false;
       return;
     }
-    /*ProgressDialog progressDialog = ProgressDialog(context,
-        message: const Text(
-          "Please wait..",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        title: const Text(
-          "Login user",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ));
-    progressDialog.show();*/
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -325,30 +316,41 @@ class _LoginScreenState extends State<LoginScreen> {
     String _pass = _passEditingController.text;
     http.post(Uri.parse("${MyConfig.server}/mypfm/php/login_user.php"),
         body: {"email": _email, "password": _pass}).then((response) {
+      Navigator.of(context).pop(); // Dismiss the dialog
       print(response.body);
-      var jsondata = jsonDecode(response.body);
-      if (response.statusCode == 200 && jsondata['status'] == 'success') {
-        User user = User.fromJson(jsondata['data']);
-        Fluttertoast.showToast(
-            msg: "Login Success",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        Navigator.of(context).pop(); // Dismiss the dialog
-        final currencyProvider =
-            Provider.of<CurrencyProvider>(context, listen: false);
-        currencyProvider.setUserId(user.id);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainScreen(
-                user: user,
-                currencyProvider:
-                    Provider.of<CurrencyProvider>(context, listen: false)),
-          ),
-          (route) => false, // This condition removes all routes from the stack
-        );
+
+      if (response.statusCode == 200) {
+        var jsondata = jsonDecode(response.body);
+        if (jsondata['status'] == 'success') {
+          User user = User.fromJson(jsondata['data']);
+          Fluttertoast.showToast(
+              msg: "Login Success",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+          final currencyProvider =
+              Provider.of<CurrencyProvider>(context, listen: false);
+          currencyProvider.setUserId(user.id);
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScreen(
+                  user: user,
+                  currencyProvider:
+                      Provider.of<CurrencyProvider>(context, listen: false)),
+            ),
+            (route) =>
+                false, // This condition removes all routes from the stack
+          );
+        } else {
+          Fluttertoast.showToast(
+              msg: "Login Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 14.0);
+        }
       } else {
         Fluttertoast.showToast(
             msg: "Login Failed",
@@ -357,7 +359,15 @@ class _LoginScreenState extends State<LoginScreen> {
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
       }
-      Navigator.of(context).pop(); // Dismiss the dialog
+    }).catchError((error) {
+      Navigator.of(context).pop(); // Dismiss the dialog in case of error
+      Fluttertoast.showToast(
+          msg: "An error occurred",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 14.0);
+      print("Error: $error");
     });
   }
 

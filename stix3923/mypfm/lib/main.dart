@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
         // Set your primary color here
       ),
-      darkTheme: ThemeData(
+      /*darkTheme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.orange,
         primaryColor: const Color.fromARGB(255, 255, 115, 0),
@@ -174,7 +174,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'Montserrat',
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.system,*/
       title: 'MyPFM',
       home: const SplashScreen(),
     );

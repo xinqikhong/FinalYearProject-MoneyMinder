@@ -348,9 +348,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    /*SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('email', '');
-    await prefs.setString('pass', '');
+    await prefs.setString('pass', '');*/
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),

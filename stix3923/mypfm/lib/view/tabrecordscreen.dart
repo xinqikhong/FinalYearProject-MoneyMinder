@@ -196,7 +196,9 @@ class _TabRecordScreenState extends State<TabRecordScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30), // Adjust the value as needed
         ),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, 
+          //color: Colors.white, // Change this color to your desired color
+        ),
       ),
     );
   }
