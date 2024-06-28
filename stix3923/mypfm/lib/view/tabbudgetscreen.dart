@@ -73,16 +73,18 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
               // Pagination for months
               Center(
                 child: Container(
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  color: Theme.of(context)
+                      .appBarTheme
+                      .backgroundColor, // Use theme color
                   height: 40, // Adjust height as needed
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
                         onPressed: _goToPreviousMonth,
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
-                          color: Colors.black,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                       ),
                       TextButton(
@@ -91,17 +93,20 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                         },
                         child: Text(
                           DateFormat('MMM yyyy').format(_selectedMonth),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ), // Display selected month
                       IconButton(
                         onPressed: _goToNextMonth,
                         icon: const Icon(Icons.arrow_forward_ios_rounded),
-                        color: Colors.black,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .color, // Use theme text color
                       ),
                     ],
                   ),
@@ -470,39 +475,48 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       firstDate: DateTime(2010),
       lastDate: DateTime(2050),
       builder: (context, child) {
+        ThemeData currentTheme = Theme.of(context);
+        Color primaryColor = currentTheme.primaryColor;
+        Color onPrimaryColor = currentTheme.colorScheme.onPrimary;
+        Color surfaceColor = currentTheme.colorScheme.surface;
+        Color onSurfaceColor = currentTheme.colorScheme.onSurface;
+        Color secondaryColor = currentTheme.colorScheme.secondary;
+        Color onSecondaryColor = currentTheme.colorScheme.onSecondary;
+        Color highlightColor = currentTheme.highlightColor;
+        // Access selectionColor based on a specific state or set a default value
+        Color selectionColor =
+            currentTheme.textSelectionTheme.selectionColor ?? Colors.blue;
+
+        // Access textButtonColor based on a specific state or set a default value
+        Color textButtonColor = currentTheme
+                .textButtonTheme.style!.foregroundColor
+                ?.resolve({MaterialState.selected}) ??
+            Colors.black;
+        Color dialogBackgroundColor = currentTheme.dialogBackgroundColor;
+
         return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Color.fromARGB(
-                255, 255, 115, 0), // Header and selected text color
-            //accentColor: Colors.orange, // Circle color for selected date
-            buttonTheme: const ButtonThemeData(
-              textTheme: ButtonTextTheme.primary,
+          data: currentTheme.copyWith(
+            primaryColor: primaryColor,
+            colorScheme: currentTheme.colorScheme.copyWith(
+              primary: primaryColor,
+              onPrimary: onPrimaryColor,
+              surface: surfaceColor,
+              onSurface: onSurfaceColor,
+              secondary: secondaryColor,
+              onSecondary: onSecondaryColor,
             ),
-            colorScheme: const ColorScheme.light(
-              primary:
-                  Color.fromARGB(255, 255, 115, 0), // Header background color
-              onPrimary: Colors.white, // Text color on header
-              surface:
-                  Color.fromARGB(255, 255, 115, 0), // Calendar background color
-              onSurface: Colors.black, // Calendar day text color
-              secondary:
-                  Color.fromARGB(255, 255, 115, 0), // Header background color
-              onSecondary: Colors.white, // Text color on header
-            ),
-            dialogBackgroundColor: Colors.white,
+            dialogBackgroundColor: dialogBackgroundColor,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Color.fromARGB(
-                    255, 255, 115, 0), // Set the text color for buttons
+                foregroundColor: textButtonColor,
               ),
             ),
-            highlightColor:
-                Color.fromARGB(255, 255, 115, 0), // Selection highlight color
+            highlightColor: highlightColor,
             textSelectionTheme: TextSelectionThemeData(
-              selectionColor: Color.fromARGB(255, 255, 115, 0),
-            ), // Background color for the picker dialog
-            sliderTheme: SliderThemeData(
-              thumbColor: Color.fromARGB(255, 255, 115, 0),
+              selectionColor: selectionColor,
+            ),
+            sliderTheme: currentTheme.sliderTheme.copyWith(
+              thumbColor: primaryColor, // Adjust as needed
             ),
           ),
           child: child!,
@@ -541,7 +555,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
     // Get the selected currency from the provider
     Currency? selectedCurrencyObject = widget.currencyProvider.selectedCurrency;
 
-// Get the currency code
+    // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
 
     var budget = budgetlist[index];
@@ -566,8 +580,8 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
       //onTap: () => _budgetDetails(budget),
       onLongPress: () => _deleteBudgetDialog(budget),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: double.infinity),
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+        constraints: BoxConstraints(maxWidth: double.infinity),
         child: Column(
           children: [
             ListTile(
@@ -584,7 +598,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      '-$selectedCurrency ${convertedExpenseAmount.toStringAsFixed(2)}', // Budget amount
+                      '-$selectedCurrency ${convertedExpenseAmount.toStringAsFixed(2)}',
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 14,
@@ -592,23 +606,24 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                       width: 10), // Add spacing between budget and progress bar
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 150.0),
+                    constraints: BoxConstraints(maxWidth: 150.0),
                     child: Stack(
-                      // Set constraints explicitly
-                      alignment: Alignment.center, // Optional: Center elements
-                      clipBehavior:
-                          Clip.none, // Optional: Allow overflowing content
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
                       children: [
                         Container(
-                          width: 110.0, // Set desired width
+                          width: 110.0,
                           height: 20.0,
                           child: LinearProgressIndicator(
                             value: percentage / 100,
                             borderRadius: BorderRadius.circular(5.0),
-                            //minHeight: 15,
+                            // Set the background color of the progress bar
+                          backgroundColor: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white.withOpacity(0.3)
+                              : Colors.grey[300],
                             valueColor: AlwaysStoppedAnimation<Color>(
                               percentage >= 100
                                   ? Colors.red
@@ -623,8 +638,10 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                           top: 0,
                           child: Text(
                             '${percentage.toStringAsFixed(1)}%',
-                            style: const TextStyle(
-                                color: Colors.black,
+                            style:  TextStyle(
+                                color: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white // Set text color for dark theme
+                                : Colors.black, // Set text color for light theme
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -635,7 +652,7 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   SizedBox(
                     width: 110,
                     child: Text(
-                      '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}', // Expense amount
+                      '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: Color.fromARGB(255, 3, 171, 68),
@@ -646,23 +663,9 @@ class _TabBudgetScreenState extends State<TabBudgetScreen> {
                   ),
                 ],
               ),
-              /*trailing: Container(
-                //margin: const EdgeInsets.all(1.0),
-                width: 100.0, // Set desired width
-                height: 20.0,
-                child: Text(
-                  '$selectedCurrency ${convertedBudgetAmount.toStringAsFixed(2)}', // Expense amount
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 3, 171, 68),
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),*/
               onTap: () => _budgetDetails(budget),
             ),
-            const Divider(height: 1),
+            Divider(height: 1, color: Theme.of(context).dividerColor),
           ],
         ),
       ),
