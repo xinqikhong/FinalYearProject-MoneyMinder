@@ -74,18 +74,22 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
               )
             : Column(
                 children: [
+                  // Pagination for months
                   Center(
                     child: Container(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                      color: Theme.of(context)
+                          .appBarTheme
+                          .backgroundColor, // Use theme color
                       height: 40, // Adjust height as needed
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
                             onPressed: _goToPreviousMonth,
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.arrow_back_ios_new_rounded,
-                              color: Colors.black,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge!.color,
                             ),
                           ),
                           TextButton(
@@ -95,23 +99,27 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                             },
                             child: Text(
                               DateFormat('MMM yyyy').format(_selectedMonth),
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ), // Display selected month
                           IconButton(
                             onPressed: _goToNextMonth,
                             icon: const Icon(Icons.arrow_forward_ios_rounded),
-                            color: Colors.black,
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .color, // Use theme text color
                           ),
                         ],
                       ),
                     ),
                   ),
-                  //const Divider(height: 1),
                   Row(
                     children: [
                       Expanded(
@@ -124,15 +132,17 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: _isIncomeSelected
-                                  ? Color.fromARGB(255, 255, 255, 255)
-                                  : Color.fromARGB(255, 255, 255, 255),
+                                  ? Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.black
+                                      : Colors.white
+                                  : Colors.transparent,
                               border: Border(
                                 bottom: BorderSide(
                                   color: _isIncomeSelected
                                       ? Colors.orange
                                       : Colors.transparent,
-                                  width:
-                                      2, // Adjust the width of the bottom border as needed
+                                  width: 2,
                                 ),
                               ),
                             ),
@@ -144,8 +154,15 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: _isIncomeSelected
-                                        ? Colors.black
-                                        : Colors.grey,
+                                        ? Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? const Color.fromARGB(
+                                                255, 255, 255, 255)
+                                            : Colors.black
+                                        : Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey
+                                            : Colors.grey,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -163,16 +180,18 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: _isIncomeSelected
-                                  ? Color.fromARGB(255, 255, 255, 255)
-                                  : Color.fromARGB(255, 255, 255, 255),
+                              color: !_isIncomeSelected
+                                  ? Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.black
+                                      : Colors.white
+                                  : Colors.transparent,
                               border: Border(
                                 bottom: BorderSide(
-                                  color: _isIncomeSelected
-                                      ? Colors.transparent
-                                      : Colors.orange,
-                                  width:
-                                      2, // Adjust the width of the bottom border as needed
+                                  color: !_isIncomeSelected
+                                      ? Colors.orange
+                                      : Colors.transparent,
+                                  width: 2,
                                 ),
                               ),
                             ),
@@ -183,9 +202,16 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                                   'Expense',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    color: _isIncomeSelected
-                                        ? Colors.grey
-                                        : Colors.black,
+                                    color: !_isIncomeSelected
+                                        ? Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? const Color.fromARGB(
+                                                255, 255, 255, 255)
+                                            : Colors.black
+                                        : Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey
+                                            : Colors.grey,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -196,6 +222,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                       ),
                     ],
                   ),
+
                   Expanded(
                     child: Column(
                       children: [
@@ -234,35 +261,48 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
       firstDate: DateTime(2010),
       lastDate: DateTime(2050),
       builder: (context, child) {
+        ThemeData currentTheme = Theme.of(context);
+        Color primaryColor = currentTheme.primaryColor;
+        Color onPrimaryColor = currentTheme.colorScheme.onPrimary;
+        Color surfaceColor = currentTheme.colorScheme.surface;
+        Color onSurfaceColor = currentTheme.colorScheme.onSurface;
+        Color secondaryColor = currentTheme.colorScheme.secondary;
+        Color onSecondaryColor = currentTheme.colorScheme.onSecondary;
+        Color highlightColor = currentTheme.highlightColor;
+        // Access selectionColor based on a specific state or set a default value
+        Color selectionColor =
+            currentTheme.textSelectionTheme.selectionColor ?? Colors.blue;
+
+        // Access textButtonColor based on a specific state or set a default value
+        Color textButtonColor = currentTheme
+                .textButtonTheme.style!.foregroundColor
+                ?.resolve({MaterialState.selected}) ??
+            Colors.black;
+        Color dialogBackgroundColor = currentTheme.dialogBackgroundColor;
+
         return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Color.fromARGB(255, 255, 115, 0), // Header and selected text color
-            //accentColor: Colors.orange, // Circle color for selected date
-            buttonTheme: const ButtonThemeData(
-              textTheme: ButtonTextTheme.primary,
+          data: currentTheme.copyWith(
+            primaryColor: primaryColor,
+            colorScheme: currentTheme.colorScheme.copyWith(
+              primary: primaryColor,
+              onPrimary: onPrimaryColor,
+              surface: surfaceColor,
+              onSurface: onSurfaceColor,
+              secondary: secondaryColor,
+              onSecondary: onSecondaryColor,
             ),
-            colorScheme: const ColorScheme.light(
-              primary: Color.fromARGB(255, 255, 115, 0), // Header background color
-              onPrimary: Colors.white, // Text color on header
-              surface: Color.fromARGB(255, 255, 115, 0), // Calendar background color
-              onSurface: Colors.black, // Calendar day text color
-              secondary: Color.fromARGB(255, 255, 115, 0), // Header background color
-              onSecondary: Colors.white, // Text color on header
-            ),
-            dialogBackgroundColor: Colors.white,
+            dialogBackgroundColor: dialogBackgroundColor,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor:
-                    Color.fromARGB(255, 255, 115, 0), // Set the text color for buttons
+                foregroundColor: textButtonColor,
               ),
             ),
-            highlightColor:
-                Color.fromARGB(255, 255, 115, 0), // Selection highlight color
+            highlightColor: highlightColor,
             textSelectionTheme: TextSelectionThemeData(
-              selectionColor: Color.fromARGB(255, 255, 115, 0),
-            ), // Background color for the picker dialog
-            sliderTheme: SliderThemeData(
-              thumbColor: Color.fromARGB(255, 255, 115, 0),
+              selectionColor: selectionColor,
+            ),
+            sliderTheme: currentTheme.sliderTheme.copyWith(
+              thumbColor: primaryColor, // Adjust as needed
             ),
           ),
           child: child!,
@@ -316,7 +356,9 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     List<Color> segmentColors = _generateSegmentColors(data);
 
     return Container(
-      color: Color.fromARGB(255, 255, 255, 255),
+      color: Theme.of(context)
+                      .appBarTheme
+                      .backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
@@ -439,7 +481,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     // Get the selected currency from the provider
     Currency? selectedCurrencyObject = widget.currencyProvider.selectedCurrency;
 
-// Get the currency code
+    // Get the currency code
     String selectedCurrency = selectedCurrencyObject?.code ?? 'MYR';
 
     double convertedTotalIncome =
@@ -455,19 +497,19 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
     data.sort((a, b) =>
         double.parse(b['amount']).compareTo(double.parse(a['amount'])));
 
-    print(data.length);
     // Build and return the list of categories with their data
     return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //const Divider(height: 1),
           Visibility(
             visible: !((_isIncomeSelected && convertedTotalIncome == 0) ||
                 (!_isIncomeSelected && convertedTotalExpense == 0)),
             child: Container(
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.white,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
@@ -476,10 +518,13 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                   children: [
                     Text(
                       _isIncomeSelected ? 'Total Income: ' : 'Total Expense: ',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                     const SizedBox(
                       width: 30,
@@ -499,18 +544,19 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
             ),
           ),
           Visibility(
-              visible: !((_isIncomeSelected && convertedTotalIncome == 0) ||
-                  (!_isIncomeSelected && convertedTotalExpense == 0)),
-              child: const Divider(height: 1)),
+            visible: !((_isIncomeSelected && convertedTotalIncome == 0) ||
+                (!_isIncomeSelected && convertedTotalExpense == 0)),
+            child: Divider(height: 1, color: Theme.of(context).dividerColor),
+          ),
           Expanded(
             child: ListView.builder(
-              //shrinkWrap: true,
-              //physics: NeverScrollableScrollPhysics(),
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final Color sectionColor = _generateSegmentColors(data)[index];
                 return Container(
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.white,
                   child: Column(
                     children: [
                       ListTile(
@@ -544,7 +590,7 @@ class _TabStatsScreenState extends State<TabStatsScreen> {
                                     : Colors.red,
                                 fontWeight: FontWeight.bold)),
                       ),
-                      const Divider(height: 1),
+                      Divider(height: 1, color: Theme.of(context).dividerColor),
                     ],
                   ),
                 );
