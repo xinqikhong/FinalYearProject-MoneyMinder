@@ -112,10 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Form(
                     key: _formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Login",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: resWidth * 0.05,
                             fontWeight: FontWeight.w600,

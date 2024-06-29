@@ -113,10 +113,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Register",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: resWidth * 0.05,
                         fontWeight: FontWeight.w600,
