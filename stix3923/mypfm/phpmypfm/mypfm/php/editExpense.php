@@ -15,7 +15,6 @@ if (empty($_POST['record_id'])) {
     exit;
 }
 
-
 $responses = [];
 
 //Check if the selected record type is Income

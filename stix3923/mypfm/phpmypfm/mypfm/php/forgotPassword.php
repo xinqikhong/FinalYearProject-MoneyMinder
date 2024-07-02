@@ -115,15 +115,15 @@ function sendPassResetEmail($email, $passtoken){
     try {
         // SMTP settings
         $mail->isSMTP();
-        $mail->Host = 'mail.xqksoft.com';
+        $mail->Host = '';
         $mail->Port = 465;
         $mail->SMTPSecure = 'ssl'; // Enable TLS encryption
         $mail->SMTPAuth = true;
-        $mail->Username = 'moneyminder_admin@xqksoft.com'; // Your Gmail email address
-        $mail->Password = 'Khongq11@'; // Your Gmail password
+        $mail->Username = ''; // Your Gmail email address
+        $mail->Password = ''; // Your Gmail password
 
         // Sender and recipient settings
-        $mail->setFrom('moneyminder_admin@xqksoft.com', 'MoneyMinder Team'); // Your name and email address
+        $mail->setFrom('', 'MoneyMinder Team'); // Your name and email address
         $mail->addAddress($email);
 
         // Email content
@@ -167,15 +167,15 @@ function sendVerifyEmail($email, $otp)
     try {
         // SMTP settings
         $mail->isSMTP();
-        $mail->Host = 'mail.xqksoft.com';
+        $mail->Host = '';
         $mail->Port = 465;
         $mail->SMTPSecure = 'ssl'; // Enable TLS encryption
         $mail->SMTPAuth = true;
-        $mail->Username = 'moneyminder_admin@xqksoft.com'; // Your Gmail email address
-        $mail->Password = 'Khongq11@'; // Your Gmail password
+        $mail->Username = ''; // Your Gmail email address
+        $mail->Password = ''; // Your Gmail password
 
         // Sender and recipient settings
-        $mail->setFrom('moneyminder_admin@xqksoft.com', 'MoneyMinder Team'); // Your name and email address
+        $mail->setFrom('', 'MoneyMinder Team'); // Your email address and name
         $mail->addAddress($email);
 
         // Email content

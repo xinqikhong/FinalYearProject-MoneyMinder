@@ -1,0 +1,86 @@
+[24-May-2024 19:47:13 UTC] PHP Parse error:  syntax error, unexpected end of file in /home2/koderkwq/public_html/mypfm/php/verify_email.php on line 61
+[24-May-2024 19:47:43 UTC] PHP Parse error:  syntax error, unexpected end of file in /home2/koderkwq/public_html/mypfm/php/verify_email.php on line 61
+[24-May-2024 19:48:46 UTC] PHP Parse error:  syntax error, unexpected end of file in /home2/koderkwq/public_html/mypfm/php/verify_email.php on line 61
+[24-May-2024 19:49:08 UTC] PHP Parse error:  syntax error, unexpected end of file in /home2/koderkwq/public_html/mypfm/php/verify_email.php on line 61
+[24-May-2024 20:18:17 UTC] PHP Fatal error:  Uncaught Error: Class 'PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer' not found in /home2/koderkwq/public_html/mypfm/php/register_user.php:88
+Stack trace:
+#0 /home2/koderkwq/public_html/mypfm/php/register_user.php(38): sendMail('difey58870@mcat...', 29545, 'Khongq11@')
+#1 {main}
+  thrown in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 88
+[24-May-2024 20:20:27 UTC] PHP Fatal error:  Uncaught Error: Class 'PHPMailer\PHPMailer\PHPMailer\PHPMailer\PHPMailer' not found in /home2/koderkwq/public_html/mypfm/php/register_user.php:88
+Stack trace:
+#0 /home2/koderkwq/public_html/mypfm/php/register_user.php(38): sendMail('difey58870@mcat...', 96263, 'Khongq11@')
+#1 {main}
+  thrown in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 88
+[24-May-2024 20:21:26 UTC] PHP Fatal error:  Uncaught Error: Class 'PHPMailer' not found in /home2/koderkwq/public_html/mypfm/php/register_user.php:95
+Stack trace:
+#0 /home2/koderkwq/public_html/mypfm/php/register_user.php(38): sendMail('difey58870@mcat...', 46495, 'Khongq11@')
+#1 {main}
+  thrown in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 95
+[24-May-2024 20:25:10 UTC] PHP Parse error:  syntax error, unexpected '-', expecting ';' or ',' in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 3
+[24-May-2024 20:26:46 UTC] PHP Fatal error:  Uncaught Error: Class 'PHPMailer' not found in /home2/koderkwq/public_html/mypfm/php/register_user.php:92
+Stack trace:
+#0 /home2/koderkwq/public_html/mypfm/php/register_user.php(35): sendMail('difey58870@mcat...', 16220, 'Khongq11@')
+#1 {main}
+  thrown in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 92
+[24-May-2024 20:52:03 UTC] PHP Notice:  Undefined variable: name in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 113
+[24-May-2024 21:00:12 UTC] PHP Notice:  Undefined variable: name in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 113
+[24-May-2024 21:00:12 UTC] PHP Notice:  Undefined variable: name in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 113
+[24-May-2024 21:06:49 UTC] PHP Notice:  Undefined variable: name in /home2/koderkwq/public_html/mypfm/php/register_user.php on line 114
+[25-May-2024 18:31:39 UTC] Response: {"status":"success","data":null}
+[25-May-2024 19:11:56 UTC] Response: {"status":"success","data":null}
+[25-May-2024 19:15:23 UTC] Response: {"status":"success","data":null}
+[26-May-2024 00:56:54 UTC] PHP Notice:  Undefined variable: pass in /home2/koderkwq/public_html/mypfm/php/retrieveAndSendPassword.php on line 42
+[26-May-2024 00:56:54 UTC] PHP Notice:  Undefined variable: password in /home2/koderkwq/public_html/mypfm/php/retrieveAndSendPassword.php on line 127
+[26-May-2024 01:02:15 UTC] PHP Notice:  Undefined variable: pass in /home2/koderkwq/public_html/mypfm/php/retrieveAndSendPassword.php on line 42
+[26-May-2024 03:44:55 UTC] PHP Notice:  Undefined index: user_password in /home2/koderkwq/public_html/mypfm/php/checkToken.php on line 42
+[02-Jun-2024 07:31:02 UTC] Response: {"status":"success","data":null}
+[02-Jun-2024 20:03:46 UTC] Response: {"status":"success","data":null}
+[02-Jun-2024 20:51:42 UTC] Response: {"status":"success","data":null}
+[02-Jun-2024 20:52:07 UTC] Response: {"status":"success","data":null}
+[02-Jun-2024 20:52:49 UTC] Response: {"status":"success","data":null}
+[06-Jun-2024 13:33:46 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 16:20:21 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 16:20:52 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 18:50:56 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:05:23 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:05:49 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:15:02 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:21:23 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:28:10 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:35:51 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:41:37 UTC] Response: {"status":"success","data":null}
+[25-Jun-2024 19:44:36 UTC] Response: {"status":"success","data":null}
+[26-Jun-2024 06:01:18 UTC] Response: {"status":"success","data":null}
+[26-Jun-2024 06:02:40 UTC] Response: {"status":"success","data":null}
+[26-Jun-2024 06:05:45 UTC] Response: {"status":"success","data":null}
+[26-Jun-2024 06:07:12 UTC] Response: {"status":"success","data":null}
+[26-Jun-2024 08:22:17 UTC] Response: {"status":"success","data":null}
+[26-Jun-2024 08:23:02 UTC] Response: {"status":"success","data":null}
+[27-Jun-2024 23:20:38 UTC] Response: {"status":"success","data":null}
+[28-Jun-2024 00:08:36 UTC] Response: {"status":"success","data":null}
+[28-Jun-2024 00:09:00 UTC] Response: {"status":"success","data":null}
+[28-Jun-2024 00:09:20 UTC] Response: {"status":"success","data":null}
+[28-Jun-2024 00:13:45 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:14:02 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:15:13 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:16:10 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:16:39 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:17:04 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:17:57 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:19:26 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:20:07 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:20:27 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:20:56 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:21:19 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:21:43 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:22:35 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:23:50 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:24:10 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:24:31 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:25:34 UTC] Response: {"status":"success","data":null}
+[01-Jul-2024 14:32:10 UTC] Response: {"status":"success","data":null}
+[02-Jul-2024 02:32:08 UTC] Response: {"status":"success","data":null}
+[02-Jul-2024 03:53:39 UTC] Response: {"status":"success","data":null}
+[02-Jul-2024 06:19:50 UTC] Response: {"status":"success","data":null}
+[02-Jul-2024 10:44:15 UTC] Response: {"status":"success","data":null}

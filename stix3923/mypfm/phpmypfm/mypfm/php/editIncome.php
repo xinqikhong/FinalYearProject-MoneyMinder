@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -21,7 +19,7 @@ if (empty($_POST['record_id']) || empty($_POST['selected_type'])) {
 if ($_POST['selected_type'] === "Expense") {
     $incomeId = $_POST['record_id'];
 
-    // Delete the current income record from the income table based on the expense_id
+    // Delete the current income record from the income table based on the income_id
     $sqlDeleteIncome = "DELETE FROM tbl_income WHERE income_id = ?";
     $stmtDeleteIncome = $conn->prepare($sqlDeleteIncome);
     $stmtDeleteIncome->bind_param("i", $incomeId);

@@ -28,7 +28,6 @@ $expenseAccount = $_POST['account'];
 //$expenseDesc = isset($_POST['expense_desc']) && $_POST['expense_desc'] !== null ? (string)$_POST['expense_desc'] : "";
 
 $expenseDateObj = DateTime::createFromFormat('d/m/Y', $expenseDate);
-// Format the date object into 'YYYY-MM-DD' format
 $expenseDateFormatted = $expenseDateObj->format('Y-m-d');
 
 /*

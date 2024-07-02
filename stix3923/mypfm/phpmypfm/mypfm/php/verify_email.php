@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once ("dbconnect.php");
+include_once("dbconnect.php");
 
 $email = $_GET['email'];
 $otp = $_GET['otp'];
@@ -22,7 +22,7 @@ if ($result->num_rows > 0) {
         }
 
         if ($userId != '') {
-
+            
             // Insert default income categories for the user
             $sqlinsertincat = "INSERT INTO tbl_incat (incat_name, user_id) VALUES 
             ('Salary', $userId),

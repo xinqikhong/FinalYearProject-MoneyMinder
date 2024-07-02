@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username   = "root";
-$password   = "Khongq11@";
-$dbname     = "mypfmdb";
+$username   = "username";
+$password   = "password";
+$dbname     = "dbname";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {

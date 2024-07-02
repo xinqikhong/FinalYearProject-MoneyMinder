@@ -87,21 +87,21 @@ function sendMail($email, $otp, $pass)
     try {
         // SMTP settings
         $mail->isSMTP();
-        $mail->Host = 'mail.xqksoft.com';
+        $mail->Host = '';
         $mail->Port = 465;
         $mail->SMTPSecure = 'ssl'; // Enable TLS encryption
         $mail->SMTPAuth = true;
-        $mail->Username = 'moneyminder_admin@xqksoft.com'; // Your Gmail email address
-        $mail->Password = 'Khongq11@'; // Your Gmail password
+        $mail->Username = ''; // Your Gmail email address
+        $mail->Password = ''; // Your Gmail password
 
         // Sender and recipient settings
-        $mail->setFrom('moneyminder_admin@xqksoft.com', 'MoneyMinder Team'); // Your name and email address
+        $mail->setFrom('', 'MoneyMinder Team'); // Your email address and name
         $mail->addAddress($email);
 
         // Email content
-        $mail->isHTML(true);
-        $mail->Subject = 'Money Minder - Account Verification';
-        $mail->Body = "
+$mail->isHTML(true);
+$mail->Subject = 'Money Minder - Account Verification';
+$mail->Body = "
     <html>
     <body style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px;'>
         <h2 style='text-align: left;'>Welcome to MoneyMinder</h2>
