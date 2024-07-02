@@ -60,10 +60,20 @@ MoneyMinder is a personal finance management mobile application developed as a f
 ## Screenshots
 - **Record Screen**:
   
-![Screenshot_20240629_162230](https://github.com/xinqikhong/stix3923/assets/129888504/16b3cc7f-b964-4159-a782-1ad3400b2d45)
+   ![Screenshot_20240629_162230](https://github.com/xinqikhong/stix3923/assets/129888504/2641ab2c-1dd2-4871-ad61-b21026622982)
+
 - **Budget Screen**:
-  
-![Screenshot_20240629_162404](https://github.com/xinqikhong/stix3923/assets/129888504/5572092d-9a88-47c0-ae57-c314a8088613)
+
+   ![Screenshot_20240629_162404](https://github.com/xinqikhong/stix3923/assets/129888504/5572092d-9a88-47c0-ae57-c314a8088613)
+
+- **Statistics Screen**:
+
+  ![Screenshot_20240629_162417](https://github.com/xinqikhong/stix3923/assets/129888504/a181d855-5397-44df-b852-e93fea8ce49a)
+
+- **Resource Screen**:
+
+  ![Screenshot_20240629_162448](https://github.com/xinqikhong/stix3923/assets/129888504/f1d95f4c-7656-4b17-81c2-6577021671ad)
+
 
 ## Contributions
 Contributions are welcome! Please fork the repository and create a pull request with your changes.
