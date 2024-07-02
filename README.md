@@ -4,6 +4,10 @@
 
 MoneyMinder is a personal finance management mobile application developed as a final year project. It enables users to easily track income and expenses, monitor budgets, generate statistical reports, and view in-app educational resources. The app is developed using Flutter and deployed on Android.
 
+## Links
+- **APK download**:
+  https://drive.google.com/file/d/1hVqtWExab1sqrV4zd9oEmpxgiVCnTy3B/view?usp=sharing
+  
 ## Features
 
 - **Income and Expense Tracking**: Users can log and categorize their income and expenses.
@@ -73,8 +77,3 @@ MoneyMinder is a personal finance management mobile application developed as a f
 - **Resource Screen**:
 
   ![Screenshot_20240629_162448](https://github.com/xinqikhong/stix3923/assets/129888504/f1d95f4c-7656-4b17-81c2-6577021671ad)
-
-
-## Links
-- **APK download**:
-  https://drive.google.com/file/d/1hVqtWExab1sqrV4zd9oEmpxgiVCnTy3B/view?usp=sharing
